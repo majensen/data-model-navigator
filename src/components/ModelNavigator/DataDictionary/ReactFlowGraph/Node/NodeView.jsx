@@ -91,7 +91,12 @@ const NodeView = ({
       <div className={clsx({ [classes.propDialog]: display })}>
         <div
           className={
-            display ? classes.customNodeExpand : classes.customNodeCollapse
+            clsx({
+              [classes.customNodeExpand]: display,
+              [classes.customNodeCollapse]: !display,
+              "customNodeExpand": display,
+              "customNodeCollapse": !display,
+            })
           }
         >
           {display && (
@@ -112,7 +117,7 @@ const NodeView = ({
               >
                 <div className={classes.nodeButtonInnerWrapper}>
                   <div
-                    className={classes.iconWrapper}
+                    className={clsx(classes.iconWrapper, `${label}_iconWrapper`)}
                     style={{ backgroundColor: iconColor }}
                   >
                     <img
@@ -171,7 +176,7 @@ const NodeView = ({
                 </li>
                 <hr className={classes.divider} />
                 <li className={classes.listItem}>
-                  <span className={classes.listItemLabel}>
+                  <span className={clsx(classes.listItemLabel, `${label}_listItemLabel`)}>
                     {"Optional Properties: "}
                   </span>
                   <span className={classes.listItemValue}>{optPropsCount}</span>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider, ThemeProvider, createMuiTheme, createTheme } from '@material-ui/core/styles';
 import themes, { overrides, typography } from './themes';
 
 const lightTheme = createMuiTheme({ ...themes.light, ...overrides, ...typography });
@@ -37,8 +37,52 @@ const CustomThemeProvider = ({ children }) => {
 
   const computedTheme = themeState.dark ? darkTheme : lightTheme;
 
+  const legnedTheme = {
+    '& div.value_categoryLegendIcon': {
+      width: '35px',
+      height: '25px',
+      backgroundRepeat: 'no-repeat',
+      backgroundImage: `url('https://raw.githubusercontent.com/CBIIT/datacommons-assets/data_model_pdf_icons/icdc/DMN/legend/administrative.svg')`,
+      '& img': {
+        display: 'none',
+      },
+    },
+  }
+
+  const nodeTheme = {
+    '& div.customNodeCollapse': {
+      color: 'red',
+    },
+    '& div.customNodeExpand': {
+      color: 'orange',
+    },
+    '& div.Program_iconWrapper': {
+      height: '35px',
+      width: '35px',
+      backgroundRepeat: 'no-repeat',
+      backgroundImage: `url('static/media/src/components/ModelNavigator/DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/administrative.svg')`,
+      '& img': {
+        display: 'none',
+      },
+    },
+    '& span.Program_listItemLabel': {
+      color: 'yellow',
+    },
+  }
+  
+  const theme = {
+    overrides: {
+      MuiContainer: {
+        maxWidthLg: {
+          ...nodeTheme,
+          ...legnedTheme,
+        },
+      },
+    },
+  };
+
   return (
-    <MuiThemeProvider theme={computedTheme}>
+    <ThemeProvider theme={createTheme(theme)}>
       <ThemeContext.Provider
         value={{
           dark: themeState.dark,
@@ -47,7 +91,7 @@ const CustomThemeProvider = ({ children }) => {
       >
         {children}
       </ThemeContext.Provider>
-    </MuiThemeProvider>
+    </ThemeProvider>
   );
 };
 

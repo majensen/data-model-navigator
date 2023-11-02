@@ -25,7 +25,7 @@ const Legend = ({ classes, categoryItems, styles, overlayPropertyHidden }) => {
     const imgUrl = `${legendIconUrl}${category}.svg`;
     return (
       <div key={category} className={classes.category}>
-        <div className={classes.categoryIcon}>
+        <div className={clsx(classes.categoryIcon, `${category}_categoryLegendIcon`)}>
           <img src={imgUrl} alt="icon" />
         </div>
         <span className={classes.text}>{capitalizeFirstLetter(category)}</span>

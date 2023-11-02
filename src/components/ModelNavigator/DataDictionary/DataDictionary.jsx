@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, withStyles } from "@material-ui/core";
+import { Button, Container, withStyles } from "@material-ui/core";
 import ReduxDictionarySearcher from "./Search/DictionarySearcher";
 import ReduxDictionarySearchHistory from "./Search/DictionarySearchHistory";
 import ReduxFacetFilters from "./Search/Filter/ReduxFacetFilter";
@@ -35,7 +35,7 @@ const DataDictionary = ({
   return (
     <div className={classes.dictionaryContainer}>
       <HeaderComponent pdfDownloadConfig={pdfDownloadConfig} />
-      <div className={classes.dataDictionary}>
+      <Container className={classes.dataDictionary}>
         <div className={classes.sidebar}>
           <ReduxDictionarySearcher ref={dictionarySearcherRef} />
           <ReduxDictionarySearchHistory
@@ -49,7 +49,7 @@ const DataDictionary = ({
           dictionary={dictionary}
           isGraphView={isGraphView}
         />
-      </div>
+      </Container>
     </div>
   );
 };
@@ -73,6 +73,8 @@ const styles = () => ({
   dataDictionary: {
     display: "flex",
     height: "calc(100vh)",
+    maxWidth: '100%',
+    padding: '0',
   },
   container: {
     paddingTop: "60px",
