@@ -55,27 +55,6 @@ const customNodeTree = [
 //set styling and configuration for autofit actions
 const graphViewConfig = {
   legend: {
-    styles: {
-      legendExpand: {
-        position: 'absolute',
-        right: '25px',
-        top: '300px',
-        backgroundColor: '#494949',
-        border: '2px solid #5486AF',
-        borderTopLeftRadius: '10px 10px',
-        borderBottomLeftRadius: '10px 10px',
-        paddingBottom: '15px',
-      },
-      legendCollapse: {
-        position: 'absolute',
-        right: '25px',
-        top: '300px',
-        backgroundColor: '#18588C',
-        border: '1px solid #125C5D',
-        borderTopLeftRadius: '10px 10px',
-        borderBottomLeftRadius: '10px 10px',
-      },
-    }
   },
   canvas: {
     fit: {
@@ -85,7 +64,10 @@ const graphViewConfig = {
       minZoom: 0.5,
       maxZoom: 2,
       xInterval: 250,
-      yInterval: 90,
+      yInterval: 100,
+    },
+    icons: {
+      // icon mapping,
     },
     nodeTree: customNodeTree,
   }
@@ -310,6 +292,7 @@ async function init() {
       fileType: 'pdf',
       prefix: 'ICDC_Data_Model_',
       landscape: 'true',
+      iconsConfig: {},
     };
   
   Promise.all(
@@ -324,15 +307,18 @@ async function init() {
           readMeConfig: readMeConfig,
           graphViewConfig: graphViewConfig,
           pdfDownloadConfig: pdfDownloadConfig,
-          assetConfig: assetConfig
+          assetConfig: assetConfig,
+          headerConfig: {},
+          iconsConfig: {},
         },
       }),
       store.dispatch({
         type: 'REACT_FLOW_GRAPH_DICTIONARY',
-        dictionary: newDataList,
+        dictionary: newDataList,  
         pdfDownloadConfig: pdfDownloadConfig,
         assetConfig: assetConfig,
         graphViewConfig: graphViewConfig,
+        categoryIcons: {},
       }),
       store.dispatch({
         type: 'RECEIVE_VERSION_INFO',

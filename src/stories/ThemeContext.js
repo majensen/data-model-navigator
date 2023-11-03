@@ -50,17 +50,33 @@ const CustomThemeProvider = ({ children }) => {
   }
 
   const nodeTheme = {
-    '& div.customNodeCollapse': {
+    '& button.Program_nodeTitleBtn': {
       color: 'red',
+    },
+    '& button.Project_nodeTitleBtn': {
+      color: 'blue',
+    },
+    
+    '& span.Node_iconWrapper': {
+      width: '45px',
+      height: '38px',
+      backgroundSize: '45px 38px',
+      backgroundRepeat: 'no-repeat',
+      backgroundImage: `url('static/media/src/components/ModelNavigator/DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/administrative.svg')`,
+      '& img': {
+        display: 'none',
+      },
     },
     '& div.customNodeExpand': {
       color: 'orange',
     },
     '& div.Program_iconWrapper': {
-      height: '35px',
+      height: '55px',
       width: '35px',
+      borderRadius: '75px',
+      backgroundSize: '35px 35px',
       backgroundRepeat: 'no-repeat',
-      backgroundImage: `url('static/media/src/components/ModelNavigator/DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/administrative.svg')`,
+      backgroundImage: `url('static/media/src/components/ModelNavigator/DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/clinical.svg')`,
       '& img': {
         display: 'none',
       },

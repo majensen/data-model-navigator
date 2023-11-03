@@ -93,7 +93,7 @@ const CanvasController = ({
           });
           nodes.forEach((node) => {
             if(!node.data.icon) {
-              node.data.icon = defaultIcon;
+              // node.data.icon = defaultIcon;
             }
             const position = nodePosition[node.id];
             node.position = {
