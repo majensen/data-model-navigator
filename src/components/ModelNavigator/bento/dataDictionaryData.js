@@ -8,7 +8,7 @@ export const types = {
   INCLUSION: 'inclusion',
   CLASS: 'class',
   MULTIPLICITY: 'multiplicity',
-}
+};
 
 export const defaultFacetSectionVariables = {
   color: '#000000',
@@ -32,14 +32,14 @@ export const facetSearchData = [
     tooltip: 'category',
     show: true,
     checkboxItems: [
-      { name: 'Administrative', isChecked: false, group:'category' },
-      { name: 'Analysis', isChecked: false, group:'category' },
-      { name: 'Biospecimen', isChecked: false, group:'category' },
-      { name: 'Case', isChecked: false, group:'category' },
-      { name: 'Clinical', isChecked: false, group:'category' },
-      { name: 'Clinical_Trial', isChecked: false, group:'category' },
-      { name: 'Data_File', isChecked: false, group:'category' },
-      { name: 'Study', isChecked: false, group:'category' },
+      { name: 'Administrative', isChecked: false, group: 'category' },
+      { name: 'Analysis', isChecked: false, group: 'category' },
+      { name: 'Biospecimen', isChecked: false, group: 'category' },
+      { name: 'Case', isChecked: false, group: 'category' },
+      { name: 'Clinical', isChecked: false, group: 'category' },
+      { name: 'Clinical_Trial', isChecked: false, group: 'category' },
+      { name: 'Data_File', isChecked: false, group: 'category' },
+      { name: 'Study', isChecked: false, group: 'category' },
     ],
   },
   {
@@ -50,7 +50,7 @@ export const facetSearchData = [
     show: true,
     checkboxItems: [
       { name: 'Core', isChecked: false, group: 'assignment' },
-      { name: 'Extended', isChecked: false, group: 'assignment'  },
+      { name: 'Extended', isChecked: false, group: 'assignment' },
     ],
   },
   {
@@ -183,12 +183,25 @@ export const controlVocabConfig = {
 };
 
 export const filterConfig = {
-  facetSearchData: facetSearchData,
-  facetSectionVariables: facetSectionVariables,
-  resetIcon: resetIcon,
-  baseFilters: baseFilters,
-  filterSections: filterSections,
-  filterOptions: filterOptions,
-  showCheckboxCount:  showCheckboxCount,
+  facetSearchData,
+  facetSectionVariables,
+  resetIcon,
+  baseFilters,
+  filterSections,
+  filterOptions,
+  showCheckboxCount,
+};
 
-}
+export const graphViewConfig = {
+  legend: {
+  },
+  canvas: {
+    fit: {
+      x: 0,
+      y: 20,
+      zoom: 0.7,
+      minZoom: 0.7,
+      maxZoom: 2,
+    },
+  },
+};

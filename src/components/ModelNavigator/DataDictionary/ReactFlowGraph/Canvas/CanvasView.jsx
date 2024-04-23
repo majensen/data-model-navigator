@@ -1,19 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from "react-redux";
-import { CircularProgress, withStyles } from '@material-ui/core';
+// import { useSelector } from 'react-redux';
+import { withStyles } from '@material-ui/core';
 import ReactFlow, {
-  MiniMap,
-  Controls,
   Background,
   ReactFlowProvider,
-  useReactFlow
+  useReactFlow,
 } from 'reactflow';
 import NodeView from '../Node/ReduxNodeView';
 import EdgeView from '../Edge/ReduxEdgeView';
 import Styles from './CanvasStyle';
 import ReduxViewPort from './ReduxViewPort';
 import ReduxAutoFitView from './ReduxAutoFitView';
-import { getMinZoom, nodeColor } from './util';
+import { getMinZoom } from './util';
 import LegendView from '../Legend/ReduxLegendView';
 import './Canvas.css';
 import './assets/style.css';
@@ -31,14 +29,10 @@ const edgeTypes = {
   custom: EdgeView,
 };
 
-const minimapStyle = {
-  height: 120,
-};
-
 /**
- * 
- * @param {*} param0 
- * @returns 
+ *
+ * @param {*} param0
+ * @returns
  * reactflow requires to create child component
  *  to add customize control buttons
  */
@@ -51,38 +45,28 @@ const CustomFlowView = ({
   onEdgesChange,
   highlightedNodes,
   graphViewConfig,
-  onGraphPanelClick
+  onGraphPanelClick,
 }) => {
   const { setViewport, zoomIn, zoomOut } = useReactFlow();
 
   const { fit, width } = graphViewConfig.canvas;
 
-  const [minZoom,  setMinZoom] = useState(fit?.minZoom);
-  
+  const [minZoom, setMinZoom] = useState(fit?.minZoom);
+
   useEffect(() => {
-    const zoom = getMinZoom({width, ...fit});
+    const zoom = getMinZoom({ width, ...fit });
     setMinZoom(zoom);
   }, [width]);
 
   const handleTransform = useCallback(() => {
-    setViewport({ x: fit?.x, y: fit?.y, zoom: getMinZoom({width, ...fit}) }, { duration: 200 });
+    setViewport({ x: fit?.x, y: fit?.y, zoom: getMinZoom({ width, ...fit }) }, { duration: 200 });
   }, [setViewport, width]);
 
   /**
-   * pdf configuration
-   */
-  const pdfDownloadConfig = useSelector(state => state.ddgraph.pdfDownloadConfig);
-  if (!pdfDownloadConfig) {
-    return <CircularProgress />
-  }
-
-  const overlayPropertyHidden = useSelector(state => state.ddgraph.overlayPropertyHidden);
-
-  /**
    * collapse all property dialog box
-   * @param {*} event 
+   * @param {*} event
    */
-  const onPanelClick = (event) => {
+  const onPanelClick = (event) => { // eslint-disable-line
     onGraphPanelClick();
   };
 
@@ -97,11 +81,11 @@ const CustomFlowView = ({
       edgeTypes={edgeTypes}
       minZoom={minZoom}
       maxZoom={fit?.maxZoom ? fit.maxZoom : 3}
-      onPaneClick={onPanelClick}
+      onPanelClick={onPanelClick}
       fitView
       className={classes.reactFlowView}
     >
-      <ReduxOverlayPropertyTable pdfDownloadConfig={pdfDownloadConfig} />
+      <ReduxOverlayPropertyTable />
       {/* <MiniMap nodeColor={nodeColor} style={minimapStyle} pannable position='bottom-left' /> */}
       {/* <Controls position='top-left' /> */}
       <div className={classes.controls}>
@@ -122,14 +106,14 @@ const CustomFlowView = ({
           backgroundColor: highlightedNodes
             && !!highlightedNodes.length
             ? '#C5DEEA'
-            : '#E7F3F7'
+            : '#E7F3F7',
         }}
         color="#aaa"
         gap={12}
       />
     </ReactFlow>
   );
-}
+};
 
 const CanvasView = ({
   classes,
@@ -143,28 +127,26 @@ const CanvasView = ({
   highlightedNodes,
   graphViewConfig,
   onGraphPanelClick,
-}) => {
-  return (
-    <div className={classes.mainWindow}>
-      <LegendView
-        categoryItems={categories}
+}) => (
+  <div className={classes.mainWindow}>
+    <LegendView
+      categoryItems={categories}
+    />
+    <ActionLayer handleClearSearchResult={onClearSearchResult} />
+    <ReactFlowProvider>
+      <CustomFlowView
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        classes={classes}
+        highlightedNodes={highlightedNodes}
+        graphViewConfig={graphViewConfig}
+        onGraphPanelClick={onGraphPanelClick}
       />
-      <ActionLayer handleClearSearchResult={onClearSearchResult} />
-      <ReactFlowProvider>
-        <CustomFlowView
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          classes={classes}
-          highlightedNodes={highlightedNodes}
-          graphViewConfig={graphViewConfig}
-          onGraphPanelClick={onGraphPanelClick}
-        />
-      </ReactFlowProvider>
-    </div>
-  );
-}
+    </ReactFlowProvider>
+  </div>
+);
 
 export default withStyles(Styles)(CanvasView);

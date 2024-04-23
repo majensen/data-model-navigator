@@ -1,4 +1,3 @@
-
 import * as actionTypes from './actionTypes';
 
 export const clickBlankSpace = () => ({
@@ -59,12 +58,12 @@ export const setReactFlowGraphData = (flowData) => ({
 });
 export const clickNode = (nodeID) => ({
   type: 'REACT_FLOW_GRAPH_CLICK_NODE',
-  nodeID
+  nodeID,
 });
 
 export const focusNode = (nodeID) => ({
   type: actionTypes.ON_REACT_FLOW_NODE_FOCUS,
-  nodeID
+  nodeID,
 });
 
 export const resetGraphHighlight = () => ({
@@ -94,9 +93,9 @@ export const setGraphView = (isGraphView) => ({
 });
 
 export const setCanvasWidth = (canvasWidth) => ({
-  type: actionTypes.CNAVAS_WIDTH_CHANGE,
-  canvasWidth
-})
+  type: actionTypes.CANVAS_WIDTH_CHANGE,
+  canvasWidth,
+});
 
 export const setNeedReset = (needReset) => ({
   type: 'GRAPH_CANVAS_RESET_REQUIRED',
@@ -143,9 +142,9 @@ export const setHighlightingMatchedNodeOpened = (opened) => ({
 });
 
 export const onViewChange = (view) => ({
-  type: actionTypes.ON_GRAPH_VIEW_CHANGE,
-  view
-})
+  type: actionTypes.ON_REACT_FLOW_GRAPH_VIEW_CHANGE,
+  view,
+});
 
 export const onPanelViewClick = () => ({
   type: actionTypes.ON_REACT_FLOW_PANEL_CLICK,
@@ -154,4 +153,3 @@ export const onPanelViewClick = () => ({
 export const onNodeDragStart = () => ({
   type: actionTypes.ON_REACT_FLOW_NODE_DRAG_START,
 });
-

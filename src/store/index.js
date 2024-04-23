@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import ReduxThunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 // import stats from '../components/Stats/StatsState';
 // import { reducers as modelReducers } from '../components/DataDictionaryComponent/reducers';
@@ -17,7 +17,7 @@ const loggerMiddleware = createLogger();
 
 const store = createStore(
   combineReducers(reducers),
-  applyMiddleware(ReduxThunk, loggerMiddleware),
+  applyMiddleware(thunk, loggerMiddleware),
 );
 
 store.injectReducer = (key, reducer) => {

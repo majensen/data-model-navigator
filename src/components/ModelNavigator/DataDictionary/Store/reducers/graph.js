@@ -3,7 +3,7 @@ import {
   clearSearchHistoryItems,
   addSearchHistoryItems,
   onViewChange,
-  onCnavasWidthChange,
+  onCanvasWidthChange,
 } from '../../Utils/utils';
 import * as actionTypes from '../actions/actionTypes';
 
@@ -35,19 +35,17 @@ const ddgraphInitialState = {
   highlightingMatchedNodeID: null,
   highlightingMatchedNodeOpened: false,
   dictionary: {},
-  pdfDownloadConfig: {},
 };
 
 const ddgraph = (state = ddgraphInitialState, action) => {
   switch (action.type) {
-    case 'TOGGLE_GRAPH_TABLE_VIEW': {
+    case 'TOGGLE_GRAPH_TABLE_VIEW':
       return {
         ...state,
         isGraphView: action.isGraphView,
         overlayPropertyHidden: true,
       };
-    }
-    case 'GRAPH_LAYOUT_CALCULATED': {
+    case 'GRAPH_LAYOUT_CALCULATED':
       return {
         ...state,
         nodes: action.nodes,
@@ -55,13 +53,11 @@ const ddgraph = (state = ddgraphInitialState, action) => {
         graphBoundingBox: action.graphBoundingBox,
         layoutInitialized: true,
       };
-    }
-    case 'GRAPH_LEGEND_CALCULATED': {
+    case 'GRAPH_LEGEND_CALCULATED':
       return {
         ...state,
         legendItems: action.legendItems,
       };
-    }
     case 'GRAPH_UPDATE_HOVERING_NODE': {
       const newHoveringNode = state.nodes.find((n) => n.id === action.nodeID);
       return {
@@ -69,85 +65,74 @@ const ddgraph = (state = ddgraphInitialState, action) => {
         hoveringNode: newHoveringNode,
       };
     }
-    case 'GRAPH_UPDATE_CANVAS_BOUNDING_RECT': {
+    case 'GRAPH_UPDATE_CANVAS_BOUNDING_RECT':
       return {
         ...state,
         canvasBoundingRect: action.canvasBoundingRect,
       };
-    }
-    case 'GRAPH_UPDATE_RELATED_HIGHLIGHTING_NODE': {
+    case 'GRAPH_UPDATE_RELATED_HIGHLIGHTING_NODE':
       return {
         ...state,
         relatedNodeIDs: action.relatedNodeIDs,
       };
-    }
-    case 'GRAPH_UPDATE_SECOND_HIGHLIGHTING_NODE_CANDIDATES': {
+    case 'GRAPH_UPDATE_SECOND_HIGHLIGHTING_NODE_CANDIDATES':
       return {
         ...state,
         secondHighlightingNodeCandidateIDs: action.secondHighlightingNodeCandidateIDs,
       };
-    }
-    case 'GRAPH_UPDATE_PATH_RELATED_TO_SECOND_HIGHLIGHTING_NODE': {
+    case 'GRAPH_UPDATE_PATH_RELATED_TO_SECOND_HIGHLIGHTING_NODE':
       return {
         ...state,
         pathRelatedToSecondHighlightingNode: action.pathRelatedToSecondHighlightingNode,
       };
-    }
-    case 'GRAPH_UPDATE_DATA_MODEL_STRUCTURE': {
+    case 'GRAPH_UPDATE_DATA_MODEL_STRUCTURE':
       return {
         ...state,
         dataModelStructure: action.dataModelStructure,
         dataModelStructureRelatedNodeIDs: action.dataModelStructureRelatedNodeIDs,
         dataModelStructureAllRoutesBetween: action.routesBetweenStartEndNodes,
       };
-    }
-    case 'GRAPH_SET_OVERLAY_PROPERTY_TABLE_HIDDEN': {
+    case 'GRAPH_SET_OVERLAY_PROPERTY_TABLE_HIDDEN':
       return {
         ...state,
         overlayPropertyHidden: action.isHidden,
       };
-    }
-    case 'GRAPH_CANVAS_RESET_REQUIRED': {
+    case 'GRAPH_CANVAS_RESET_REQUIRED':
       return {
         ...state,
         needReset: action.needReset,
       };
-    }
-    case 'GRAPH_RESET_HIGHLIGHT': {
+    case 'GRAPH_RESET_HIGHLIGHT':
       return {
         ...state,
         highlightingNode: null,
         secondHighlightingNodeID: null,
         tableExpandNodeID: null,
       };
-    }
-    case 'REACT_FLOW_GRAPH_DICTIONARY': {
+    case 'REACT_FLOW_GRAPH_DICTIONARY':
       return {
         ...state,
         dictionary: action.dictionary,
-        pdfDownloadConfig: action.pdfDownloadConfig,
         graphConfig: action.graphConfig,
         assetConfig: action.assetConfig,
-        graphViewConfig: {...action.graphViewConfig, ...state.graphViewConfig},
-      }
-    }
-    case 'REACT_FLOW_SET_GRAPH_DATA': {
+        graphViewConfig: { ...action.graphViewConfig, ...state.graphViewConfig },
+      };
+    case 'REACT_FLOW_SET_GRAPH_DATA':
       return {
         ...state,
         nodes: action.nodes,
         edges: action.edges,
-      }
-    }
+      };
     case 'REACT_FLOW_GRAPH_CLICK_NODE': {
       let newArray;
       if (state.highlightedNodes) {
         if (state.highlightedNodes.includes(action.nodeID)) {
-          newArray = state.highlightedNodes.filter((el) => el !== action.nodeID)
+          newArray = state.highlightedNodes.filter((el) => el !== action.nodeID);
         } else {
-          newArray = [...state.highlightedNodes, action.nodeID]
+          newArray = [...state.highlightedNodes, action.nodeID];
         }
       } else {
-        newArray = [action.nodeID]
+        newArray = [action.nodeID];
       }
       if (state.isSearchMode) {
         // clicking node in search mode opens property table
@@ -161,16 +146,16 @@ const ddgraph = (state = ddgraphInitialState, action) => {
           highlightedNodes: newArray,
         };
       }
-      // if serach mode is false
+      // if search mode is false
       return {
         ...state,
-          highlightingMatchedNodeID: action.nodeID,
-          highlightingNode: state.dictionary[action.nodeID],
-          highlightingMatchedNodeOpened: false,
-          overlayPropertyHidden: true,
-          expandNodeView: true,
-          highlightedNodes: newArray,
-      }
+        highlightingMatchedNodeID: action.nodeID,
+        highlightingNode: state.dictionary[action.nodeID],
+        highlightingMatchedNodeOpened: false,
+        overlayPropertyHidden: true,
+        expandNodeView: true,
+        highlightedNodes: newArray,
+      };
     }
     case 'GRAPH_CLICK_NODE': {
       if (state.isSearchMode) {
@@ -287,13 +272,12 @@ const ddgraph = (state = ddgraphInitialState, action) => {
         secondHighlightingNodeID: null,
       };
     }
-    case 'SEARCH_SET_IS_SEARCHING_STATUS': {
+    case 'SEARCH_SET_IS_SEARCHING_STATUS':
       return {
         ...state,
         isSearching: action.isSearching,
       };
-    }
-    case 'SEARCH_RESULT_UPDATED': {
+    case 'SEARCH_RESULT_UPDATED':
       return {
         ...state,
         searchResult: action.searchResult,
@@ -309,26 +293,22 @@ const ddgraph = (state = ddgraphInitialState, action) => {
         secondHighlightingNodeID: null,
         tableExpandNodeID: null,
       };
-    }
-    case 'SEARCH_CLEAR_HISTORY': {
+    case 'SEARCH_CLEAR_HISTORY':
       return {
         ...state,
         searchHistoryItems: clearSearchHistoryItems(),
       };
-    }
-    case 'SEARCH_HISTORY_ITEM_CREATED': {
+    case 'SEARCH_HISTORY_ITEM_CREATED':
       return {
         ...state,
         searchHistoryItems: addSearchHistoryItems(action.searchHistoryItem),
       };
-    }
-    case 'GRAPH_NODES_SVG_ELEMENTS_UPDATED': {
+    case 'GRAPH_NODES_SVG_ELEMENTS_UPDATED':
       return {
         ...state,
         graphNodesSVGElements: action.graphNodesSVGElements,
       };
-    }
-    case 'SEARCH_RESULT_CLEARED': {
+    case 'SEARCH_RESULT_CLEARED':
       return {
         ...state,
         searchResult: [],
@@ -338,45 +318,41 @@ const ddgraph = (state = ddgraphInitialState, action) => {
         highlightingMatchedNodeID: null,
         highlightingMatchedNodeOpened: false,
       };
-    }
-    case 'SEARCH_SAVE_CURRENT_KEYWORD': {
+    case 'SEARCH_SAVE_CURRENT_KEYWORD':
       return {
         ...state,
         currentSearchKeyword: action.keyword,
       };
-    }
-    case 'GRAPH_MATCHED_NODE_OPENED': {
+    case 'GRAPH_MATCHED_NODE_OPENED':
       return {
         ...state,
         highlightingMatchedNodeOpened: action.opened,
       };
-    }
     case actionTypes.ON_REACT_FLOW_PANEL_CLICK:
       return {
         ...state,
         expandNodeView: false,
-      }
+      };
     case actionTypes.ON_REACT_FLOW_NODE_DRAG_START:
       return {
         ...state,
         expandNodeView: false,
-      }
+      };
     case actionTypes.ON_REACT_FLOW_GRAPH_VIEW_CHANGE:
-      const { view } = action;
       return {
         ...state,
-        reactFlowView: onViewChange(view),
-      }
+        reactFlowView: onViewChange(action),
+      };
     case actionTypes.ON_REACT_FLOW_NODE_FOCUS:
       return {
         ...state,
-        focusedNodeId: action?.nodeID
-      }
-    case actionTypes.CNAVAS_WIDTH_CHANGE:
+        focusedNodeId: action?.nodeID,
+      };
+    case actionTypes.CANVAS_WIDTH_CHANGE:
       return {
         ...state,
-        graphViewConfig: onCnavasWidthChange({...action, ...state}),
-      }
+        graphViewConfig: onCanvasWidthChange({ ...action, ...state }),
+      };
     default:
       return state;
   }

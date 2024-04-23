@@ -21,7 +21,7 @@ const getData = async (url) => {
   return data;
 };
 
-async function getModelExploreData(modelUrl = DATA_MODEL, modelPropsUrl = DATA_MODEL_PROPS) {
+export default async function getModelExploreData(modelUrl = DATA_MODEL, modelPropsUrl = DATA_MODEL_PROPS) {
   const icdcMData = await getData(modelUrl);
   const icdcMPData = await getData(modelPropsUrl);
 
@@ -213,4 +213,3 @@ async function getModelExploreData(modelUrl = DATA_MODEL, modelPropsUrl = DATA_M
   };
 }
 
-module.exports.getModelExploreData = getModelExploreData;

@@ -238,13 +238,6 @@ export const defaultCategory = {
   color: '#9B9B9B',
 };
 
-export const getCategoryIconSVG = (category) => {
-  if (nodeCategoryList[category]) {
-    return table+category;
-  }
-
-  return defaultCategory.icon;
-};
 
 export const getCategoryColor = (category) => {
   if (nodeCategoryList[category]) {
@@ -267,23 +260,4 @@ export const getCategoryStyle = (category) => {
     return nodeCategoryList[category];
   }
   return defaultCategory.color;
-};
-
-export const getGraphCategoryIconSVG = (category) => {
-  if (graphNodeCategoryList[category]) {
-    return graph+category;
-  }
-  return table+'default.svg';
-};
-
-export const getPdfCategoryIconSVG = (category) => {
-  return pdfNodeCategoryList[category];
-};
-
-export const getLegendCategoryIconSVG = (category) => {
-  if (graphNodeCategoryList[category]) {
-    return legend+category;
-  }
-
-  return table+'default.svg';
 };
