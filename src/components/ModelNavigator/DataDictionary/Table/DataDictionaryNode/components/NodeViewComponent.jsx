@@ -152,7 +152,7 @@ const NodeViewComponent = ({
                     image: IconDownloadPDF,
                   }}
                   documentData={node}
-                  fileName={createFileName(node.id, pdfDownloadConfig.prefix)}
+                  fileName={createFileName(node.id, pdfDownloadConfig?.prefix)}
                 />
               </ButtonGroup>
             </div>

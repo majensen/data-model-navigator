@@ -17,20 +17,20 @@ const DATA_MODEL_PROPS = 'https://raw.githubusercontent.com/CBIIT/icdc-model-too
 
 const getData = async (url) => {
   const response = await axios.get(url);
-  const data = yaml.safeLoad(response.data);
+  const data = yaml.load(response.data);
   return data;
 };
 
-export default async function getModelExploreData(modelUrl = DATA_MODEL, modelPropsUrl = DATA_MODEL_PROPS) {
-  const icdcMData = await getData(modelUrl);
-  const icdcMPData = await getData(modelPropsUrl);
+export async function getModelNavData(modelUrl = DATA_MODEL, modelPropsUrl = DATA_MODEL_PROPS) {
+  const MData = await getData(modelUrl);
+  const MPData = await getData(modelPropsUrl);
 
   // translate the json file here
   const dataList = {};
   const keyMaps = new Set();
 
   // using the following code the convert MDF to Gen3 format
-  for (const [key, value] of Object.entries(icdcMData.Nodes)) {
+  for (const [key, value] of Object.entries(MData.Nodes)) {
     const item = {};
     item.$schema = 'http://json-schema.org/draft-06/schema#';
     item.id = key;
@@ -62,45 +62,45 @@ export default async function getModelExploreData(modelUrl = DATA_MODEL, modelPr
     const pOptional = [];
 
     const Yes = [];
-    const No  = [];
-    if (icdcMData.Nodes[key].Props != null) {
-      for (let i = 0; i < icdcMData.Nodes[key].Props.length; i++) {
-        const nodeP = icdcMData.Nodes[key].Props[i];
+    const No = [];
+    if (MData.Nodes[key].Props != null) {
+      for (let i = 0; i < MData.Nodes[key].Props.length; i++) {
+        const nodeP = MData.Nodes[key].Props[i];
         const propertiesItem = {};
-        for (var propertyName in icdcMPData.PropDefinitions) {
+        for (var propertyName in MPData.PropDefinitions) {
           if (propertyName === nodeP) {
-            if (icdcMPData.PropDefinitions[propertyName].Key) {
+            if (MPData.PropDefinitions[propertyName].Key) {
               keyMaps.add({ props: propertyName, node: key });
             }
-            propertiesItem.labeled = icdcMPData.PropDefinitions[propertyName].Tags
-              ? icdcMPData.PropDefinitions[propertyName]?.Tags?.Labeled
-                ? icdcMPData.PropDefinitions[propertyName]?.Tags?.Labeled : undefined : undefined;
+            propertiesItem.labeled = MPData.PropDefinitions[propertyName].Tags
+              ? MPData.PropDefinitions[propertyName]?.Tags?.Labeled
+                ? MPData.PropDefinitions[propertyName]?.Tags?.Labeled : undefined : undefined;
             propertiesItem.category = key;
-            propertiesItem.description = icdcMPData?.PropDefinitions[propertyName]?.Desc;
-            propertiesItem.type = icdcMPData?.PropDefinitions[propertyName]?.Type
-              || icdcMPData?.PropDefinitions[propertyName]?.Enum;
-            propertiesItem.enum = icdcMPData?.PropDefinitions[propertyName]?.Enum
-              || icdcMPData.PropDefinitions[propertyName]?.Type?.Enum;
-            propertiesItem.src = icdcMPData?.PropDefinitions[propertyName]?.Src;
-            propertiesItem.key = icdcMPData?.PropDefinitions[propertyName]?.Key;
-            if (icdcMPData.PropDefinitions[propertyName].Req === 'Yes' || String(icdcMPData.PropDefinitions[propertyName].Req).toLowerCase() === 'true') {
+            propertiesItem.description = MPData?.PropDefinitions[propertyName]?.Desc;
+            propertiesItem.type = MPData?.PropDefinitions[propertyName]?.Type
+              || MPData?.PropDefinitions[propertyName]?.Enum;
+            propertiesItem.enum = MPData?.PropDefinitions[propertyName]?.Enum
+              || MPData.PropDefinitions[propertyName]?.Type?.Enum;
+            propertiesItem.src = MPData?.PropDefinitions[propertyName]?.Src;
+            propertiesItem.key = MPData?.PropDefinitions[propertyName]?.Key;
+            if (MPData.PropDefinitions[propertyName].Req === 'Yes' || String(MPData.PropDefinitions[propertyName].Req).toLowerCase() === 'true') {
               pRequired.push(nodeP);
-              propertiesItem['propertyType'] = 'required';
-            } else if (icdcMPData.PropDefinitions[propertyName].Req === 'Preferred') {
+              propertiesItem.propertyType = 'required';
+            } else if (MPData.PropDefinitions[propertyName].Req === 'Preferred') {
               pPreffered.push(nodeP);
-              propertiesItem['propertyType'] = 'preferred';
+              propertiesItem.propertyType = 'preferred';
             } else {
               pOptional.push(nodeP);
-              propertiesItem['propertyType'] = 'optional';
+              propertiesItem.propertyType = 'optional';
             }
 
-            if (icdcMPData.PropDefinitions[propertyName].Tags &&
-              icdcMPData.PropDefinitions[propertyName].Tags.Labeled) {
-                Yes.push(nodeP);
-                propertiesItem['display'] = 'yes';
+            if (MPData.PropDefinitions[propertyName].Tags
+                && MPData.PropDefinitions[propertyName].Tags.Labeled) {
+              Yes.push(nodeP);
+              propertiesItem.display = 'yes';
             } else {
-                No.push(nodeP);
-                propertiesItem['display'] = 'no';
+              No.push(nodeP);
+              propertiesItem.display = 'no';
             }
           }
         }
@@ -147,21 +147,21 @@ export default async function getModelExploreData(modelUrl = DATA_MODEL, modelPr
       item.properties = {};
     }
 
-    for (const property in icdcMData.Relationships) {
-      item.multiplicity = _.startCase(icdcMData.Relationships[property].Mul);
+    for (const property in MData.Relationships) {
+      item.multiplicity = _.startCase(MData.Relationships[property].Mul);
       const label = propertyName;
-      // const multiplicity = icdcMData.Relationships[propertyName].Mul;
+      // const multiplicity = MData.Relationships[propertyName].Mul;
       const required = false;
-      for (let i = 0; i < icdcMData.Relationships[property].Ends.length; i++) {
+      for (let i = 0; i < MData.Relationships[property].Ends.length; i++) {
         const linkItem = {};
-        if (icdcMData.Relationships[property].Ends[i].Src === key) {
-          const backref = icdcMData.Relationships[property].Ends[i].Src;
-          const name = icdcMData.Relationships[property].Ends[i].Dst;
+        if (MData.Relationships[property].Ends[i].Src === key) {
+          const backref = MData.Relationships[property].Ends[i].Src;
+          const name = MData.Relationships[property].Ends[i].Dst;
           if (name !== backref) {
-            const target = icdcMData.Relationships[property].Ends[i].Dst;
-            const multiplicity = icdcMData.Relationships[property].Ends[i].Mul
-              ? icdcMData.Relationships[property].Ends[i].Mul
-              : icdcMData.Relationships[property].Mul;
+            const target = MData.Relationships[property].Ends[i].Dst;
+            const multiplicity = MData.Relationships[property].Ends[i].Mul
+              ? MData.Relationships[property].Ends[i].Mul
+              : MData.Relationships[property].Mul;
             linkItem.name = name;
             linkItem.backref = backref;
             linkItem.label = label;
@@ -198,7 +198,7 @@ export default async function getModelExploreData(modelUrl = DATA_MODEL, modelPr
         const targetId = keyMapList.find((item) => item.node === c.target_type);
         if (targetId) {
           value.links[index].targetId = targetId.props;
-          value.links[index].generatedType = icdcMPData.PropDefinitions[targetId.props].Src;
+          value.links[index].generatedType = MPData.PropDefinitions[targetId.props].Src;
         }
       });
     }
@@ -207,9 +207,10 @@ export default async function getModelExploreData(modelUrl = DATA_MODEL, modelPr
   return {
     data: newDataList,
     version: {
-      model: icdcMData.Version,
+      model: MData.Version,
       ...version,
     },
   };
 }
 
+export default getModelNavData;
