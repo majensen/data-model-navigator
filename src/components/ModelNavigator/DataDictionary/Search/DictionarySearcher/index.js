@@ -15,9 +15,9 @@ import {
 } from '../../Store/actions/graph';
 import { 
   clearAllFilters,
-  toggleCheckBox,
-  sortSection,
-  clearGroupFilter,
+  toggleCheckBox, // ?
+  sortSection, // ?
+  clearGroupFilter, // ?
 } from '../../Store/actions/filter';
 
 const ReduxDictionarySearcher = (() => {

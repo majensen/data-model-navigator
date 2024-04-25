@@ -1,135 +1,182 @@
-import React, { Component } from 'react';
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-unused-vars */
+import React, { useState, useRef, useContext } from 'react';
 import { Button, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import './AutoCompleteInput.css';
-import styles from './AutoCompleteInputStyle';
 import CloseIcon from '@material-ui/icons/Close';
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from '@material-ui/icons/Search';
+import styles from './AutoCompleteInputStyle';
+import SearchDataContext from '../SearchContext';
 
-class AutoCompleteInput extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      closeIconHidden: true,
-    };
-    this.inputElem = React.createRef();
-  }
 
-  handleChange() {
-    const currentInput = this.inputElem.current.value;
-    this.props.onInputChange(currentInput);
-    this.updateCloseIcon();
-  }
+function AutoCompleteInput({
+  classes,
+  placeHolderText,
+  inputTitle,
+}) {
 
-  handleClear() {
-    this.inputElem.current.value = '';
-    this.updateCloseIcon();
-    this.props.onInputChange('');
-  }
+  let inputRef = useRef(null)
+  const searchData = useContext(SearchDataContext);
 
-  handleSubmit(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    this.props.onSubmitInput(this.inputElem.current.value);
-  }
-
-  setInputText(text) {
-    this.inputElem.current.value = text;
-    this.updateCloseIcon();
-  }
-
-  updateCloseIcon() {
-    const currentInput = this.inputElem.current.value;
-    this.setState({
-      closeIconHidden: !currentInput || currentInput.length === 0,
-    });
-  }
-
-  clearInput() {
-    this.inputElem.current.value = '';
-    this.updateCloseIcon();
-  }
-
-  render() {
-    const {
-      classes,
-      placeHolderText,
-      icon
-    } = this.props;
-    return (
-      <div className={classes.autoCompleteInput}>
-        <form
-          className={classes.autoCompleteInputForm}
-          onSubmit={(e) => this.handleSubmit(e)}
-        >
-          <input
-            title={this.props.inputTitle}
-            className={classes.autoCompleteInputBox}
-            onChange={() => { this.handleChange(); }}
-            placeholder={placeHolderText}
-            ref={this.inputElem}
-          />
-        </form>
-        {
-          !this.state.closeIconHidden && (
-            <>
-              <Button
-                onClick={() => this.handleClear()}
-                disableRipple
-                className={classes.closeBtn}
-                aria-label="Clear search"
-              >
-                <CloseIcon
-                  className={classes.closeIcon}
-                />
-              </Button>
-              {/* <i
-                className='g3-icon g3-icon--cross auto-complete-input__close'
-                onClick={() => { this.handleClear(); }}
-                role='button'
-                aria-label='close'
-                tabIndex={0}
-              /> */}
-              <i className={classes.verticalLine} />
-              {/* <i className='auto-complete-input__separator' /> */}
-            </>
-          )
-        }
-        <Button
-          onClick={() => this.handleSubmit()}
-          disableRipple
-          className={classes.searchBtn}
-          aria-label="Submit search"
-        >
-          <SearchIcon
-            className={classes.searchIcon}
-          />
-        </Button>
-
-        {/* <i
-          className={`g3-icon g3-icon--${icon} auto-complete-input__icon`}
-          onClick={() => this.handleSubmit()}
-          role='button'
-          aria-label='submit'
-          tabIndex={0}
-        /> */}
-      </div>
+  const search = (str) => {
+    setIsSearching(true);
+    const { result, errorMsg } = searchKeyword(
+      searchData,
+      `${str}`.toLowerCase()
     );
+    if (!result || result.length === 0) {
+      // group in a reducer?
+      onSearchResultUpdated([], []);
+      setIsSearchFinished(true);
+      setHasError(true);
+      setErrorMsg(errorMsg);
+      setSuggestionList([]);
+      return;
+    }
+    const summary = getSearchSummary(result);
+    setIsSearchFinished(true);
+    setHasError(false);
+    setSearchResult({
+        matchedNodes: result,
+        summary,
+    });
+    setSuggestionList([]);
+
+    setIsSearching(false);
+    onSearchResultUpdated(result, summary);
+    onSearchHistoryItemCreated({
+      keywordStr: str,
+      matchedCount: summary.generalMatchedNodeIDs.length,
+    });
+    onSaveCurrentSearchKeyword(str);
+  };
+
+  const handleSubmitInput = (inputText) => {
+    search(formatText(inputText));
+  };
+
+  const handleInputChange = (query) => {
+    onStartSearching();
+    resetSearchResult();
+    const inputText = formatText(query);
+    const { result } = searchKeyword(searchData, inputText);
+    const matchedStrings = {};
+    result.forEach((resItem) => {
+      resItem.matches.forEach((matchItem) => {
+        if (!matchedStrings[matchItem.value]) {
+          matchedStrings[matchItem.value] = {
+            matchedPieceIndices: matchItem.indices.map((arr) => [
+              arr[0],
+              arr[1] + 1,
+            ]),
+          };
+        }
+      });
+    });
+    const suggList = Object.keys(matchedStrings).
+      sort(
+        (str1, str2) =>
+          compareTwoStrings(str2, inputText) -
+          compareTwoStrings(str1, inputText)
+      ).
+      map((str) => ({
+        fullString: str,
+        matchedPieceIndices: matchedStrings[str].matchedPieceIndices,
+      }));
+    const text = query;
+    setSuggestionList(suggList);
+    setText(text);
   }
+
+  const [closeIconHidden, setCloseIconHidden] = useState(true);
+
+  const updateCloseIcon = () => {
+    setCloseIconHidden(!inputRef.current.value ||
+                       inputRef.current.value.length === 0);
+  }
+  
+  const clearInput = () => {
+    inputRef.current.value = '';
+    updateCloseIcon();
+  }
+
+  const handleChange = () => {
+    handleInputChange(inputRef.current.value);
+    updateCloseIcon();
+  }
+
+  const handleClear = () =>  {
+    inputRef.current.value = '';
+    updateCloseIcon();
+    handleInputChange('');
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleSubmitInput(inputRef.current.value);
+  }
+
+  const setInputText = (text) => {
+    inputRef.current.value = text;
+    updateCloseIcon();
+  }
+
+  return (
+    <div className={ classes.autoCompleteInput }>
+      <form
+        className={ classes.autoCompleteInputForm }
+        onSubmit={ handleSubmit }
+      >
+        <input
+          title={ inputTitle }
+          className={ classes.autoCompleteInputBox }
+          onChange={ handleChange }
+          placeholder={ placeHolderText }
+          ref={ inputRef }
+        />
+      </form>
+      {
+        !closeIconHidden && (
+          <>
+            <Button
+              onClick={handleClear}
+              disableRipple
+              className={classes.closeBtn}
+              aria-label="Clear search"
+            >
+              <CloseIcon
+                className={classes.closeIcon}
+              />
+            </Button>
+            <i className={classes.verticalLine} />
+          </>
+        )
+      }
+      <Button
+        onClick={ handleSubmit }
+        disableRipple
+        className={ classes.searchBtn }
+        aria-label="Submit search"
+      >
+        <SearchIcon
+          className={ classes.searchIcon }
+        />
+      </Button>
+    </div>
+  );
 }
 
+            
 AutoCompleteInput.propTypes = {
-  onInputChange: PropTypes.func,
   placeHolderText: PropTypes.string,
   icon: PropTypes.string,
-  onSubmitInput: PropTypes.func,
   inputTitle: PropTypes.string,
 };
 
 AutoCompleteInput.defaultProps = {
-  onInputChange: () => {},
   placeHolderText: 'Search',
   icon: 'search',
-  onSubmitInput: () => {},
   inputTitle: 'Search Input',
 };
 

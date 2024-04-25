@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React, { useRef, useContext } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import styles from './AutoCompleteSuggestnStyle';
+import SuggestionContext from '../SearchContext';
 
 /**
  * Wrap suggestion item into HTML, take following as an e.g.:
@@ -21,7 +22,8 @@ import styles from './AutoCompleteSuggestnStyle';
  *       a
  *     </span>
  */
-export const getSuggestionItemHTML = (suggestionItem, classes) => {
+
+function PaintItemOld({classes, suggestionItem}) {
   const { fullString, matchedPieceIndices } = suggestionItem;
   let cursor = 0;
   let currentHighlighPieceIndex = 0;
@@ -31,63 +33,93 @@ export const getSuggestionItemHTML = (suggestionItem, classes) => {
     const highlightEndPos = matchedPieceIndices[currentHighlighPieceIndex][1];
     if (cursor < highlightStartPos) {
       resultHTMLSnippits.push(
-        (
-          <span key={cursor}>
-            {fullString.substring(cursor, highlightStartPos)}
+        <span key={cursor}>
+          {fullString.substring(cursor, highlightStartPos)}
           </span>
-        ),
       );
     }
     resultHTMLSnippits.push(
-      (
-        <span key={highlightStartPos} className={classes.highlight}>
-          {fullString.substring(highlightStartPos, highlightEndPos)}
-        </span>
-      ),
+      <span key={highlightStartPos} className={classes.highlight}>
+        {fullString.substring(highlightStartPos, highlightEndPos)}
+      </span>
     );
     cursor = highlightEndPos;
     currentHighlighPieceIndex += 1;
-  }
+    }
   if (cursor < fullString.length) {
     resultHTMLSnippits.push(
-      (
-        <span key={cursor}>
-          {fullString.substring(cursor)}
-        </span>
-      ),
+      <span key={cursor}>
+        {fullString.substring(cursor)}
+      </span>
     );
   }
-  return resultHTMLSnippits;
+  return (
+    <>
+      {resultHTMLSnippits}
+    </>
+  );
 };
 
-class AutoCompleteSuggestions extends Component {
-  handleClickItem(suggestionItem, i) {
-    this.props.onSuggestionItemClick(suggestionItem, i);
-  }
+function SuggestionItemDiv({ classes, suggestionItem, i }) {
+  const { fullString, matchedPieceIndices } = suggestionItem;
 
-  render() {
-    const {
-      suggestionList,
-      classes
-    } = this.props;
+  const handleSuggestionItemClick = (suggestionItem) => {
+    autoCompleteRef.current.setInputText(suggestionItem.fullString);
+    search(suggestionItem.fullString);
+  };
+
+  const handleClickItem = () => {
+    handleSuggestionItemClick(suggestionItem, i); // eslint-disable-line
+  };
+
+  const PaintItem = () => {
+    var left=0;
+    const painted = matchedPieceIndices.map( (elt) => (
+      <>
+        {fullString.substring(left,elt[0]-1)}
+        <span className={ classes.highlight }>
+          {fullString.substring(...elt)}
+        </span>
+        left = elt[1]
+      </>
+    ));
     return (
-      <div className={classes.suggestionList}>
-        {
-          suggestionList.map((suggestionItem, i) => (
-            <div
-              key={`${i}-${suggestionItem.fullString}`}
-              className={classes.suggestionItem}
-              onClick={() => { this.handleClickItem(suggestionItem, i); }}
-              role='button'
-              tabIndex={0}
-            >
-              {getSuggestionItemHTML(suggestionItem, classes)}
-            </div>
-          ))
-        }
-      </div>
+      <>
+        {painted}
+      </>
     );
-  }
+  };
+
+  return (
+    <div
+      key={`${i}-${suggestionItem.fullString}`}
+      className={ classes.suggestionItem }
+      onClick={ handleClickItem }
+      role="button"
+      tabIndex={0}
+    >
+      <PaintItemOld suggestionItem={suggestionItem} classes={classes}/>
+    </div>
+  );
+}
+
+function AutoCompleteSuggestions({
+  classes,
+}) {
+  const suggestionList = useContext(SuggestionContext);
+  const divList = suggestionList.map(
+    (suggestionItem, i) => {
+      <SuggestionItemDiv
+        classes={classes}
+        suggestionItem={suggestionItem}
+        i={ i } />
+    })
+
+  return (
+    <div className={classes.suggestionList}>
+      { divList }
+    </div>
+  );
 }
 
 export const SuggestionItem = {
@@ -97,7 +129,6 @@ export const SuggestionItem = {
 
 AutoCompleteSuggestions.propTypes = {
   suggestionList: PropTypes.arrayOf(PropTypes.shape(SuggestionItem)),
-  onSuggestionItemClick: PropTypes.func,
 };
 
 AutoCompleteSuggestions.defaultProps = {

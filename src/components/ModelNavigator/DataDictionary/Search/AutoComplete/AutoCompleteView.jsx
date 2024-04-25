@@ -1,85 +1,63 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core';
+import clsx from 'clsx';
 import AutoCompleteInput from './AutoCompleteInput';
 import AutoCompleteSuggestions, { SuggestionItem } from './AutoCompleteSuggestions';
 import './AutoComplete.css';
-import { withStyles } from '@material-ui/core';
+import SuggestionContext from '../SearchContext';
+
 import styles from './AutoCompleteStyle';
-import clsx from 'clsx';
 
-class AutoComplete extends Component {
-  constructor(props) {
-    super(props);
-    this.inputRef = React.createRef();
-  }
+function AutoComplete({
+  classes,
+  inputPlaceHolderText,
+  inputTitle,
+//  suggestionList,
+}) {
 
-  setInputText(text) {
-    this.inputRef.current.setInputText(text);
-  }
+//  const emptySuggestionsClassModifier = suggestionList.length === 0 // eslint-disable-line
+//        ? 'auto-complete--empty-suggestion-list' : '';
 
-  clearInput() {
-    this.inputRef.current.clearInput();
-  }
-
-  render() {
-    const {
-      classes,
-      suggestionList,
-      onSuggestionItemClick,
-      onInputChange,
-      onSubmitInput,
-      inputTitle,
-      inputIcon,
-      inputPlaceHolderText
-    } = this.props;
-
-    const emptySuggestionsClassModifier = suggestionList.length === 0
-      ? 'auto-complete--empty-suggestion-list' : '';
-    return (
-      <div 
+  const [suggestionList, setSuggestionList] = useState([]);
+  return (
+    <SuggestionContext.Provider value={suggestionList}>
+      <div
         className={
           clsx(classes.autoComplete,
-            {[classes.emptySuggestionList]: suggestionList.length})
-          }
+               { [classes.emptySuggestionList]: suggestionList.length })
+        }
       >
         <div className={classes.inputWrapper}>
           <AutoCompleteInput
-            ref={this.inputRef}
-            placeHolderText={inputPlaceHolderText}
-            icon={inputIcon}
-            inputTitle={inputTitle}
-            onInputChange={onInputChange}
-            onSubmitInput={onSubmitInput}
+            classes={ classes }
+            placeHolderText={ inputPlaceHolderText }
+            inputTitle={ inputTitle }
+            setSuggestionList={setSuggestionList} // hmmmm communicating to sibling via context
           />
         </div>
         <AutoCompleteSuggestions
           className={classes.suggestions}
-          suggestionList={suggestionList}
-          onSuggestionItemClick={onSuggestionItemClick}
+          classes={classes}
         />
       </div>
-    );
-  }
+    </SuggestionContext.Provider>
+  );
 }
 
+
 AutoComplete.propTypes = {
-  onInputChange: PropTypes.func,
   suggestionList: PropTypes.arrayOf(PropTypes.shape(SuggestionItem)),
   inputPlaceHolderText: PropTypes.string,
   inputTitle: PropTypes.string,
   inputIcon: PropTypes.string,
-  onSuggestionItemClick: PropTypes.func,
-  onSubmitInput: PropTypes.func,
 };
 
 AutoComplete.defaultProps = {
-  onInputChange: () => {},
   suggestionList: [],
   inputPlaceHolderText: 'Search',
   inputTitle: 'Search Input',
   inputIcon: 'search',
-  onSuggestionItemClick: () => {},
-  onSubmitInput: () => {},
 };
 
 export default withStyles(styles)(AutoComplete);

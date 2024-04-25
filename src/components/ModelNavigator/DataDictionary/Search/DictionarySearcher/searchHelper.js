@@ -13,7 +13,6 @@ export const ZERO_RESULT_FOUND_MSG = '0 results found. Please try another keywor
  * @params [Object] dictionary
  * @returns [Object] search data
  */
-export const formatText = (text) => `${text}`.toLowerCase();
 
 export const prepareSearchData = (dictionary) => {
   const searchData = parseDictionaryNodes(dictionary)

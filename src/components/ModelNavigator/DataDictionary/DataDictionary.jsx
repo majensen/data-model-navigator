@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button, withStyles } from "@material-ui/core";
 import ReduxDictionarySearcher from "./Search/DictionarySearcher";
@@ -8,20 +8,18 @@ import HeaderComponent from "./Header";
 import DictionaryView from "./DictionaryView/DictionaryView";
 import "./DataDictionary.css";
 
-const DataDictionary = ({
+function DataDictionary({
   classes,
   onSetGraphView,
   isGraphView,
   pdfDownloadConfig,
   dictionary,
-}) => {
-  const dictionarySearcherRef = React.useRef();
-  const setGraphView = (isGraphView) => {
-    onSetGraphView(isGraphView);
-  };
+}) {
 
-  React.useEffect(() => {
-    setGraphView(true);
+  const dictionarySearcherRef = useRef(null);
+
+  useEffect(() => {
+    onSetGraphView(true);
   }, []);
 
   const handleClickSearchHistoryItem = (keyword) => {

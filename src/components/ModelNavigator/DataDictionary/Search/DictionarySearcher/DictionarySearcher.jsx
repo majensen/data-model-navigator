@@ -12,8 +12,11 @@ import {
   TextField,
 } from "@material-ui/core";
 import { createFilterOptions } from "@material-ui/lab";
-import AutoComplete from "../AutoComplete/AutoCompleteView";
 import { compareTwoStrings } from "string-similarity";
+import DictionaryContext from "../DictionaryContext";
+import AutoComplete from "../AutoComplete/AutoCompleteView";
+import SearchDataContext from "../SearchContext";
+
 import {
   prepareSearchData,
   searchKeyword,
@@ -23,6 +26,7 @@ import {
 } from "./searchHelper";
 import styles from "./DictionarySearcher.style";
 import SearchThemeConfig from "./SearchThemeConfig";
+
 
 function DictionarySearcher({
   activeFiltersCount,
@@ -38,7 +42,11 @@ function DictionarySearcher({
   onSearchHistoryItemCreated,
   onStartSearching,
 }) {
+  
   let autoCompleteRef = useRef(null);
+  const [searchData, setSearchData] = useState(prepareSearchData(dictionary));
+
+
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchFinished, setIsSearchFinished] = useState(false);
   const [searchResult, setSearchResult] = useState(
@@ -49,16 +57,15 @@ function DictionarySearcher({
   const [hasError, setHasError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [suggestionList, setSuggestionList] = useState([]);
-  const [searchData, setSearchData] = useState(prepareSearchData(dictionary));
   const [text, setText] = useState("");
 
   // this is probably not right
-  useEffect( () => {
-    if (currentSearchKeyword) {
-      autoCompleteRef.current.setInputText(currentSearchKeyword)
-      this.search(this.props.currentSearchKeyword);
-    }
-  }, [currentSearchKeyword, autoCompleteRef]);
+  // useEffect( () => {
+  //   if (currentSearchKeyword) {
+  //     autoCompleteRef.current.setInputText(currentSearchKeyword)
+  //     search(currentSearchKeyword);
+  //   }
+  // }, [currentSearchKeyword, autoCompleteRef]);
 
   // componentDidMount() {
   //   // resume search status after switching back from other pages
@@ -67,72 +74,6 @@ function DictionarySearcher({
   //     this.search(this.props.currentSearchKeyword);
   //   }
   // }
-
-  const search = (str) => {
-    setIsSearching(true);
-    const { result, errorMsg } = searchKeyword(
-      this.searchData,
-      formatText(str)
-    );
-    if (!result || result.length === 0) {
-      // group in a reducer?
-      onSearchResultUpdated([], []);
-      setIsSearchFinished(true);
-      setHasError(true);
-      setErrorMsg(errorMsg);
-      setSuggestionList([]);
-      return;
-    }
-    const summary = getSearchSummary(result);
-    setIsSearchFinished(true);
-    setHasError(false);
-    setSearchResult({
-        matchedNodes: result,
-        summary,
-    });
-    setSuggestionList([]);
-
-    setIsSearching(false);
-    onSearchResultUpdated(result, summary);
-    onSearchHistoryItemCreated({
-      keywordStr: str,
-      matchedCount: summary.generalMatchedNodeIDs.length,
-    });
-    onSaveCurrentSearchKeyword(str);
-  };
-
-  const inputChangeFunc = (query) => {
-    onStartSearching();
-    resetSearchResult();
-    const inputText = formatText(query);
-    const { result } = searchKeyword(searchData, inputText);
-    const matchedStrings = {};
-    result.forEach((resItem) => {
-      resItem.matches.forEach((matchItem) => {
-        if (!matchedStrings[matchItem.value]) {
-          matchedStrings[matchItem.value] = {
-            matchedPieceIndices: matchItem.indices.map((arr) => [
-              arr[0],
-              arr[1] + 1,
-            ]),
-          };
-        }
-      });
-    });
-    const suggestionList = Object.keys(matchedStrings).
-      sort(
-        (str1, str2) =>
-          compareTwoStrings(str2, inputText) -
-          compareTwoStrings(str1, inputText)
-      ).
-      map((str) => ({
-        fullString: str,
-        matchedPieceIndices: matchedStrings[str].matchedPieceIndices,
-      }));
-    const text = query;
-    setSuggestionList(suggestionList);
-    setText(text);
-  };
 
   const resetSearchResult = () => {
     setIsSearchFinished(false);
@@ -157,15 +98,6 @@ function DictionarySearcher({
     search(keyword);
   };
 
-  const suggestionItemClickFunc = (suggestionItem) => {
-    autoCompleteRef.current.setInputText(suggestionItem.fullString);
-    search(suggestionItem.fullString);
-  };
-
-  const submitInputFunc = (inputText) => {
-    search(formatText(inputText));
-  };
-
   const clearFilterHandler = () => {
     onClickBlankSpace();
     onClearAllFilter();
@@ -173,77 +105,75 @@ function DictionarySearcher({
   };
 
   return (
-    <div className={classes.searcher}>
-      <SearchThemeConfig>
-        <div className={classes.searchBarTitle}>
-          <span className={classes.searchBarTitleText}>Filter & Search</span>
-        </div>
-        <div className={classes.searchInput}>
-          <AutoComplete
-            className="hermo"
-            ref={autoCompleteRef}
-            suggestionList={suggestionList}
-            inputPlaceHolderText="Search in Dictionary"
-            onSuggestionItemClick={suggestionItemClickFunc}
-            onInputChange={inputChangeFunc}
-            onSubmitInput={submitInputFunc}
-          />
-
-          <br />
-
-          <Button
-            id="button_sidebar_clear_all_filters"
-            variant="outlined"
-            disabled={activeFiltersCount === 0}
-            className={classes.customButton}
-            classes={{ root: classes.clearAllButtonRoot }}
-            onClick={clearFilterHandler}
-            disableRipple
-            title="CLEAR ALL"
-          >
-            CLEAR ALL
-          </Button>
-        </div>
-      </SearchThemeConfig>
-      <div className={classes.results}>
-        {isSearchFinished && (
-          <div>
-            {!hasError &&
-             (searchResult.matchedNodes.length > 0 ? (
-               <>
-                 <div className={classes.searchResultText}>
-                   <span>Search Results</span>
-                 </div>
-                 <List className={classes.resultList} dense>
-                   <ListItem className={classes.resultItem}>
-                     <span className={classes.resultCountTitleDesc}>
-                       {
-                         searchResult.summary
-                           .matchedNodeNameAndDescriptionsCount
-                       }
-                     </span>
-                     &nbsp;
-                     <span>
-                       Match(es) in nodes <br /> (title and description)
-                     </span>
-                   </ListItem>
-                   <ListItem className={classes.resultItem}>
-                     <span className={classes.resultCountProps}>
-                       {searchResult.summary.matchedPropertiesCount}
-                     </span>
-                     &nbsp;
-                     <span>Match(es) in node properties</span>
-                   </ListItem>
-                 </List>
-               </>
-             ) : (
-               <p>{ZERO_RESULT_FOUND_MSG}</p>
-             ))}
-            {hasError && <p>{errorMsg}</p>}
+    <SearchDataContext.Provider value={searchData}>
+      <div className={classes.searcher}>
+        <SearchThemeConfig>
+          <div className={classes.searchBarTitle}>
+            <span className={classes.searchBarTitleText}>Filter & Search</span>
           </div>
-        )}
+          <div className={classes.searchInput}>
+            <AutoComplete
+              className="hermo"
+              ref={autoCompleteRef}
+              suggestionList={suggestionList}
+              inputPlaceHolderText="Search in Dictionary"
+              handleSuggestionItemClick={handleSuggestionItemClick}
+            />
+            <br />
+            <Button
+              id="button_sidebar_clear_all_filters"
+              variant="outlined"
+              disabled={activeFiltersCount === 0}
+              className={classes.customButton}
+              classes={{ root: classes.clearAllButtonRoot }}
+              onClick={clearFilterHandler}
+              disableRipple
+              title="CLEAR ALL"
+            >
+              CLEAR ALL
+            </Button>
+          </div>
+        </SearchThemeConfig>
+        <div className={classes.results}>
+          {isSearchFinished && (
+            <div>
+              {!hasError &&
+               (searchResult.matchedNodes.length > 0 ? (
+                 <>
+                   <div className={classes.searchResultText}>
+                     <span>Search Results</span>
+                   </div>
+                   <List className={classes.resultList} dense>
+                     <ListItem className={classes.resultItem}>
+                       <span className={classes.resultCountTitleDesc}>
+                         {
+                           searchResult.summary
+                             .matchedNodeNameAndDescriptionsCount
+                         }
+                       </span>
+                       &nbsp;
+                       <span>
+                         Match(es) in nodes <br /> (title and description)
+                       </span>
+                     </ListItem>
+                     <ListItem className={classes.resultItem}>
+                       <span className={classes.resultCountProps}>
+                         {searchResult.summary.matchedPropertiesCount}
+                       </span>
+                       &nbsp;
+                       <span>Match(es) in node properties</span>
+                     </ListItem>
+                   </List>
+                 </>
+               ) : (
+                 <p>{ZERO_RESULT_FOUND_MSG}</p>
+               ))}
+              {hasError && <p>{errorMsg}</p>}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </SearchDataContext.Provider>
   );
   
 }
