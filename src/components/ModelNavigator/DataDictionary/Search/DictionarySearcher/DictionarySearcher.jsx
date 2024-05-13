@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   withStyles,
@@ -12,10 +12,8 @@ import {
   TextField,
 } from "@material-ui/core";
 import { createFilterOptions } from "@material-ui/lab";
-import { compareTwoStrings } from "string-similarity";
-import DictionaryContext from "../DictionaryContext";
 import AutoComplete from "../AutoComplete/AutoCompleteView";
-import SearchDataContext from "../SearchContext";
+import { SearchDataContext } from "../SearchContext";
 
 import {
   prepareSearchData,
@@ -32,7 +30,7 @@ function DictionarySearcher({
   activeFiltersCount,
   classes,
   currentSearchKeyword,
-  dictionary,
+  model,
   hidePropertyTable,
   onClearAllFilter,
   onClickBlankSpace,
@@ -43,8 +41,7 @@ function DictionarySearcher({
   onStartSearching,
 }) {
   
-  let autoCompleteRef = useRef(null);
-  const [searchData, setSearchData] = useState(prepareSearchData(dictionary));
+  const [searchData, setSearchData] = useState(prepareSearchData(model));
 
 
   const [isSearching, setIsSearching] = useState(false);
@@ -75,35 +72,31 @@ function DictionarySearcher({
   //   }
   // }
 
-  const resetSearchResult = () => {
-    setIsSearchFinished(false);
-    setSearchResult({
-        matchedNodes: [],
-        summary: {},
-    });
-    onSearchResultCleared();
-  };
+  // these probably don't belong here
+  // const onClearResult = () => {
+  //   dispatch({ type: "CLEAR_RESULT" });
+  // };
 
-  const onClearResult = () => {
-    resetSearchResult();
-    autoCompleteRef.current.clearInput();
-  };
-
+  //       {
+  //   resetSearchResult();
+  //   autoCompleteRef.current.clearInput();
+  // };
   const launchClearSearchFromOutside = () => {
-    onClearResult();
+   //  onClearResult();
   };
 
   const launchSearchFromOutside = (keyword) => {
-    autoCompleteRef.current.setInputText(keyword);
-    search(keyword);
+    // autoCompleteRef.current.setInputText(keyword);
+    // search(keyword);
   };
-
+  ////
+  
   const clearFilterHandler = () => {
     onClickBlankSpace();
     onClearAllFilter();
     hidePropertyTable();
   };
-
+ 
   return (
     <SearchDataContext.Provider value={searchData}>
       <div className={classes.searcher}>
@@ -114,10 +107,8 @@ function DictionarySearcher({
           <div className={classes.searchInput}>
             <AutoComplete
               className="hermo"
-              ref={autoCompleteRef}
               suggestionList={suggestionList}
               inputPlaceHolderText="Search in Dictionary"
-              handleSuggestionItemClick={handleSuggestionItemClick}
             />
             <br />
             <Button
@@ -179,7 +170,7 @@ function DictionarySearcher({
 }
 
 DictionarySearcher.propTypes = {
-  dictionary: PropTypes.object.isRequired,
+  model: PropTypes.object.isRequired,
   setIsSearching: PropTypes.func,
   onSearchResultUpdated: PropTypes.func,
   onSearchHistoryItemCreated: PropTypes.func,

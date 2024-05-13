@@ -1,14 +1,25 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-unused-vars */
-import React, { useState, useRef, useContext } from 'react';
+import React, { useRef, useReducer, useContext } from 'react';
 import { Button, withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import { compareTwoStrings } from "string-similarity";
 import './AutoCompleteInput.css';
 import CloseIcon from '@material-ui/icons/Close';
 import SearchIcon from '@material-ui/icons/Search';
 import styles from './AutoCompleteInputStyle';
-import SearchDataContext from '../SearchContext';
+import { addSearchHistoryItems } from '../../Utils/utils';
+import {
+  searchKeyword,
+  getSearchSummary,
+} from '../DictionarySearcher/searchHelper.js';
+import {
+  SearchDataContext,
+  SearchHistoryContext,
+  SuggestionContext,
+} from '../SearchContext';
 
+import acInputReducer from './AutoCompleteInputReducer';
 
 function AutoCompleteInput({
   classes,
@@ -16,110 +27,121 @@ function AutoCompleteInput({
   inputTitle,
 }) {
 
-  let inputRef = useRef(null)
+  const [state, dispatch] = useReducer(acInputReducer, {
+    isSearching: false,
+    searchResult: { matchedNodes: [], summary: {} },
+    currentSearchKeyword: '',
+    hasError: false,
+    inputText: '',
+    closeIconHidden: true,
+  });
   const searchData = useContext(SearchDataContext);
-
+  const {
+    suggestionList,
+    setSuggestionList,
+    clickedSuggestionItem,
+    setClickedSuggestionItem,
+  } = useContext(SuggestionContext);
+  const {
+    searchHistoryItems,
+    setSearchHistoryItems,
+  } = useContext(SearchHistoryContext);
+    
+  let inputRef = useRef(null);
+  // setClickedSuggestionItem(null);
+  
   const search = (str) => {
-    setIsSearching(true);
+    dispatch({type: 'RESET_SEARCH'});
     const { result, errorMsg } = searchKeyword(
       searchData,
       `${str}`.toLowerCase()
     );
     if (!result || result.length === 0) {
-      // group in a reducer?
-      onSearchResultUpdated([], []);
-      setIsSearchFinished(true);
-      setHasError(true);
-      setErrorMsg(errorMsg);
-      setSuggestionList([]);
+      dispatch({
+        type: 'SEARCH_FINISHED_WITH_ERROR',
+        errorMsg,
+      });
+      setSuggestionList([]); 
       return;
     }
     const summary = getSearchSummary(result);
-    setIsSearchFinished(true);
-    setHasError(false);
-    setSearchResult({
-        matchedNodes: result,
-        summary,
-    });
-    setSuggestionList([]);
 
-    setIsSearching(false);
-    onSearchResultUpdated(result, summary);
-    onSearchHistoryItemCreated({
-      keywordStr: str,
-      matchedCount: summary.generalMatchedNodeIDs.length,
-    });
-    onSaveCurrentSearchKeyword(str);
+    dispatch(({
+      type: 'SEARCH_FINISHED',
+      result,
+      summary,
+      currentSearchKeyword: str,
+    }));
+
+    setSuggestionList([]);
+    setSearchHistoryItems(
+      addSearchHistoryItems({
+        keywordStr: str,
+        matchedCount: summary.generalMatchedNodeIDs.length,
+      }));
   };
 
   const handleSubmitInput = (inputText) => {
-    search(formatText(inputText));
+    dispatch({ type: "RESET_SEARCH" });
+    search(inputText);
   };
 
   const handleInputChange = (query) => {
-    onStartSearching();
-    resetSearchResult();
-    const inputText = formatText(query);
-    const { result } = searchKeyword(searchData, inputText);
-    const matchedStrings = {};
-    result.forEach((resItem) => {
-      resItem.matches.forEach((matchItem) => {
-        if (!matchedStrings[matchItem.value]) {
-          matchedStrings[matchItem.value] = {
-            matchedPieceIndices: matchItem.indices.map((arr) => [
-              arr[0],
-              arr[1] + 1,
-            ]),
-          };
-        }
+    dispatch({ type: "RESET_SEARCH" });
+    if (query.length > 0) {
+      const { result } = searchKeyword(searchData, query);
+      const summary = getSearchSummary(result);
+      const matchedStrings = {};
+      result.forEach((resItem) => {
+        resItem.matches.forEach((matchItem) => {
+          if (!matchedStrings[matchItem.value]) {
+            matchedStrings[matchItem.value] = {
+              matchedPieceIndices: matchItem.indices.map((arr) => [
+                arr[0],
+                arr[1] + 1,
+              ]),
+            };
+          }
+        });
       });
-    });
-    const suggList = Object.keys(matchedStrings).
-      sort(
-        (str1, str2) =>
-          compareTwoStrings(str2, inputText) -
-          compareTwoStrings(str1, inputText)
-      ).
-      map((str) => ({
-        fullString: str,
-        matchedPieceIndices: matchedStrings[str].matchedPieceIndices,
-      }));
-    const text = query;
-    setSuggestionList(suggList);
-    setText(text);
-  }
-
-  const [closeIconHidden, setCloseIconHidden] = useState(true);
-
-  const updateCloseIcon = () => {
-    setCloseIconHidden(!inputRef.current.value ||
-                       inputRef.current.value.length === 0);
-  }
-  
-  const clearInput = () => {
-    inputRef.current.value = '';
-    updateCloseIcon();
+      const suggList = Object.keys(matchedStrings)
+            .sort(
+              (str1, str2) =>
+              compareTwoStrings(str2, query) -
+                compareTwoStrings(str1, query)
+            )
+            .map((str) => ({
+              fullString: str,
+              matchedPieceIndices: matchedStrings[str].matchedPieceIndices,
+            }));
+      dispatch({
+        type: "SEARCH_FINISHED",
+        result: result,
+        summary: summary,
+        closeIconHidden:!inputRef.current.value ||
+          inputRef.current.value.length === 0,
+      })
+      setSuggestionList(suggList);
+    }
   }
 
   const handleChange = () => {
     handleInputChange(inputRef.current.value);
-    updateCloseIcon();
   }
 
+  const handleClickedSuggItem = () => {
+    inputRef.current.value = clickedSuggestionItem.fullString;
+    setClickedSuggestionItem(null)
+  }
   const handleClear = () =>  {
     inputRef.current.value = '';
-    updateCloseIcon();
+    dispatch({type: 'RESET_SEARCH'});
     handleInputChange('');
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     handleSubmitInput(inputRef.current.value);
-  }
-
-  const setInputText = (text) => {
-    inputRef.current.value = text;
-    updateCloseIcon();
   }
 
   return (
@@ -137,7 +159,7 @@ function AutoCompleteInput({
         />
       </form>
       {
-        !closeIconHidden && (
+        !state.closeIconHidden && (
           <>
             <Button
               onClick={handleClear}

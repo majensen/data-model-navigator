@@ -21,48 +21,31 @@ import DataDictionaryCategory from '../DataDictionaryCategory';
  * @param {Object} dictionary
  * @return {} mapping from category to node list
  */
-/* eslint-disable no-param-reassign */
-export function category2NodeList(dictionary) {
-  const res = Object.keys(dictionary).filter(
-    (id) => id.charAt(0) !== '_' && id === dictionary[id].id,
-  ).map(
-    (id) => dictionary[id],
-  ).filter(
-    (node) => node.category && node.id,
-  )
-    .reduce(
-      (lookup, node) => {
-        if (!lookup[node.category]) {
-          lookup[node.category] = [];
-        }
-        lookup[node.category].push(node);
-        return lookup;
-      }, {},
-    );
-  return res;
+
+export function category2NodeList(model) {
+  return Object.fromEntries(
+    model.tag_kvs('Category')
+      .map( ([key, value]) => {
+        let cat = value;
+        return [cat.toLowerCase(),
+                model.tagged_items('Category', cat)
+                .filter(item => item._kind === 'Node')]
+      })
+  );
 }
+
 
 /** cluster props according to the category for PDF download */
-export function sortByCategory(c2nl, dictionary) {
+export function sortByCategory(c2nl, model) {
   const keys = Object.keys(c2nl);
-  return Object.values(dictionary).sort((a, b) => keys.indexOf(`${a.category}`) - keys.indexOf(`${b.category}`));
+  return model.nodes().sort((a, b) =>
+    keys.indexOf(a.tags('Category') - keys.indexOf(b.tags('Category')));
 }
 
-/* eslint-enable no-param-reassign */
-
-const getNodePropertyCount = (dictionary) => {
-  const res = parseDictionaryNodes(dictionary)
-    .reduce((acc, node) => {
-      acc.nodesCount += 1;
-      acc.propertiesCount += Object.keys(node.properties).length;
-      return acc;
-    }, {
-      nodesCount: 0,
-      propertiesCount: 0,
-    });
+const getNodePropertyCount = (model) => {
   return {
-    nodesCount: res.nodesCount,
-    propertiesCount: res.propertiesCount,
+    nodesCount: model.nodes().length,
+    propertiesCount: model.props().length,
   };
 };
 
@@ -72,10 +55,10 @@ const getNodePropertyCount = (dictionary) => {
  * @param {dictionary} params
  */
 const DataDictionaryTable = ({
-  classes, dictionary, highlightingNodeID, onExpandNode, dictionaryName, pdfDownloadConfig,
+  classes, model, highlightingNodeID, onExpandNode, dictionaryName, pdfDownloadConfig,
 }) => {
-  const c2nl = category2NodeList(dictionary);
-  const { nodesCount, propertiesCount } = getNodePropertyCount(dictionary);
+  const c2nl = category2NodeList(model);
+  const { nodesCount, propertiesCount } = getNodePropertyCount(model);
   return (
     <>
       {/* <DownloadLinkWrapper> */}
@@ -110,14 +93,14 @@ const DataDictionaryTable = ({
 };
 
 DataDictionaryTable.propTypes = {
-  dictionary: PropTypes.object,
+  model: PropTypes.object,
   highlightingNodeID: PropTypes.string,
   onExpandNode: PropTypes.func,
   dictionaryName: PropTypes.string,
 };
 
 DataDictionaryTable.defaultProps = {
-  dictionary: {},
+  model: {},
   highlightingNodeID: null,
   onExpandNode: () => {},
   dictionaryName: '',

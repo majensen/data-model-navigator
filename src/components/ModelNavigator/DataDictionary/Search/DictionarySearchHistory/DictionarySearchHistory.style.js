@@ -5,7 +5,7 @@ export default () => ({
     fontSize: "14px",
     color: "#606060",
   },
-  serachedItems: {
+  searchedItems: {
     marginTop: "10px",
   },
   item: {

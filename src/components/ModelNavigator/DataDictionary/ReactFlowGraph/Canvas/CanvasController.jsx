@@ -11,7 +11,7 @@ import {
 import CircularProgress from '@material-ui/core/CircularProgress';
 import _ from 'lodash';
 import CanvasView from './CanvasView';
-import { createNodesAndEdges } from '../GraphUtils/utils';
+import { createNodesAndEdges } from '../GraphUtils/MDFutils';
 import { getDistinctCategoryItems, setMatchingNodeTitle, getCategoryIconUrl } from './util';
 import {
   onNodeDragStart, onPanelViewClick, onViewChange, setReactFlowGraphData,
@@ -34,7 +34,7 @@ const CanvasController = ({
   ddgraph,
   currentSearchKeyword,
   tabViewWidth,
-  dictionary,
+  model,
   searchResults,
   isSearchMode,
   onClearSearchResult,
@@ -92,9 +92,9 @@ const CanvasController = ({
          * 2. xInterval & yInterval
          */
     const { canvas } = graphViewConfig;
-    if (dictionary && nodeTree) {
+    if (model && nodeTree) {
       const nodePosition = getNodePosition({
-        dictionary,
+        model,
         nodeTree: canvas?.nodeTree || nodeTree,
         tabViewWidth,
         ...canvas?.fit,
@@ -119,14 +119,14 @@ const CanvasController = ({
      * 2. toggle between on/off for search mode
      */
   useEffect(() => {
-    const flowData = createNodesAndEdges({ dictionary }, true, []);
+    const flowData = createNodesAndEdges({ model }, true, []);
     const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
       flowData.nodes,
       flowData.edges,
     );
     setNodes(layoutedNodes);
     setEdges(layoutedEdges);
-  }, [dictionary, currentSearchKeyword]);
+  }, [model, currentSearchKeyword]);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(

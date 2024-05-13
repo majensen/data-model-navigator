@@ -23,7 +23,7 @@ import {
   sortLabels,
   resetIcon,
   defaultFacetSectionVariables,
-} from "../../../bento/dataDictionaryData";
+} from "../../../config/nav.config";
 import CheckBoxView from "./CheckBoxView";
 import styles from "./FacetFilters.style";
 import FacetFilterThemeProvider from "./FacetFilterThemeConfig";
@@ -216,7 +216,7 @@ const FacetFilters = ({
     ));
   };
 
-  const showSelectedChecbox = (sideBarItem, currentSection) => {
+  const showSelectedCheckbox = (sideBarItem, currentSection) => {
     const selectedItems = sideBarItem.checkboxItems
       .filter((item) => item.isChecked && item.subjects > 0)
       .map((item) => ({
@@ -444,7 +444,7 @@ const FacetFilters = ({
                         </Accordion>
                         <div className={classes.selectedCheckboxDisplay}>
                           {!groupsExpanded.includes(sideBarItem.groupName) &&
-                            showSelectedChecbox(sideBarItem, currentSection)}
+                            showSelectedCheckbox(sideBarItem, currentSection)}
                         </div>
                       </React.Fragment>
                     );

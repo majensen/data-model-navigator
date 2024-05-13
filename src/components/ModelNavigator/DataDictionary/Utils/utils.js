@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import JSZip from 'jszip';
 import _ from 'lodash';
 
-// import { getMinZoom } from '../ReactFlowGraph/Canvas/util';
 // import { dataDictionaryTemplatePath, appname } from '../localconf';
 
 const dataDictionaryTemplatePath = 'FIXME';
@@ -15,90 +14,15 @@ const concatTwoWords = (w1, w2) => {
   return `${w1} ${w2}`;
 };
 
-export const truncateLines = (str, maxCharInRow = 10, breakwordMinLength = 12) => {
-  const wordsList = str.split(' ');
-  const res = [];
-  let currentLine = '';
-  for (let i = 0; i < wordsList.length; i += 1) {
-    // if adding a new word will make the current line too long
-    if (concatTwoWords(currentLine, wordsList[i]).length > maxCharInRow) {
-      // if the new word itself is too long, break it
-      if (wordsList[i].length > breakwordMinLength) {
-        let breakPos = maxCharInRow - currentLine.length - 1;
-        if (currentLine.length > 0) breakPos -= 1; // 1 more for space
-        res.push(`${concatTwoWords(currentLine, wordsList[i].substring(0, breakPos))}-`);
-
-        // break the rest of the new word if it's still too long
-        while (breakPos + maxCharInRow < wordsList[i].length) {
-          const nextBreakPos = (breakPos + maxCharInRow) - 1;
-          res.push(`${wordsList[i].substring(breakPos, nextBreakPos)}-`);
-          breakPos = nextBreakPos;
-        }
-        currentLine = wordsList[i].substring(breakPos);
-      } else { // else, end current line and create a new line
-        if (currentLine.length > 0) { // avoid adding first empty line
-          res.push(currentLine);
-        }
-        currentLine = wordsList[i];
-      }
-    } else { // else, just add the new word to current line
-      currentLine = concatTwoWords(currentLine, wordsList[i]);
-    }
+// patch over original for getting property type:
+export const getType = (prop) => {
+  if (prop.type == 'value_set') {
+    return prop.valueSet();
   }
-  res.push(currentLine);
-  return res;
-};
-
-/**
- * Little helper to extract the type for some dictionary node property.
- * Export just for testing.
- * @param {Object} property one of the properties of a dictionary node
- * @return {String|Array<String>} string for scalar types, array for enums
- *                   and other listish types or 'UNDEFINED' if no
- *                   type information availabale
- */
-export const getType = (property) => {
-  let type = 'UNDEFINED';
-  if ('type' in property) {
-    if (typeof property.type === 'string') {
-      type = property.type;
-    } else {
-      type = property.type;
-    }
-  } else if ('enum' in property) {
-    type = property.enum;
-  } else if ('oneOf' in property) {
-    // oneOf has nested type list - we want to flatten nested enums out here ...
-    type = property.oneOf
-      .map((item) => getType(item))
-      .reduce(
-        (flatList, it) => {
-          if (Array.isArray(it)) {
-            return flatList.concat(it);
-          }
-          flatList.push(it);
-          return flatList;
-        }, [],
-      );
-  } else if ('anyOf' in property) {
-    // anyOf has nested type list
-    type = property.anyOf
-      .map((item) => getType(item))
-      .reduce(
-        (flatList, it) => {
-          if (Array.isArray(it)) {
-            return flatList.concat(it);
-          }
-          flatList.push(it);
-          return flatList;
-        }, [],
-      );
-  } else {
-    type = 'UNDEFINED';
+  else {
+    return prop.type || 'UNDEFINED';
   }
-
-  return type;
-};
+}
 
 export const downloadTemplate = (format, nodeId) => {
   if (format === 'tsv' || format === 'json') {
@@ -151,28 +75,6 @@ export const graphStyleConfig = {
   nodeTextLineGap: 4,
   nodeContentPadding: 20,
   nodeIconRadius: 10,
-};
-
-export const parseDictionaryNodes = (dictionary) => Object.keys(dictionary).filter(
-  (id) => id.charAt(0) !== '_' && id === dictionary[id].id,
-).map(
-  (id) => {
-    const originNode = dictionary[id];
-    return originNode;
-  },
-).filter(
-  (node) => node.id,
-);
-
-export const getPropertyDescription = (property) => {
-  let description;
-  if ('description' in property) {
-    description = property.description;
-  }
-  if ('term' in property) {
-    description = property.term.description;
-  }
-  return description;
 };
 
 const searchHistoryLocalStorageKey = 'datadictionary:searchHistory';

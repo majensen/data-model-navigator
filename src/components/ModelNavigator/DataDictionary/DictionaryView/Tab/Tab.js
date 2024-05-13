@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Tabs, Tab, withStyles,
 } from '@material-ui/core';
-import TabLabel from './TabLable';
+import TabLabel from './TabLabel';
 
 const TabItems = ({
   tabItems,

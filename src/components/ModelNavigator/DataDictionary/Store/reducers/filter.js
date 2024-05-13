@@ -3,11 +3,9 @@ import * as actionTypes from '../actions/actionTypes';
 import {
   initializeFilterHashMap,
   setSubjectCount,
-  getFileNodes,
   getNodeTypes,
-  getDictionaryWithExcludeSystemProperties,
-  generateSubjectCountsAndFilterData,
   getAllFilters,
+  generateSubjectCountsAndFilterData,
   toggleCheckBoxAction,
   setNodeHierarchy,
   setSelectedFilterValues,
@@ -26,7 +24,7 @@ const initialState = {
 };
 
 const defaultFilterConfig = {
-  facetSearchData: [],
+  facetFilters: [],
   facetSectionVariables: {},
   resetIcon: {},
   baseFilters: {},
@@ -91,19 +89,19 @@ const sortFacetSections = (checkboxData, sortByList) => {
  * @returns
  */
 const toggleCheckBox = (payload, state) => {
-  const allActiveFilters = toggleCheckBoxAction(payload, state);
-  let updatedCheckboxData = setSelectedFilterValues(
-    state.facetfilterConfig.facetSearchData,
+  const allActiveFilters = toggleCheckBoxAction(payload, state); // <-
+  let updatedCheckboxData = setSelectedFilterValues( // <-
+    state.facetfilterConfig.facetFilters,
     allActiveFilters);
-  const filtered = generateSubjectCountsAndFilterData(state, allActiveFilters, payload);
-  const sortCheckboxData = setSubjectCount(updatedCheckboxData, filtered.subjectCounts);
+  const filtered = generateSubjectCountsAndFilterData(state, allActiveFilters, payload); // <-
+  const sortCheckboxData = setSubjectCount(updatedCheckboxData, filtered.subjectCounts); // <-
   updatedCheckboxData = sortFacetSections(sortCheckboxData, state.sortByList);
   const updateState = {
     ...state,
-    dictionary: setNodeHierarchy(filtered.dictionary, state.nodeHierarchy),
+    dictionary: setNodeHierarchy(filtered.dictionary, state.nodeHierarchy), // <-
     allActiveFilters: allActiveFilters,
     checkbox: {
-      data: setSubjectCount(updatedCheckboxData, filtered.subjectCounts),
+      data: setSubjectCount(updatedCheckboxData, filtered.subjectCounts), // <-
     },
   }
   return updateState;
@@ -116,29 +114,29 @@ const moduleReducers = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.RECEIVE_DICTIONARY:
       const filterConfig = (payload && payload.facetfilterConfig)
-        ? payload.facetfilterConfig : defaultFilterConfig;
-      const dictionary = getDictionaryWithExcludeSystemProperties(payload.data);
-      filtered = generateSubjectCountsAndFilterData(dictionary);
+      ? payload.facetfilterConfig : defaultFilterConfig;
+      const model = payload.model;
+      filtered = generateSubjectCountsAndFilterData(model); // <-
       return ({
         ...state,
-        dictionary: dictionary,
-        nodeHierarchy: Object.keys(dictionary),
-        properties: payload.properties,
-        nodeTypes: getNodeTypes(payload.data),
-        file_nodes: getFileNodes(payload.data),
-        allActiveFilters: getAllFilters(filterConfig.facetSearchData),
-        unfilteredDictionary: dictionary,
-        node2Level: generateNodeTree(dictionary),
-        filteredDictionary: dictionary,
-        filterHashMap: initializeFilterHashMap(dictionary, filterConfig.filterSections),
-        subjectCountObject: filtered,
+        model: model,
+        nodeHierarchy: model.nodes().map( (n) => n.handle ),
+        properties: payload.properties, 
+        nodeTypes: model.nodes().map( (n) => n.handle ),
+        file_nodes: model.tagged_items('Category','data_file'),
+        allActiveFilters: getAllFilters(filterConfig.facetFilters), // <-
+        unfilteredDictionary: model, //*?
+        node2Level: generateNodeTree(model),
+        filteredDictionary: model, //*?
+        filterHashMap: initializeFilterHashMap(model, filterConfig.filterSections), // <-
+        subjectCountObject: filtered, // <- (see above var)
         facetfilterConfig: filterConfig,
         readMeConfig: payload.readMeConfig,
         graphViewConfig: payload.graphViewConfig,
         assetConfig: payload.assetConfig,
         ctrlVocabConfig: payload.ctrlVocabConfig,
         checkbox: {
-          data: setSubjectCount(filterConfig.facetSearchData, filtered.subjectCounts),
+          data: setSubjectCount(filterConfig.facetFilters, filtered.subjectCounts), // <-
         },
         pageConfig: payload.pageConfig,
         loadingExampleConfig: payload.loadingExampleConfig,
@@ -148,25 +146,30 @@ const moduleReducers = (state = initialState, action) => {
       return toggleCheckBox(payload, state);
 
     case actionTypes.CLEAR_ALL_FILTERS:
-      filtered = generateSubjectCountsAndFilterData(state.unfilteredDictionary);
-      const checkboxItems = sortFacetSections(setSubjectCount(state.facetfilterConfig.facetSearchData,
+      filtered = generateSubjectCountsAndFilterData(state.unfilteredDictionary); // <- 
+      const checkboxItems = sortFacetSections(setSubjectCount(state.facetfilterConfig.facetFilters,
         filtered.subjectCounts), state.sortByList);
       return {
         ...state,
-        dictionary: state.unfilteredDictionary,
-        filteredDictionary: state.unfilteredDictionary,
-        subjectCountObject: filtered,
+        dictionary: state.unfilteredDictionary, //*?
+        filteredDictionary: state.unfilteredDictionary, //*?
+        subjectCountObject: filtered, // <- (see above var)
         allActiveFilters: state.facetfilterConfig.baseFilters,
         activeFilter: false,
         filtersCleared: true,
         checkbox: {
           data: checkboxItems,
         },
-        ortByList: {
+        sortByList: { //*?
           ...state.sortByList,
         },
-      }
-    case actionTypes.SORT_SINGLE_SECTION:
+      };
+   case actionTypes.SORT_SINGLE_SECTION:
+    // groupName; groupData wtf - what is a 'group'? group refers to checkbox group
+    // "group" is in fact the Tag key from the model: 'Category', 'Assignment', or 'Class'
+    // "payload" == an element of facetFilters (but presumably .groupName has been lowercased.
+
+      // this is just "find the facet data object corresponding to groupName"
       const groupData = state.checkbox.data.filter((group) => payload.groupName === group.datafield)[0];
       let { sortByList } = state;
       sortByList = sortByList || {};

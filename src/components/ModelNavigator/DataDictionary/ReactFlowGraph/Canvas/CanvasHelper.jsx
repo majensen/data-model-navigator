@@ -13,8 +13,10 @@
  */
 import _ from 'lodash';
 
-export const generateNodeTree = (dictionary, nextLevel = 2, interval = 2) => {
-  const nodes = Object.keys(dictionary);
+// 'dictionary'->'model' is now an MDFReader instance
+
+export const generateNodeTree = (model, nextLevel = 2, interval = 2) => {
+  const nodes = model.nodes().map( n => n.handle );
   /**
      * initialize level to zero for all the nodes
      */
@@ -32,10 +34,11 @@ export const generateNodeTree = (dictionary, nextLevel = 2, interval = 2) => {
   const exploredSourceNodes = {};
   let maxLevel = 0;
   nodes.forEach((node, index) => {
-    const links = dictionary[node].links.filter((item) => item.Src !== undefined);
-    links.forEach((link, linkIndex) => {
-      const source = link.Dst;
-      const target = link.Src;
+    // const links = dictionary[node].links.filter((item) => item.Src !== undefined);
+    // links.forEach((link, linkIndex) => {
+    model.outgoing_edges().forEach( (edge) => {
+      const source = edge.src;
+      const target = edge.dst;
       if (target && source) {
         // check for circular relation (adverse_event/case)
         if (distinctLinks[source] === target) {
@@ -45,7 +48,7 @@ export const generateNodeTree = (dictionary, nextLevel = 2, interval = 2) => {
           // assign order based on the level of hierarchy node
           distinctLinks[target] = source;
           const levels = [node2Level[target], node2Level[source] + nextLevel];
-          let max = Math.max(...levels);
+          let max = _.max(...levels);
           /**
                      * IF - hierarchy is other than root node (program)
                      * off_treatment, off_study, canine_ind to case
@@ -58,7 +61,7 @@ export const generateNodeTree = (dictionary, nextLevel = 2, interval = 2) => {
             if (node2Level[target] === 0) {
               const level = node2Level[target] + nextLevel / 2;
               node2Level[target] = level;
-              max = Math.max(max, level);
+              max = _.max(max, level);
             } else if (!exploredSourceNodes[source]) {
               // node2Level[source] = node2Level[target] - nextLevel/2;
               // updated 10/18/2023 - AR
@@ -76,7 +79,7 @@ export const generateNodeTree = (dictionary, nextLevel = 2, interval = 2) => {
           } else {
             node2Level[target] = max;
           }
-          maxLevel = Math.max(max, maxLevel);
+          maxLevel = _.max(max, maxLevel);
         }
         exploredSourceNodes[source] = true;
       }
@@ -87,9 +90,11 @@ export const generateNodeTree = (dictionary, nextLevel = 2, interval = 2) => {
     * assign max level to node with no edges
     * move to bottom of the tree
     */
-  const nodeWithoutEdges = _.cloneDeep(nodes).filter((node) => dictionary[node].links
-        && dictionary[node].links.length === 0);
-  nodeWithoutEdges.forEach((node) => {
+
+  // const nodeWithoutEdges = _.cloneDeep(nodes).filter((node) => dictionary[node].links
+  //      && dictionary[node].links.length === 0);
+  const nodesWithoutEdges =  _.difference(nodes, model.edges().flatMap( e => [e.src, e.dst] ));
+  nodesWithoutEdges.forEach((node) => {
     node2Level[node] = maxLevel;
   });
 
@@ -113,8 +118,8 @@ export const generateNodeTree = (dictionary, nextLevel = 2, interval = 2) => {
 * @param {*} distionary
 * @param {*} nodeTree
 */
-export const generateSubTree = (dictionary, nodeTree) => {
-  const nodes = Object.keys(dictionary);
+export const generateSubTree = (model, nodeTree) => {
+  const nodes = model.nodes().map( n => n.handle );
   const subtree = {};
   let nextLevel = 0;
   for (const [key, value] of Object.entries(nodeTree)) {
@@ -137,13 +142,13 @@ export const generateSubTree = (dictionary, nodeTree) => {
  *
  */
 export const getNodePosition = ({
-  dictionary,
+  model,
   nodeTree,
   tabViewWidth,
-  xInterval = 250,
-  yInterval = 90,
+  xInterval = 250, // hard code??
+  yInterval = 90, // hard code??
 }) => {
-  const subtree = generateSubTree(dictionary, nodeTree);
+  const subtree = generateSubTree(model, nodeTree);
   const position = {};
   const x = tabViewWidth / 2;
   for (const [level, nodes] of Object.entries(subtree)) {

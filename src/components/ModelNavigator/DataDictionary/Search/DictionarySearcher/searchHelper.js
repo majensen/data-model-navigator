@@ -1,37 +1,36 @@
 import _ from 'lodash';
 import Fuse from 'fuse.js';
 import {
-  parseDictionaryNodes,
-  getPropertyDescription,
   getType,
 } from '../../Utils/utils';
 
 export const ZERO_RESULT_FOUND_MSG = '0 results found. Please try another keyword.';
 
+const lc = (str) => { `${str}`.toLowerCase() };
 /**
  * Prepare search items for Fuse.io library
- * @params [Object] dictionary
+ * @params [Class MDFReader] model 
  * @returns [Object] search data
  */
 
-export const prepareSearchData = (dictionary) => {
-  const searchData = parseDictionaryNodes(dictionary)
+export const prepareSearchData = (model) => {
+  const searchData = model.nodes()
     .map((node) => {
-      const properties = Object.keys(node.properties).map((propertyKey) => {
-        let type = getType(node.properties[propertyKey]);
+      const properties = node.props().map((prop) => {
+        let type = getType(prop);
         if (type === 'UNDEFINED') type = undefined;
-        const propertyDescription = getPropertyDescription(node.properties[propertyKey]);
+        const propertyDescription = prop.desc;
         const splitText = propertyDescription ? propertyDescription.split('<br>')[0] : propertyDescription;
         return {
-          name: formatText(propertyKey),
-          description: formatText(splitText),
+          name: lc(prop.handle),
+          description: lc(splitText),
           type,
         };
       });
       return {
-        id: node.id,
-        title: formatText(node.title),
-        description: formatText(node.description),
+        id: node.handle,
+        title: lc(node.handle),
+        description: lc(node.desc),
         properties,
       };
     });
@@ -50,17 +49,17 @@ export const filterMatches = (results, keyword) => {
           const highlightIndices = [];
           const { indices, value } = match;
           if (match.indices.length > 0) {
-            indices.forEach((indice, index) => {
+            indices.forEach((index) => {
               if (match.key !== 'title') {
-                const text = value.slice(indice[0], indice[1] + 1);
+                const text = value.slice(index[0], index[1] + 1);
                 if (`${text}`.toLowerCase().includes(keyword.toLowerCase())){
                   const initIndex = `${text}`.indexOf(keyword, 0);
-                  const diff = indice[1] - indice[0];
+                  const diff = index[1] - index[0];
                   if (diff >= keyword.length) {
-                    indice[0] += initIndex;
-                    indice[1] = indice[0] + keyword.length - 1;
+                    index[0] += initIndex;
+                    index[1] = index[0] + keyword.length - 1;
                   }
-                  highlightIndices.push(indice);
+                  highlightIndices.push(index);
                 }
               }
             });

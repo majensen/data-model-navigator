@@ -1,4 +1,7 @@
-export const categories = ['Admistrative', 'Study', 'Clinical Trial', 'Case', 'Biospecimen', 'Clinical', 'Analysis', 'Data File'];
+oexport const categories = [
+  'Adminstrative', 'Study', 'Clinical Trial',
+  'Case', 'Biospecimen', 'Clinical',
+  'Analysis', 'Data File'];
 
 export const showCheckboxCount = 5;
 
@@ -24,7 +27,7 @@ export const sortLabels = {
   showMore: '...expand to see all selections',
 };
 
-export const facetSearchData = [
+export const facetFilters = [
   {
     groupName: 'Category',
     datafield: 'category',
@@ -64,19 +67,6 @@ export const facetSearchData = [
       { name: 'Secondary', isChecked: false, group: 'class' },
     ],
   },
-  // {
-  //   groupName: 'Multiplicity',
-  //   datafield: 'multiplicity',
-  //   section: 'Filter By Relationship',
-  //   tooltip: 'multiplicity',
-  //   show: true,
-  //   checkboxItems: [
-  //     { name: 'One_to_one', isChecked: false, group: 'multiplicity' },
-  //     { name: 'One_to_many', isChecked: false, group: 'multiplicity' },
-  //     { name: 'Many_to_one', isChecked: false, group: 'multiplicity' },
-  //     { name: 'Many_to_many', isChecked: false, group: 'multiplicity' },
-  //   ],
-  // },
   {
     groupName: 'Inclusion',
     datafield: 'inclusion',
@@ -183,7 +173,7 @@ export const controlVocabConfig = {
 };
 
 export const filterConfig = {
-  facetSearchData,
+  facetFilters,
   facetSectionVariables,
   resetIcon,
   baseFilters,

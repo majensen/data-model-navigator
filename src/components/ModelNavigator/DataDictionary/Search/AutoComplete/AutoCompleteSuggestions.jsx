@@ -2,7 +2,7 @@ import React, { useRef, useContext } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import styles from './AutoCompleteSuggestnStyle';
-import SuggestionContext from '../SearchContext';
+import { SuggestionContext } from '../SearchContext';
 
 /**
  * Wrap suggestion item into HTML, take following as an e.g.:
@@ -60,34 +60,32 @@ function PaintItemOld({classes, suggestionItem}) {
   );
 };
 
+function PaintItem({ classes, suggestionItem }) {
+  var left=0;
+  const {fullString, matchedPieceIndices} = suggestionItem;
+  const painted = matchedPieceIndices.map( (elt) => (
+    <>
+      {fullString.substring(left,elt[0]-1)}
+      <span className={ classes.highlight }>
+        {fullString.substring(...elt)}
+      </span>
+      left = elt[1]
+    </>
+  ));
+  return (
+    <>
+      {painted}
+    </>
+  );
+};
+
+
 function SuggestionItemDiv({ classes, suggestionItem, i }) {
   const { fullString, matchedPieceIndices } = suggestionItem;
-
-  const handleSuggestionItemClick = (suggestionItem) => {
-    autoCompleteRef.current.setInputText(suggestionItem.fullString);
-    search(suggestionItem.fullString);
-  };
-
+  const { setClickedSuggestionItem } = useContext(SuggestionContext);
+  
   const handleClickItem = () => {
-    handleSuggestionItemClick(suggestionItem, i); // eslint-disable-line
-  };
-
-  const PaintItem = () => {
-    var left=0;
-    const painted = matchedPieceIndices.map( (elt) => (
-      <>
-        {fullString.substring(left,elt[0]-1)}
-        <span className={ classes.highlight }>
-          {fullString.substring(...elt)}
-        </span>
-        left = elt[1]
-      </>
-    ));
-    return (
-      <>
-        {painted}
-      </>
-    );
+    setClickedSuggestionItem(suggestionItem);
   };
 
   return (
@@ -96,7 +94,7 @@ function SuggestionItemDiv({ classes, suggestionItem, i }) {
       className={ classes.suggestionItem }
       onClick={ handleClickItem }
       role="button"
-      tabIndex={0}
+      tabIndex={0} // why not $i?
     >
       <PaintItemOld suggestionItem={suggestionItem} classes={classes}/>
     </div>
@@ -106,7 +104,7 @@ function SuggestionItemDiv({ classes, suggestionItem, i }) {
 function AutoCompleteSuggestions({
   classes,
 }) {
-  const suggestionList = useContext(SuggestionContext);
+  const { suggestionList } = useContext(SuggestionContext);
   const divList = suggestionList.map(
     (suggestionItem, i) => {
       <SuggestionItemDiv
@@ -114,7 +112,6 @@ function AutoCompleteSuggestions({
         suggestionItem={suggestionItem}
         i={ i } />
     })
-
   return (
     <div className={classes.suggestionList}>
       { divList }
@@ -122,11 +119,12 @@ function AutoCompleteSuggestions({
   );
 }
 
+
 export const SuggestionItem = {
   fullString: PropTypes.string.isRequired,
   matchedPieceIndices: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
 };
-
+  
 AutoCompleteSuggestions.propTypes = {
   suggestionList: PropTypes.arrayOf(PropTypes.shape(SuggestionItem)),
 };

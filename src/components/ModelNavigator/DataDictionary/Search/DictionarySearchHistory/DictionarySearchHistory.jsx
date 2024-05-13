@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import styles from './DictionarySearchHistory.style';
+import { SearchHistoryContext } from '../SearchContext';
 
 function DictionarySearchHistory({
   classes,
   onClickSearchHistoryItem,
   onClearSearchHistoryItems,
-  searchHistoryItems,
 }) {
   const handleClick = (keyword) => {
     onClickSearchHistoryItem(keyword);
@@ -16,7 +16,11 @@ function DictionarySearchHistory({
   const handleClearHistory = () => {
     onClearSearchHistoryItems();
   }
-
+  const {
+    searchHistoryItems,
+    setSearchHistoryItems,
+  } = useContext(SearchHistoryContext);
+  
   var historyItems = []
   if (searchHistoryItems) {
     historyItems = searchHistoryItems.map((item) => {
@@ -56,7 +60,7 @@ function DictionarySearchHistory({
             Clear History
           </span>
         </div>
-        <div className={classes.serachedItems}>
+        <div className={classes.searchedItems}>
           {historyItems}
         </div>
       </div>

@@ -27,7 +27,7 @@ const DictionaryView = ({
   classes,
   pdfDownloadConfig,
   handleClearSearchResult,
-  dictionary,
+  model,
   graphView,
   onSetGraphView,
   onWidthChange,
@@ -85,7 +85,7 @@ const DictionaryView = ({
               <TabPanel value={currentTab} index={0}>
                 <div className={classes.graphView}>
                   <CanvasView
-                    dictionary={dictionary}
+                    model={model}
                     tabViewWidth={tabViewWidth}
                     onClearSearchResult={handleClearSearchResult}
                   />

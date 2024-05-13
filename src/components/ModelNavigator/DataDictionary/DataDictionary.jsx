@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { Button, withStyles } from "@material-ui/core";
 import ReduxDictionarySearcher from "./Search/DictionarySearcher";

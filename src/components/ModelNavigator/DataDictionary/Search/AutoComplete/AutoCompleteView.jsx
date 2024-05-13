@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import AutoCompleteInput from './AutoCompleteInput';
 import AutoCompleteSuggestions, { SuggestionItem } from './AutoCompleteSuggestions';
 import './AutoComplete.css';
-import SuggestionContext from '../SearchContext';
+import { SuggestionContext } from '../SearchContext';
 
 import styles from './AutoCompleteStyle';
 
@@ -13,15 +13,20 @@ function AutoComplete({
   classes,
   inputPlaceHolderText,
   inputTitle,
-//  suggestionList,
 }) {
 
 //  const emptySuggestionsClassModifier = suggestionList.length === 0 // eslint-disable-line
 //        ? 'auto-complete--empty-suggestion-list' : '';
 
   const [suggestionList, setSuggestionList] = useState([]);
+  const [clickedSuggestionItem, setClickedSuggestionItem] = useState([])
   return (
-    <SuggestionContext.Provider value={suggestionList}>
+    <SuggestionContext.Provider value={{
+                                  suggestionList,
+                                  setSuggestionList,
+                                  clickedSuggestionItem,
+                                  setClickedSuggestionItem,
+                                }}>
       <div
         className={
           clsx(classes.autoComplete,
@@ -33,7 +38,6 @@ function AutoComplete({
             classes={ classes }
             placeHolderText={ inputPlaceHolderText }
             inputTitle={ inputTitle }
-            setSuggestionList={setSuggestionList} // hmmmm communicating to sibling via context
           />
         </div>
         <AutoCompleteSuggestions
