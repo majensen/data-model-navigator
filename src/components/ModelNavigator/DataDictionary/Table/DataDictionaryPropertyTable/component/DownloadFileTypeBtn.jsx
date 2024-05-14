@@ -17,7 +17,7 @@ import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { useSelector } from 'react-redux';
 
 const DOWNLOADS = "DOWNLOADS";
-const filePerfix = "ICDC_Controlled_Vocabulary-";
+const filePrefix = "Controlled_Vocabulary-";
 const FILE_TYPE_JSON = "JSON";
 const CONTENT_TYPE_JSON = "application/json";
 const CONTENT_TYPE_TSV = "data:text/tab-separated-values";
@@ -65,7 +65,7 @@ const StyledMenuItem = withStyles((theme) => ({
   },
 }))(MenuItem);
 
-const DownloadFileTypeBtn = ({ classes, data, node, propertyKey }) => {
+const DownloadFileTypeBtn = ({ classes, data, node:node_handle, propertyKey }) => {
   const [anchorElement, setAnchorElement] = React.useState(null);
   const [label, setLabel] = useState("DOWNLOADS");
   const pdfConfig = useSelector((state) => state?.ddgraph && state?.ddgraph?.pdfDownloadConfig ? state?.ddgraph?.pdfDownloadConfig : {});
@@ -86,8 +86,8 @@ const DownloadFileTypeBtn = ({ classes, data, node, propertyKey }) => {
 
   const download = (thisData, fileType, contentType) => {
     const exportData = new Blob([thisData], { type: contentType });
-    const nodeTitle = capitalizeFirstLetter(node);
-    const fileName = createFileName(`${nodeTitle}-${propertyKey}`, pdfConfig?.downloadPrefix || filePerfix);
+    const nodeTitle = capitalizeFirstLetter(node_handle);
+    const fileName = createFileName(`${nodeTitle}-${propertyKey}`, pdfConfig?.downloadPrefix || filePrefix);
     saveAs(exportData, `${fileName}.${fileType.toLowerCase()}`);
   };
 

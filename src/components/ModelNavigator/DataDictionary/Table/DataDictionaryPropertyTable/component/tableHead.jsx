@@ -20,9 +20,9 @@ const TableHeader = ({ classes, hideIsRequired }) => (
       <th className={classes.item}>
         Description
       </th>
-      <th className={classes.item}>
+      {/* <th className={classes.item}>
         Source
-      </th>
+        </th> */}
     </tr>
   </thead>
 );

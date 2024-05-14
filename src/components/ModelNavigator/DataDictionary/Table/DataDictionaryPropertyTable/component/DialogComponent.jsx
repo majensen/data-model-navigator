@@ -124,7 +124,7 @@ const DialogComponent = ({
         </div>
         <DialogContent>
           <ListComponent
-            items={values}
+            enums={values}
             maxNoOfItems={maxNoOfItems}
             maxNoOfItemDlgBox={maxNoOfItemDlgBox}
             expand={expand}

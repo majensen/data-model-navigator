@@ -136,7 +136,7 @@ const theme = {
 
 const ListComponent = ({
   classes,
-  items,
+  enums,
   maxNoOfItems,
   maxNoOfItemDlgBox,
   expand,
@@ -144,15 +144,15 @@ const ListComponent = ({
   isSearchMode,
 }) => {
   // const meanIndex = (length) => ((length % 2) ? length / 2 - 0.5 : length / 2);
-  const customTheme = (expand && items.length > maxNoOfItemDlgBox + maxNoOfItems)
+  const customTheme = (expand && enums.length > maxNoOfItemDlgBox + maxNoOfItems)
     ? { overrides: { ...theme.overrides, ...threeColumnsView.overrides } }
     : (items.length > maxNoOfItems)
       ? { overrides: { ...theme.overrides, ...twoColumnsView.overrides } } : theme;
 
-  const highlightMatchingProperties = (item) => {
+  const highlightMatchingProperties = (enum_val) => {
     if (isSearchMode && typeMatchList && typeMatchList.length > 0) {
       const matchItem = typeMatchList.map((prop) => {
-        if (prop.value === item) {
+        if (prop.value === enum_val) { // so are the 'items' props or what?
           return prop;
         }
       }).filter((c) => c);
@@ -160,10 +160,10 @@ const ListComponent = ({
         return (
           <ListItemText>
             <span className={classes.listItemText}>
-              {item.substring}
+              {enum_val.substring}
               {
               addHighlightingSpans(
-                item,
+                enum_val,
                 matchItem[0].indices,
                 'data-dictionary-property-table__span',
               )
@@ -177,7 +177,7 @@ const ListComponent = ({
       <ListItemText
         primary={(
           <Typography className={classes.listItemText}>
-            {item}
+            {enum_val}
           </Typography>
         )}
       />
@@ -187,13 +187,13 @@ const ListComponent = ({
   return (
     <MuiThemeProvider theme={createTheme(customTheme)}>
       <List>
-        {items.map((item, index) => (
+        {enums.map((enum_val, index) => (
           <>
             <ListItem key={`${index}`}>
               <ListItemIcon>
                 <FiberManualRecord style={{ fontSize: 8 }} />
               </ListItemIcon>
-              {highlightMatchingProperties(item)}
+              {highlightMatchingProperties(enum_val)}
             </ListItem>
           </>
         ))}
