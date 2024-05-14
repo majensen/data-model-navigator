@@ -1,5 +1,9 @@
 *~
 */*~
+*.old
+*.org
+*/*.old
+*/*.org
 # Logs
 logs
 *.log

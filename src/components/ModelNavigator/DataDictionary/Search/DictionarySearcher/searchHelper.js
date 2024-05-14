@@ -6,7 +6,7 @@ import {
 
 export const ZERO_RESULT_FOUND_MSG = '0 results found. Please try another keyword.';
 
-const lc = (str) => { `${str}`.toLowerCase() };
+const lc = (str) => `${str}`.toLowerCase();
 /**
  * Prepare search items for Fuse.io library
  * @params [Class MDFReader] model 

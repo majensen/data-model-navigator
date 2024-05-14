@@ -8,7 +8,7 @@ import {
   filterConfig,
   controlVocabConfig,
   graphViewConfig,
-} from './bento/dataDictionaryData';
+} from './config/nav.config';
 
 // import env from '../../env';
 // should take a glob of yaml files.

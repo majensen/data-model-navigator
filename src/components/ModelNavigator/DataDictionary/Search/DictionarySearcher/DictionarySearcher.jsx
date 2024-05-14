@@ -56,13 +56,13 @@ function DictionarySearcher({
   const [suggestionList, setSuggestionList] = useState([]);
   const [text, setText] = useState("");
 
-  // this is probably not right
-  // useEffect( () => {
-  //   if (currentSearchKeyword) {
-  //     autoCompleteRef.current.setInputText(currentSearchKeyword)
-  //     search(currentSearchKeyword);
-  //   }
-  // }, [currentSearchKeyword, autoCompleteRef]);
+  // this is probably not right??
+  useEffect( () => {
+    if (currentSearchKeyword) {
+      autoCompleteRef.current.setInputText(currentSearchKeyword)
+      search(currentSearchKeyword);
+    }
+  }, [currentSearchKeyword, autoCompleteRef]);
 
   // componentDidMount() {
   //   // resume search status after switching back from other pages

@@ -10,7 +10,7 @@ import {
   getMatchesSummaryForProperties,
 } from '../../Utils/highlightHelper';
 import DialogBox from './component/DialogComponent';
-import { controlVocabConfig as ctrlConfig } from '../../../bento/dataDictionaryData';
+import { controlVocabConfig as ctrlConfig } from '../../../config/nav.config';
 import TableHead from './component/tableHead';
 import TableRow from './component/tableRow';
 

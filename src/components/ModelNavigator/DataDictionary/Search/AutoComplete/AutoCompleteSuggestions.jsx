@@ -106,12 +106,12 @@ function AutoCompleteSuggestions({
 }) {
   const { suggestionList } = useContext(SuggestionContext);
   const divList = suggestionList.map(
-    (suggestionItem, i) => {
+    (suggestionItem, i) => (
       <SuggestionItemDiv
         classes={classes}
         suggestionItem={suggestionItem}
-        i={ i } />
-    })
+        key={ `${suggestionItem.fullString}-$i` } />
+    ))
   return (
     <div className={classes.suggestionList}>
       { divList }

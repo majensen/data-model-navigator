@@ -22,7 +22,7 @@ import {
 
 const ReduxDictionarySearcher = (() => {
   const mapStateToProps = state => ({
-    dictionary: state.submission.dictionary,
+    model: state.submission.model,
     currentSearchKeyword: state.ddgraph.currentSearchKeyword,
     activeFiltersCount: Object.entries(state.submission.allActiveFilters).reduce(
       (acc, [key, val]) => acc + (val.length), 0, // eslint-disable-line no-unused-vars
