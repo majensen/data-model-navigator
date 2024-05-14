@@ -14,7 +14,7 @@ import JSZip from 'jszip';
 import { pdf } from '@react-pdf/renderer';
 import LandscapePDFDoc from '../../LandscapeNodePDF/Pdf';
 import PdfDocument from '../../NodePDF/Pdf';
-import { category2NodeList, sortByCategory } from '../../Utils/download-helper-functions';
+import { category2NodeList, sortByCategory } from '../../utils';
 import { downloadMarkdownPdf } from '../../ReadMe/ReadMe.component';
 import {
   convertToTSV, createFileName, generateFileManifest, generateVocabFullDownload, isFileManifest,
@@ -95,7 +95,7 @@ const generatePdfDocument = async (object, config, setLoading, fileName, pdfDown
   saveAs(blob, `${fileName}.pdf`);
 };
 
-const DownloadFileTypeBtn = ({
+const DownloadDropdownMenu = ({
   classes,
   config,
   filteredDictionary,
@@ -131,14 +131,14 @@ const DownloadFileTypeBtn = ({
   };
 
   const downloadFullDictionaryPdf = (pdfDownloadConfig) => {
-    const fileName = createFileName(config?.downloadPrefix || 'ICDC_Data_Model', '');
+    const fileName = createFileName(config?.downloadPrefix || 'Data_Model', '');
     setLoading(true);
     setTimeout(() => {
       generatePdfDocument(processedFullDictionary, config, setLoading, fileName, pdfDownloadConfig);
     }, 50);
   };
 
-  const downloadAllTemplates = (prefix = "ICDC_") => {
+  const downloadAllTemplates = (prefix = "") => {
     // eslint-disable-next-line no-unused-vars
     const fullDictionaryTemplates = Object.fromEntries(Object.entries(fullDictionary).filter(([_key, value]) => value.template === 'Yes'));
     const nodesValueArray = Object.values(fullDictionaryTemplates);
@@ -298,4 +298,4 @@ const styles = () => ({
 
 });
 
-export default withStyles(styles, { withTheme: true })(DownloadFileTypeBtn);
+export default withStyles(styles, { withTheme: true })(DownloadDropdownMenu);
