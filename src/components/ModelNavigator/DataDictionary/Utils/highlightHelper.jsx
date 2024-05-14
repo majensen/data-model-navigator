@@ -1,5 +1,6 @@
 /* eslint-disable no-plusplus */
-import React from 'react';import {
+import React from 'react';
+import {
   List,
   ListItem,
   ListItemText,
@@ -9,7 +10,7 @@ import React from 'react';import {
   createTheme,
   MuiThemeProvider,
 } from '@material-ui/core';
-import { getPropertyDescription, getType } from './utils';
+import { getType } from './utils';
 
 const theme = {
   overrides: {
@@ -122,17 +123,17 @@ export const addHighlightingSpans = (str, indices, spanClassName) => {
   return resultFragments;
 };
 
-export const getPropertyNameFragment = (propertyName, matchedItem, spanClassName) => {
+export const getPropertyNameFragment = (prop, matchedItem, spanClassName) => {
   const propertyNameFragment = addHighlightingSpans(
-    propertyName,
+    prop.handle,
     matchedItem ? matchedItem.indices : [],
     spanClassName,
   );
   return propertyNameFragment;
 };
 
-export const getPropertyTypeFragment = (property, typeMatchList, spanClassName) => {
-  const type = getType(property);
+export const getPropertyTypeFragment = (prop, typeMatchList, spanClassName) => {
+  const type = getType(prop);
   let propertyTypeFragment;
   if (typeof type === 'string') {
     propertyTypeFragment = (
@@ -189,8 +190,8 @@ export const getPropertyTypeFragment = (property, typeMatchList, spanClassName) 
   return propertyTypeFragment;
 };
 
-export const getPropertyDescriptionFragment = (property, matchedItem, spanClassName) => {
-  let descriptionStr = getPropertyDescription(property);
+export const getPropertyDescriptionFragment = (prop, matchedItem, spanClassName) => {
+  let descriptionStr = prop.desc;
   if (!descriptionStr) descriptionStr = 'No Description';
   const propertyDescriptionFragment = addHighlightingSpans(
     descriptionStr,
@@ -220,7 +221,8 @@ export const getNodeDescriptionFragment = (allMatches, description, spanClassNam
   return nodeDescriptionFragment;
 };
 
-export const getMatchInsideProperty = (propertyIndex, propertyKey, property, allMatches) => {
+// assume property = model property object
+export const getMatchInsideProperty = (propertyIndex, propertyKey, prop, allMatches) => {
   let nameMatch = null;
   let descriptionMatch = null;
   const typeMatchList = [];
@@ -229,13 +231,13 @@ export const getMatchInsideProperty = (propertyIndex, propertyKey, property, all
       if (item.key === 'properties.name' && item.value === propertyKey) {
         nameMatch = item;
       } else if (item.key === 'properties.description') {
-        const descriptionStr = `${getPropertyDescription(property)}`.toLowerCase();
+        const descriptionStr = prop.desc.toLowerCase();
         const splitText = descriptionStr ? descriptionStr.split('<br>')[0] : descriptionStr;
         if (item.value === splitText) {
           descriptionMatch = item;
         }
       } else if (item.key === 'properties.type') {
-        const type = getType(property);
+        const type = getType(prop);
         if (typeof type === 'string') {
           if (type === item.value) {
             typeMatchList.push(item);
@@ -259,13 +261,12 @@ export const getMatchInsideProperty = (propertyIndex, propertyKey, property, all
 
 export const getMatchesSummaryForProperties = (allProperties, allMatches) => {
   const matchedPropertiesSummary = [];
-  Object.keys(allProperties).forEach((propertyKey, propertyIndex) => {
-    const property = allProperties[propertyKey];
+  allProperties.forEach( (property, propertyIndex) => {
     const {
       nameMatch,
       descriptionMatch,
       typeMatchList,
-    } = getMatchInsideProperty(propertyIndex, propertyKey, property, allMatches);
+    } = getMatchInsideProperty(propertyIndex, property.handle, property, allMatches);
     const summaryItem = {
       propertyKey,
       property,

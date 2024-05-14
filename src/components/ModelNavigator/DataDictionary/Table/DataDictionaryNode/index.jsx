@@ -17,11 +17,13 @@ const NODE_STATE = {
   CLOSE: "close",
 };
 
-class DataDictionaryNode extends React.Component {
+const DataDictionaryNode = (
+  props
+) =>  {
   notHorizontal = true; // supports landscape orientation
 
   handleClickNode(nodeID) {
-    const { expanded, onExpandNode } = this.props;
+    const { expanded, onExpandNode } = props;
     if (!expanded) {
       onExpandNode(nodeID, NODE_STATE.OPEN);
     } else {
@@ -30,27 +32,25 @@ class DataDictionaryNode extends React.Component {
   }
 
   handleCloseNode = () => {
-    const { onExpandNode } = this.props;
+    const { onExpandNode } = props;
     onExpandNode(null);
   };
 
   handleDownloadTemplate = (e, format) => {
-    const { node } = this.props;
+    const { node } = props;
     e.stopPropagation(); // no toggling
-    downloadTemplate(format, node.id);
+    downloadTemplate(format, node.handle);
   };
 
-  render() {
-    const { classes, node, pdfDownloadConfig, description, expanded } =
-      this.props;
-    const propertyCount = Object.keys(node.properties).length;
-    return (
+  const { classes, node, pdfDownloadConfig, description, expanded } = props;
+  const propertyCount = node.props().length;
+  return (
       <>
         <div
           className={classes.node}
           style={{ borderLeftColor: getCategoryColor(node.category) }}
-          onClick={() => this.handleClickNode(node.id)}
-          onKeyPress={() => this.handleClickNode(node.id)}
+          onClick={() => this.handleClickNode(node.handle)}
+          onKeyPress={() => this.handleClickNode(node.handle)}
           role="button"
           tabIndex={0}
         >
@@ -66,15 +66,15 @@ class DataDictionaryNode extends React.Component {
           <div
             className={classes.property}
             style={{
-              borderLeft: `5px solid ${getCategoryColor(node.category)}`,
+              borderLeft: `5px solid ${getCategoryColor(node.tags('Category'))}`,
               borderBottom: `1px solid #adbec4`,
             }}
           >
             <DataDictionaryPropertyTable
-              title={node.title}
-              properties={node.properties}
-              requiredProperties={node.required}
-              preferredProperties={node.preferred}
+              title={node.handle}
+              properties={node.props()}
+              requiredProperties={node.props().filter(p => p.tags('inclusion') === 'required')}
+              preferredProperties={node.props().filter(p => p.tags('inclusion') === 'preferred')}
               // horizontal // supports horizontal orientation
             />
           </div>

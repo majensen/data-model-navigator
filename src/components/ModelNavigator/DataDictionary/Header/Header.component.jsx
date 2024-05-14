@@ -11,7 +11,8 @@ import CustomTheme from './Header.theme.config';
 import ReadMeComponent from '../ReadMe/ReadMe.controller';
 import DownloadDropdownMenu from './components/download-dropdown-menu';
 
-const dogIconSrc = 'https://raw.githubusercontent.com/CBIIT/datacommons-assets/4a3fb8e201e6ba2a858d7ec1226d2fd6ea2b5298/icdc/images/svgs/Icon-DMNav.85x85.svg';
+// graph all the things
+const brandIconSrc = 'https://avatars.githubusercontent.com/u/82073?v=4';
 const HeaderComponent = ({
   pdfDownloadConfig, dictionary, fullDictionary, classes,
 }) => {
@@ -48,9 +49,9 @@ const HeaderComponent = ({
             className={classes.logoAndTitle}
           >
             <img
-              className={classes.dogIcon}
-              alt="dog-icon"
-              src={pageConfig?.iconSrc || dogIconSrc}
+              className={classes.brandIcon}
+              alt="brand-icon"
+              src={pageConfig?.brandIconSrc || brandIconSrc}
             />
             <div className={classes.titleAndVersion}>
               <h2

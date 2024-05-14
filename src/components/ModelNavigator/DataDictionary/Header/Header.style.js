@@ -13,7 +13,7 @@ export default () => ({
     display: "flex",
     gap: "13px",
   },
-  dogIcon: {
+  brandIcon: {
     height: "85px",
     width: "85px",
     border: "0px",

@@ -39,74 +39,82 @@ const graphIconColors = {
  * This function traverse links recursively and return all nested subgroup lnks
  */
 
-const getSubgroupLinks = (link, nameToNode, sourceId) => {
-  let subgroupLinks = [];
-  if (link.subgroup) {
-    link.subgroup.forEach((sgLink) => {
-      if (sgLink.subgroup) {
-        subgroupLinks = subgroupLinks.concat(
-          getSubgroupLinks(sgLink, nameToNode, sourceId)
-        );
-      } else {
-        subgroupLinks.push({
-          source: nameToNode[sourceId],
-          target: nameToNode[sgLink.target_type],
-          exists: 1,
-          ...sgLink,
-        });
-      }
-    });
-  }
-  return subgroupLinks;
-};
+// const getSubgroupLinks = (link, nameToNode, sourceId) => {
+//   let subgroupLinks = [];
+//   if (link.subgroup) {
+//     link.subgroup.forEach((sgLink) => {
+//       if (sgLink.subgroup) {
+//         subgroupLinks = subgroupLinks.concat(
+//           getSubgroupLinks(sgLink, nameToNode, sourceId)
+//         );
+//       } else {
+//         subgroupLinks.push({
+//           source: nameToNode[sourceId],
+//           target: nameToNode[sgLink.target_type],
+//           exists: 1,
+//           ...sgLink,
+//         });
+//       }
+//     });
+//   }
+//   return subgroupLinks;
+// };
 
-const generateNodes = (nodes, edges, windowWidth) => {
-  const generatedNodes = nodes.map((node, index) => {
+const generateNodes = (node_objs, edge_objs, windowWidth) => {
+  const generatedNodes = node_objs.map((node_o, index) => {
+    const cat = node_o.node.tags('Category');
+    const nreq = node_o.node.props()
+          .filter( (p) => p.tags('inclusion') === 'required')
+          .length;
+    const npref = node_o.node.props()
+          .filter( (p) => p.tags('inclusion') === 'preferred')
+          .length;
+    const nopt = node_o.node.props()
+          .filter( (p) => p.tags('inclusion') === 'optional')
+          .length;
     return {
       type: "custom",
       position: { x: 0, y: 0 },
-      id: `${node.id}`,
-      category: `${node.category}`,
+      id: node_o.node.handle,
+      category: cat,
       data: {
-        label: _.capitalize(node.name),
-        icon: graphIcons[node.category],
-        iconColor: graphIconColors[node.category],
-        category: `${node.category}`,
-        nodeAssignment: _.capitalize(`${node.assignment}`),
-        nodeClass: _.capitalize(`${node.class}`),
-        reqPropsCount: node.required ? node.required.length : 0,
-        prefPropsCount: node.preferred ? node.preferred.length : 0,
-        optPropsCount: node.optional ? node.optional.length : 0,
+        label: _.capitalize(node_o.name),
+        icon: graphIcons[cat],
+        iconColor: graphIconColors[cat],
+        category: cat,
+        nodeAssignment: _.capitalize(node_o.node.tags('Assignment')),
+        nodeClass: _.capitalize(node_o.node.tags('Class')),
+        reqPropsCount: nreq,
+        prefPropsCount: npref,
+        optPropsCount: nopt,
       },
     };
   });
-  // console.log(generatedNodes);
-
   return generatedNodes;
 };
 
-const generateEdges = (edges) => {
+const generateEdges = (edge_objs) => {
   const DEFAULT_EDGE_TYPE = {
     type: "custom",
     animated: false,
   };
 
-  const generatedEdges = edges.map((edge, index) => {
+  const generatedEdges = edge_objs.map((edge_o, index) => {
     return {
       ...DEFAULT_EDGE_TYPE,
-      id: `${edge.name}-${edge.backref}`,
-      source: `${edge.name}`,
-      target: `${edge.backref}`,
+      id: `${edge_o.name}-${edge_o.target.handle}`,
+      source: edge_o.name,
+      target: edge_o.target.handle,
     };
   });
 
   return generatedEdges;
 };
 
-const generateFlowData = (nodes, edges) => {
+const generateFlowData = (node_objs, edge_objs) => {
   return {
-    nodes: generateNodes(nodes, edges),
-    edges: generateEdges(edges),
+    nodes: generateNodes(node_objs, edge_objs),
+    edges: generateEdges(edge_objs),
   };
 };
 
@@ -115,16 +123,16 @@ const generateFlowData = (nodes, edges) => {
  *    and edges, returns the nodes and edges in correct format
  *
  * @method createNodesAndEdges
- * @param props: Object (normally taken from redux state) that includes dictionary
- *    property defining the dictionary as well as other optional properties
+ * @param props: Object (normally taken from redux state) that includes model
+ *    property (MDFReader object)  as well as other optional properties
  *    such as counts_search and links_search (created by getCounts) with
- *    information about the number of each type (node) and link (between
+ *    information about the number of each type (node) and edge (between
  *    nodes with a link's source and target types) that actually
- *    exist in the data
+ *    exist in the model
  * @param createAll: Include all nodes and edges or only those that are populated in
  *    counts_search and links_search
  * @param nodesToHide: Array of nodes to hide from graph
- * @returns { nodes, edges } Object containing nodes and edges
+ * @returns { node_objs, edge_objs } Object containing annotated model nodes and edges
  */
 export function createNodesAndEdges(
   props,
@@ -147,10 +155,11 @@ export function createNodesAndEdges(
         })
         .filter((node_obj) => createAll || node_obj.count !== 0);
 
-  const nameToNode = nodes.reduce((db, node) => {
-    db[node.id] = node;
-    return db;
-  }, {});
+  // const nameToNode = nodes.reduce((db, node) => {
+  //   db[node.id] = node;
+  //   return db;
+  // }, {});
+
   const hideDb = nodesToHide.reduce((db, name) => {
     db[name] = true;
     return db;

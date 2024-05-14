@@ -56,11 +56,11 @@ const DataDictionaryCategory = ({
       />
       {nodes.map((node) => (
         <DataDictionaryNode
-          node={node}
-          key={node.id}
-          description={node.description}
+          node={node.handle}
+          key={node.handle}
+          description={node.desc}
           pdfDownloadConfig={pdfDownloadConfig}
-          expanded={highlightingNodeID && highlightingNodeID.includes(node.id)}
+          expanded={highlightingNodeID && highlightingNodeID.includes(node.handle)}
           onExpandNode={onExpandNode}
         />
       ))}

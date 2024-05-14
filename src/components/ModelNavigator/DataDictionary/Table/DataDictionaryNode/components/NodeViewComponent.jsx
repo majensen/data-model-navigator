@@ -32,20 +32,20 @@ const NodeViewComponent = ({
     prefix: pdfDownloadConfig?.downloadPrefix || "ICDC_Data_Loading_Template-",
   };
 
-  const isFileManifest = node.id === "file";
-  const isTemplate = node.template === "Yes";
+  const isFileManifest = node.handle === "file";
+  const isTemplate = node.tags('Template') === "Yes";
   const fileManifestDownloadSettings = fileManifestConfig || defaultConfig;
 
   const getTitle = () => {
     if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(
         matchedResult.matches,
-        capitalizeFirstLetter(node.title),
+        capitalizeFirstLetter(node.handle),
         "data-dictionary-property-table__span"
       );
       return nodeTitleFragment;
     }
-    return capitalizeFirstLetter(node.title);
+    return capitalizeFirstLetter(node.handle);
   };
 
   const getDescription = (description) => {
@@ -120,7 +120,7 @@ const NodeViewComponent = ({
                     <span className={classes.nodeLabel}>
                       Class:
                       <span className={classes.nodeClass}>
-                        {capitalizeFirstLetter(node.class)}
+                        {capitalizeFirstLetter(node.tags('Class'))}
                       </span>
                     </span>
                   </>
@@ -133,7 +133,7 @@ const NodeViewComponent = ({
                   <DownloadButton
                     config={csvBtnDownloadConfig}
                     documentData={node}
-                    template={node.template}
+                    template={node.tags('Template')}
                     isFileManifest={isFileManifest}
                     fileName={
                       isFileManifest
@@ -152,7 +152,7 @@ const NodeViewComponent = ({
                     image: IconDownloadPDF,
                   }}
                   documentData={node}
-                  fileName={createFileName(node.id, pdfDownloadConfig?.prefix)}
+                  fileName={createFileName(node.handle, pdfDownloadConfig?.prefix)}
                 />
               </ButtonGroup>
             </div>

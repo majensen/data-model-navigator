@@ -17,14 +17,12 @@ import TableRow from './component/tableRow';
 const DataDictionaryPropertyTable = ({
   classes,
   onlyShowMatchedProperties,
-  properties,
+  properties, // list of model properties
   hasBorder,
   needHighlightSearchResult,
   matchedResult,
   hideIsRequired,
   tideIsRequired,
-  requiredProperties,
-  preferredProperties,
   isSearchMode,
   title,
 }) => {
@@ -48,8 +46,8 @@ const DataDictionaryPropertyTable = ({
     setItems([]);
   };
 
-  const propertyKeysList = tideIsRequired ? Object.keys(properties)
-    : Object.keys(properties);
+  const propertyKeysList = properties.map( p => p.handle );
+
   const needHighLgSearchResult = onlyShowMatchedProperties
     || needHighlightSearchResult;
   const matchedPropertiesSummary = needHighlightSearchResult
@@ -65,10 +63,8 @@ const DataDictionaryPropertyTable = ({
         <tbody>
           <TableRow
             propertyKeysList={propertyKeysList}
-            requiredProperties={requiredProperties}
             onlyShowMatchedProperties={onlyShowMatchedProperties}
             matchedPropertiesSummary={matchedPropertiesSummary}
-            preferredProperties={preferredProperties}
             properties={properties}
             needHighlightSearchResult={needHighLgSearchResult}
             hideIsRequired={hideIsRequired}
