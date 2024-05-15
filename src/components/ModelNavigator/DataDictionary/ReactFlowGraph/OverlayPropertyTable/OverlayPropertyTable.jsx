@@ -22,9 +22,9 @@ import DataDictionaryPropertyTable from "../../Table/DataDictionaryPropertyTable
 import styles from "./OverlayPropertyTable.style";
 import NodeViewComponent from "../../Table/DataDictionaryNode/components/NodeViewComponent";
 
-const OverlayPropertyTable = ({
+const OverlayPropertyTable = (
   props
-}) =>  {
+) =>  {
   const getTitle = () => {
     if (props.isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(
@@ -69,9 +69,8 @@ const OverlayPropertyTable = ({
   const handleDisplayOnlyMatchedProperties = () => {
     this.props.onCloseMatchedProperties();
   };
-  const { classes, isSearchMode, node, hidden } = this.props;
+  const { classes, isSearchMode, node, hidden } = props;
   const needHighlightSearchResult = isSearchMode;
-  const categoryColor = getCategoryColor(node.category);
   if (!node || hidden) {
     return (
       <></>
@@ -86,7 +85,7 @@ const OverlayPropertyTable = ({
             <div
               className={classes.category}
               style={{
-                borderLeftColor: categoryColor,
+                borderLeftColor: getCategoryColor(node.category),
                 backgroundColor: getCategoryBackground(node.category),
               }}
             >
@@ -148,7 +147,7 @@ const OverlayPropertyTable = ({
           
           <div
             className={classes.propertyTable}
-            style={{ borderLeftColor: categoryColor }}
+            style={{ borderLeftColor: getCategoryColor(node.category) }}
           >
             <div className={classes.property}>
               <DataDictionaryPropertyTable

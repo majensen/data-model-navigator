@@ -4,7 +4,7 @@ import HeaderComponent from './Header.component';
 const ReduxDataDictionaryHeader = (() => {
   const mapStateToProps = (state) => {
     return ({
-      dictionary: state.submission.dictionary,
+      model: state.submission.model,
       fullDictionary: state.submission.unfilteredDictionary,
     });
   };

@@ -5,12 +5,6 @@ import {
 } from '../../config/nav.config';
 import { clearAllFilters } from '../Store/actions/filter';
 
-// little helper, should add to mdf-reader:
-const tagValue = (entity, key) => {
-  return (entity.tags().
-          filter( (kv) => kv[0] === key ))[0][1];
-};
-
 /**
  * Helper function (you mean HACK)  to query and get an object from the redux store
  * @param {string} storeKey name of store property to access
@@ -154,9 +148,9 @@ export const newHandleExplorerFilter = (selectedFilters, filterHashMap) => {
 // include their own names as attributes, that's how.
 
 export const initializeFilterHashMap = (model, filterSections) => {
-  const map = new Map();
+  const hashMap = new Map();
   // 'options' are tag values
-  filterOptions.forEach((option) => map.set(option, []));
+  filterOptions.forEach((option) => hashMap.set(option, []));
   model.nodes()
     .forEach((node) => {
       filterSections.forEach( (section) => {
@@ -164,21 +158,24 @@ export const initializeFilterHashMap = (model, filterSections) => {
         case 'category':
         case 'assignment':
         case 'class':
-          if (map && map.get(tagValue(node, section))) {
-            map.set(tagValue(section),
-                    [...map.get(tagValue(section)), ...[[node.handle, node]]]);
+          if (hashMap && hashMap.get(node.tags(_.capitalize(section)))) {
+            hashMap.set(node.tags(_.capitalize(section)),
+                    [...hashMap.get(node.tags(_.capitalize(section))), ...[[node.handle, node]]]);
           }
           break;
         case 'uiDisplay':
         case 'inclusion': {
           // determine for which filter options a node has props defined
           let node_options = new Set();
-          node.flatMap( (n) => n.props().flatMap( (p) => p.tags() ))
+          node.props()
+            .flatMap( (p) => p.tags() )
             .map( (t) => t[0] )
             .forEach( (opt) => { node_options.add(opt); });
           node_options
             .forEach((opt) => {
-              map.set(opt,[...map.get(opt), ...[[node.handle, node]] ]);
+              if (hashMap.get(opt)) {
+                hashMap.set(opt,[...hashMap.get(opt), ...[[node.handle, node]] ]);
+              }
             });
           break;
         }
@@ -186,7 +183,7 @@ export const initializeFilterHashMap = (model, filterSections) => {
           break;
         }});
       });
-  return map;
+  return hashMap;
 };
 
 export const setCheckboxItems = (checkboxItems, subjectCountObj) => checkboxItems.map((elem) => ({
@@ -405,7 +402,7 @@ const filterNodesByProperty = (property = [], inclusionFilter, model) => {
   });
   const filterDictionary = {};
   property.forEach(prop => {
-    let cat = tagValue(prop, "Category").toLowerCase();
+    let cat = prop.tags("Category");
     if (!filterDictionary[cat]) {
       filterDictionary[cat] = model.props(cat); // <- this doesn't make sense in original code
     }
@@ -422,17 +419,17 @@ const getPropertySubjectCountAndFilterDictionary = (model, inclusionFilter) => {
       const lcFilterItems = items.map(e => e.toLowerCase());
       if (key === 'inclusion') {
         filterProps = filterProps.filter(
-          (prop) => lcFilterItems.indexOf(tagValue(prop,'inclusion')) !== -1
+          (prop) => lcFilterItems.indexOf(prop.tags('inclusion')) !== -1
         );
       } else {
         filterProps = filterProps.filter(
-          (prop) => lcFilterItems.indexOf(tagValue(prop, 'uiDisplay')) !== -1
+          (prop) => lcFilterItems.indexOf(prop.tags('uiDisplay')) !== -1
         );
       }
     });
     filterProps.forEach((prop) => {
-      const incValue = tagValue(prop, 'inclusion');
-      const dispValue = tagValue(prop, 'uiDisplay');
+      const incValue = prop.tags('inclusion');
+      const dispValue = prop.tags('uiDisplay');
       if (!subjectCount[dispValue]) {
         subjectCount[dispValue] = 0;
       };
@@ -451,8 +448,8 @@ const getPropertySubjectCountAndFilterDictionary = (model, inclusionFilter) => {
     const lcFilterItems = items.map(e => e.toLowerCase());
     
     filterProps.forEach(prop => {
-      const incValue = tagValue(prop, 'inclusion');
-      const dispValue = tagValue(prop, 'uiDisplay');
+      const incValue = prop.tags('inclusion');
+      const dispValue = prop.tags('uiDisplay');
       lcFilterItems.forEach(item => {
         if (dispValue == item
             || incValue == item) {
@@ -494,7 +491,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
     //** if any inclusion filter is active - inclusion behavior for both filter by inclusion and nodes */
     const { inclusion, uiDisplay } = allActiveFilters;
     // create new dictionary to track properties count only
-    const currectSelectedSection = facetfilterConfig.facetFilters.filter(section => section.datafield === currentFilter.datafield);
+    const currentSelectedSection = facetfilterConfig.facetFilters.filter(section => section.datafield === currentFilter.datafield);
     const inclusionItem = 'inclusion';
     const uiDisplayItem = 'uiDisplay';
 
@@ -583,8 +580,8 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
         //** chcek if the current filter inclusion filter */
         if (activeInclusionFilter) {
             /** get current filter  */
-            const currentInculsionSection = filterByInclusion.filter((item) => item[0] !== currentFilter.datafield);
-            const currentInculsionFilter = getPropertySubjectCountAndFilterDictionary(filteredDictionary, currentInculsionSection);
+            const currentInclusionSection = filterByInclusion.filter((item) => item[0] !== currentFilter.datafield);
+            const currentInclusionFilter = getPropertySubjectCountAndFilterDictionary(filteredDictionary, currentInclusionSection);
             let inclusionFilterOnFilteredDictionary = getPropertySubjectCountAndFilterDictionary(filteredDictionary, filterByInclusion);
             const inclusionSubjectCount = inclusionFilterOnFilteredDictionary.count;
             // ** adjust inclusion subject count with node filter */
@@ -717,10 +714,10 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
     if (filterByInclusion.length === 2 && filterWithoutInclusion.length === 2) {
         if (activeInclusionFilter) {
             /** get current filter  */
-            const currentInculsionSection = filterByInclusion.filter((item) => item[0] !== currentFilter.datafield);
-            const currentInculsionFilter = getPropertySubjectCountAndFilterDictionary(filteredDictionary, currentInculsionSection);
+            const currentInclusionSection = filterByInclusion.filter((item) => item[0] !== currentFilter.datafield);
+            const currentInclusionFilter = getPropertySubjectCountAndFilterDictionary(filteredDictionary, currentInclusionSection);
             let inclusionFilterOnFilteredDictionary = getPropertySubjectCountAndFilterDictionary(filteredDictionary, filterByInclusion);
-            // const selectedFilterCount = currentInculsionFilter.count;
+            // const selectedFilterCount = currentInclusionFilter.count;
             const inclusionSubjectCount = inclusionFilterOnFilteredDictionary.count;
             // ** adjust inclusion subject count with node filter */
             const allInclusionFilterItem = [["inclusion", ["Preferred", "Required", "Optional"]],

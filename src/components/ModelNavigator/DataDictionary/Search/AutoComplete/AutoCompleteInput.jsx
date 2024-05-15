@@ -1,4 +1,3 @@
-/* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-unused-vars */
 import React, { useRef, useReducer, useContext } from 'react';
 import { Button, withStyles } from '@material-ui/core';

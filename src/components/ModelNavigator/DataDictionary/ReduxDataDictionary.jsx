@@ -4,19 +4,19 @@ import { CircularProgress } from '@material-ui/core';
 import { setGraphView } from './Store/actions/graph';
 // import DataDictionaryController from './DataDictionaryController';
 import DataDictionary from './DataDictionary';
-// eslint-disable-next-line no-unused-vars
 
 const ReduxDataDictionary = (props) => {
-  if (!props.dictionary) {
-    return <CircularProgress />;
+  const { model } = props;
+  if (!model) {
+    return ( <CircularProgress /> );
   }
 
-  return <DataDictionary {...props} />;
+  return ( <DataDictionary {...props} /> );
 };
 
 const mapStateToProps = (state) => ({
   isGraphView: state.ddgraph.isGraphView,
-  dictionary: state.submission.dictionary,
+  model: state.submission.model,
 });
 
 const mapDispatchToProps = (dispatch) => ({

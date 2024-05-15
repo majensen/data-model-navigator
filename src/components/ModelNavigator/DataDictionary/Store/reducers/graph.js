@@ -363,7 +363,7 @@ const versionInfo = (state = {}, action) => {
     case 'RECEIVE_VERSION_INFO':
       return {
         ...state,
-        dictionaryVersion: action.data.dictionary.version || 'unknown',
+        dictionaryVersion: action.data.model.version || 'unknown',
         apiVersion: action.data.version || 'unknown',
         modelVersion: action.data.model || undefined,
       };

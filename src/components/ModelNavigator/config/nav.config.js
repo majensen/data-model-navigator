@@ -1,4 +1,4 @@
-oexport const categories = [
+export const categories = [
   'Adminstrative', 'Study', 'Clinical Trial',
   'Case', 'Biospecimen', 'Clinical',
   'Analysis', 'Data File'];

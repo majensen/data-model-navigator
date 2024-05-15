@@ -14,7 +14,7 @@ import DownloadDropdownMenu from './components/download-dropdown-menu';
 // graph all the things
 const brandIconSrc = 'https://avatars.githubusercontent.com/u/82073?v=4';
 const HeaderComponent = ({
-  pdfDownloadConfig, dictionary, fullDictionary, classes,
+  pdfDownloadConfig, model, fullDictionary, classes,
 }) => {
   const [displayReadMe, setDisplayReadMe] = useState(false);
   const [content, setContent] = useState(undefined);
@@ -91,7 +91,7 @@ const HeaderComponent = ({
             )}
             <DownloadDropdownMenu
               config={{ ...pdfDownloadConfig, type: 'document' }}
-              filteredDictionary={dictionary}
+              filteredDictionary={model}
               fullDictionary={fullDictionary}
               readMeContent={content}
               readMeConfig={config}

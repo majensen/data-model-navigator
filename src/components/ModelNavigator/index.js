@@ -16,7 +16,7 @@ import {
 const mdf_urls = ['https://raw.githubusercontent.com/CBIIT/icdc-model-tool/develop/model-desc/icdc-model.yml',
                   'https://raw.githubusercontent.com/CBIIT/icdc-model-tool/develop/model-desc/icdc-model-props.yml'];
 
-function getData() {
+function getModel() {
   return loadMDFDictionary(...mdf_urls)
     .then( (model) => { 
       return Promise.all(
@@ -45,7 +45,7 @@ function getData() {
 }
 
 const ModelNavigator = async () => {
-  await getData();
+  await getModel();
   return (
     <ReduxDataDictionary />
   );

@@ -3,8 +3,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import './DataDictionaryTable.css';
-import { parseDictionaryNodes } from '../../Utils/utils';
-import { createFileName } from '../../utils';
+import {
+  createFileName,
+  category2NodeList,
+  sortByCategory,
+  getNodePropertyCount,
+} from '../../utils';
 import DataDictionaryCategory from '../DataDictionaryCategory';
 
 // const pdfDownloadConfig = {
@@ -13,41 +17,6 @@ import DataDictionaryCategory from '../DataDictionaryCategory';
 //   landscape: true,
 // };
 
-/**
- * Just exported for testing
- * Little helper that extacts a mapping of category-name to
- * the list of nodes in that category given a dictionary definition object
- *
- * @param {Object} dictionary
- * @return {} mapping from category to node list
- */
-
-export function category2NodeList(model) {
-  return Object.fromEntries(
-    model.tag_kvs('Category')
-      .map( ([key, value]) => {
-        let cat = value;
-        return [cat.toLowerCase(),
-                model.tagged_items('Category', cat)
-                .filter(item => item._kind === 'Node')]
-      })
-  );
-}
-
-
-/** cluster props according to the category for PDF download */
-export function sortByCategory(c2nl, model) {
-  const keys = Object.keys(c2nl);
-  return model.nodes().sort((a, b) =>
-    keys.indexOf(a.tags('Category') - keys.indexOf(b.tags('Category')));
-}
-
-const getNodePropertyCount = (model) => {
-  return {
-    nodesCount: model.nodes().length,
-    propertiesCount: model.props().length,
-  };
-};
 
 /**
  * Little components presents an overview of the types in a dictionary organized by category
@@ -100,7 +69,7 @@ DataDictionaryTable.propTypes = {
 };
 
 DataDictionaryTable.defaultProps = {
-  model: {},
+  model: PropTypes.object,
   highlightingNodeID: null,
   onExpandNode: () => {},
   dictionaryName: '',

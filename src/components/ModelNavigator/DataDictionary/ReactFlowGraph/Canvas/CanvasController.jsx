@@ -59,7 +59,7 @@ const CanvasController = ({
      * initalize category item for Legend
      */
   useEffect(() => {
-    const cats = getDistinctCategoryItems(Object.values(unfilteredDictionary));
+    const cats = _.uniq(model.tag_kvs('Category').map(([,val]) => val));
     setCategories(cats);
     const urls = getCategoryIconUrl(cats, `${assetConfig?.iconUrl}`);
     setIconsURL(urls);

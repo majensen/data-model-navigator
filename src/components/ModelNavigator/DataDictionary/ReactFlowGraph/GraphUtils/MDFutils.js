@@ -166,7 +166,7 @@ export function createNodesAndEdges(
   }, {});
 
   const edge_objs = node_objs
-        .filter((obj) => obj.node.outgoing_edges() > 0) // just outgoing edges, b/c Gen3
+        .filter((obj) => model.outgoing_edges(obj.node.handle) > 0) // just outgoing edges, b/c Gen3
     .reduce(
       // add each node's links to the edge list
       (list, obj) => {

@@ -56,7 +56,7 @@ const DataDictionaryCategory = ({
       />
       {nodes.map((node) => (
         <DataDictionaryNode
-          node={node.handle}
+          node={node}
           key={node.handle}
           description={node.desc}
           pdfDownloadConfig={pdfDownloadConfig}
@@ -72,8 +72,8 @@ DataDictionaryCategory.propTypes = {
   category: PropTypes.string.isRequired,
   nodes: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      description: PropTypes.string,
+      handle: PropTypes.string.isRequired,
+      desc: PropTypes.string,
     })
   ).isRequired,
   highlightingNodeID: PropTypes.string,

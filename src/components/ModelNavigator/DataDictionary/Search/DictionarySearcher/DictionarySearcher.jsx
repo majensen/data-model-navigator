@@ -13,7 +13,10 @@ import {
 } from "@material-ui/core";
 import { createFilterOptions } from "@material-ui/lab";
 import AutoComplete from "../AutoComplete/AutoCompleteView";
-import { SearchDataContext } from "../SearchContext";
+import {
+  SearchDataContext,
+  SearchHistoryContext,
+} from "../SearchContext";
 
 import {
   prepareSearchData,
@@ -42,7 +45,7 @@ function DictionarySearcher({
 }) {
   
   const [searchData, setSearchData] = useState(prepareSearchData(model));
-
+  const [searchHistoryItems, setSearchHistoryItems] = useState([]);
 
   const [isSearching, setIsSearching] = useState(false);
   const [isSearchFinished, setIsSearchFinished] = useState(false);
@@ -55,14 +58,14 @@ function DictionarySearcher({
   const [errorMsg, setErrorMsg] = useState("");
   const [suggestionList, setSuggestionList] = useState([]);
   const [text, setText] = useState("");
-
+  
   // this is probably not right??
-  useEffect( () => {
-    if (currentSearchKeyword) {
-      autoCompleteRef.current.setInputText(currentSearchKeyword)
-      search(currentSearchKeyword);
-    }
-  }, [currentSearchKeyword, autoCompleteRef]);
+  // useEffect( () => {
+  //   if (currentSearchKeyword) {
+  //     autoCompleteRef.current.setInputText(currentSearchKeyword)
+  //     search(currentSearchKeyword);
+  //   }
+  // }, [currentSearchKeyword, autoCompleteRef]);
 
   // componentDidMount() {
   //   // resume search status after switching back from other pages
@@ -98,6 +101,7 @@ function DictionarySearcher({
   };
  
   return (
+    <SearchHistoryContext.Provider value={{searchHistoryItems, setSearchHistoryItems}}>
     <SearchDataContext.Provider value={searchData}>
       <div className={classes.searcher}>
         <SearchThemeConfig>
@@ -165,6 +169,7 @@ function DictionarySearcher({
         </div>
       </div>
     </SearchDataContext.Provider>
+    </SearchHistoryContext.Provider>
   );
   
 }

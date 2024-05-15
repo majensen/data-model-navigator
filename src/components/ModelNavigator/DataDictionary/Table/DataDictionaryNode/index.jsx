@@ -17,71 +17,69 @@ const NODE_STATE = {
   CLOSE: "close",
 };
 
-const DataDictionaryNode = (
-  props
-) =>  {
-  notHorizontal = true; // supports landscape orientation
+const DataDictionaryNode = ( props ) => {
+  const { classes, node, pdfDownloadConfig, description, expanded } = props;
+  const notHorizontal = true; // supports landscape orientation
 
-  handleClickNode(nodeID) {
+  const handleClickNode = (nodeID) => {
     const { expanded, onExpandNode } = props;
     if (!expanded) {
       onExpandNode(nodeID, NODE_STATE.OPEN);
     } else {
       onExpandNode(nodeID, NODE_STATE.CLOSE);
     }
-  }
+  };
 
-  handleCloseNode = () => {
+  const handleCloseNode = () => {
     const { onExpandNode } = props;
     onExpandNode(null);
   };
 
-  handleDownloadTemplate = (e, format) => {
+  const handleDownloadTemplate = (e, format) => {
     const { node } = props;
     e.stopPropagation(); // no toggling
     downloadTemplate(format, node.handle);
   };
 
-  const { classes, node, pdfDownloadConfig, description, expanded } = props;
+
   const propertyCount = node.props().length;
   return (
-      <>
+    <>
+      <div
+        className={classes.node}
+        style={{ borderLeftColor: getCategoryColor(node.category) }}
+        onClick={() => this.handleClickNode(node.handle)}
+        onKeyPress={() => this.handleClickNode(node.handle)}
+        role="button"
+        tabIndex={0}
+      >
+        <NodeViewComponent
+          node={node}
+          isExpanded={expanded}
+          description={description}
+          pdfDownloadConfig={pdfDownloadConfig}
+          propertyCount={propertyCount}
+        />
+      </div>
+      {expanded && (
         <div
-          className={classes.node}
-          style={{ borderLeftColor: getCategoryColor(node.category) }}
-          onClick={() => this.handleClickNode(node.handle)}
-          onKeyPress={() => this.handleClickNode(node.handle)}
-          role="button"
-          tabIndex={0}
+          className={classes.property}
+          style={{
+            borderLeft: `5px solid ${getCategoryColor(node.tags('Category'))}`,
+            borderBottom: `1px solid #adbec4`,
+          }}
         >
-          <NodeViewComponent
-            node={node}
-            isExpanded={expanded}
-            description={description}
-            pdfDownloadConfig={pdfDownloadConfig}
-            propertyCount={propertyCount}
+          <DataDictionaryPropertyTable
+            title={node.handle}
+            properties={node.props()}
+            requiredProperties={node.props().filter(p => p.tags('inclusion') === 'required')}
+            preferredProperties={node.props().filter(p => p.tags('inclusion') === 'preferred')}
+            // horizontal // supports horizontal orientation
           />
         </div>
-        {expanded && (
-          <div
-            className={classes.property}
-            style={{
-              borderLeft: `5px solid ${getCategoryColor(node.tags('Category'))}`,
-              borderBottom: `1px solid #adbec4`,
-            }}
-          >
-            <DataDictionaryPropertyTable
-              title={node.handle}
-              properties={node.props()}
-              requiredProperties={node.props().filter(p => p.tags('inclusion') === 'required')}
-              preferredProperties={node.props().filter(p => p.tags('inclusion') === 'preferred')}
-              // horizontal // supports horizontal orientation
-            />
-          </div>
-        )}
-      </>
-    );
-  }
+      )}
+    </>
+  );
 }
 
 DataDictionaryNode.propTypes = {

@@ -1,9 +1,8 @@
 import * as d3 from 'd3-scale';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { category2NodeList } from './Utils/download-helper-functions';
 import { fileManifestDownload } from '../../../config/file-manifest-config';
-import Axios from 'axios';
+import axios from 'axios';
 
 const submissionApiPath = 'FIXME-submissionApiPath';
 
@@ -329,7 +328,7 @@ export const generateFileManifest = (node) => {
   return text;
 };
 
-export const generateVocabFullDownload = (fullDictionary, format, prefix = "ICDC_") => {
+export const generateVocabFullDownload = (fullDictionary, format, prefix = "") => {
   const c2nl = category2NodeList(fullDictionary);
   const enumArr = [];
   const zip = new JSZip();
@@ -384,10 +383,10 @@ export const generateLoadingExample = async (configUrl = "https://raw.githubuser
   const zip = new JSZip();
 
   // fetch config
-  const {loadingExamples, title} = await (await Axios.get(configUrl)).data
+  const {loadingExamples, title} = await (await axios.get(configUrl)).data
   try {
     const titleArr = Object.keys(loadingExamples);
-    const res = await Promise.all(Object.values(loadingExamples).map((example) => Axios.get(example)));
+    const res = await Promise.all(Object.values(loadingExamples).map((example) => axios.get(example)));
     const data = res.map((res, index) => ({
       title: titleArr[index],
       content: res.data,
@@ -407,3 +406,32 @@ export const generateLoadingExample = async (configUrl = "https://raw.githubuser
 export const downloadLoadingExample = async (zipUrl = "") => {
   window.open(zipUrl, '_blank');
 };
+
+export function category2NodeList(model) {
+  return Object.fromEntries(
+    model.tag_kvs('Category')
+      .map( ([key, value]) => {
+        let cat = value;
+        return [cat.toLowerCase(),
+                model.tagged_items('Category', cat)
+                .filter(item => item._kind === 'Node')];
+      })
+  );
+}
+
+
+/** cluster props according to the category for PDF download */
+export function sortByCategory(c2nl, model) {
+  const keys = Object.keys(c2nl);
+  return model.nodes().sort((a, b) =>
+    keys.indexOf(a.tags('Category') - keys.indexOf(b.tags('Category')))
+  );
+}
+
+export function getNodePropertyCount(model) {
+  return {
+    nodesCount: model.nodes().length,
+    propertiesCount: model.props().length,
+  };
+}
+

@@ -4,7 +4,7 @@ import DataDictionaryTable from './DataDictionaryTable';
 
 const ReduxDataDictionaryTable = (() => {
   const mapStateToProps = (state) => ({
-    dictionary: state.submission.dictionary,
+    model: state.submission.model,
     highlightingNodeID: state.ddgraph.tableExpandNodeID,
     dictionaryName: 'Dictionary Utils Viz',
   });

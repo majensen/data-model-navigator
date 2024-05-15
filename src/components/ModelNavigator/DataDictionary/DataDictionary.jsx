@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button, withStyles } from "@material-ui/core";
 import ReduxDictionarySearcher from "./Search/DictionarySearcher";
@@ -6,6 +6,11 @@ import ReduxDictionarySearchHistory from "./Search/DictionarySearchHistory";
 import ReduxFacetFilters from "./Search/Filter/ReduxFacetFilter";
 import HeaderComponent from "./Header";
 import DictionaryView from "./DictionaryView/DictionaryView";
+import {
+  SuggestionContext,
+  SearchHistoryContext,
+} from './Search/SearchContext';
+
 import "./DataDictionary.css";
 
 function DataDictionary({
@@ -13,11 +18,12 @@ function DataDictionary({
   onSetGraphView,
   isGraphView,
   pdfDownloadConfig,
-  dictionary,
+  model,
 }) {
 
   const dictionarySearcherRef = useRef(null);
-
+  const [searchHistoryItems, setSearchHistoryItems] = useState([]);
+  
   useEffect(() => {
     onSetGraphView(true);
   }, []);
@@ -31,6 +37,7 @@ function DataDictionary({
   };
 
   return (
+    <SearchHistoryContext.Provider value={{searchHistoryItems, setSearchHistoryItems}}>
     <div className={classes.dictionaryContainer}>
       <HeaderComponent pdfDownloadConfig={pdfDownloadConfig} />
       <div className={classes.dataDictionary}>
@@ -44,11 +51,12 @@ function DataDictionary({
         <DictionaryView
           pdfDownloadConfig={pdfDownloadConfig}
           handleClearSearchResult={handleClearSearchResult}
-          dictionary={dictionary}
+          model={model}
           isGraphView={isGraphView}
         />
       </div>
     </div>
+    </SearchHistoryContext.Provider>
   );
 };
 
