@@ -34,7 +34,7 @@ const ddgraphInitialState = {
   isSearching: false,
   highlightingMatchedNodeID: null,
   highlightingMatchedNodeOpened: false,
-  dictionary: {},
+  model: {},
 };
 
 const ddgraph = (state = ddgraphInitialState, action) => {
@@ -112,7 +112,7 @@ const ddgraph = (state = ddgraphInitialState, action) => {
     case 'REACT_FLOW_GRAPH_DICTIONARY':
       return {
         ...state,
-        dictionary: action.dictionary,
+        model: action.model,
         graphConfig: action.graphConfig,
         assetConfig: action.assetConfig,
         graphViewConfig: { ...action.graphViewConfig, ...state.graphViewConfig },
@@ -139,7 +139,7 @@ const ddgraph = (state = ddgraphInitialState, action) => {
         return {
           ...state,
           highlightingMatchedNodeID: action.nodeID,
-          highlightingNode: state.dictionary[action.nodeID],
+          highlightingNode: state.model.nodes(action.nodeID),
           highlightingMatchedNodeOpened: false,
           overlayPropertyHidden: false,
           expandNodeView: false,
@@ -150,7 +150,7 @@ const ddgraph = (state = ddgraphInitialState, action) => {
       return {
         ...state,
         highlightingMatchedNodeID: action.nodeID,
-        highlightingNode: state.dictionary[action.nodeID],
+        highlightingNode: state.model.nodes(action.nodeID),
         highlightingMatchedNodeOpened: false,
         overlayPropertyHidden: true,
         expandNodeView: true,

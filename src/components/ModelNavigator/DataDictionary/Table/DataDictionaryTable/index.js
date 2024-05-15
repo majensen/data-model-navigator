@@ -10,7 +10,7 @@ const ReduxDataDictionaryTable = (() => {
   });
 
   const mapDispatchToProps = (dispatch) => ({
-    onExpandNode: (nodeID, nodeState) => dispatch(setExpandNodes(nodeID, nodeState)),
+    expandNode: (nodeID, nodeState) => dispatch(setExpandNodes(nodeID, nodeState)),
   });
 
   return connect(mapStateToProps, mapDispatchToProps)(DataDictionaryTable);

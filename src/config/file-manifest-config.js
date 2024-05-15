@@ -5,5 +5,5 @@ export const fileManifestDownload = [
 ];
 
 export const fileManifestDownloadSettings = {
-  filename_prefix: 'ICDC_File_Transfer_Manifest',
+  filename_prefix: 'File_Transfer_Manifest',
 };

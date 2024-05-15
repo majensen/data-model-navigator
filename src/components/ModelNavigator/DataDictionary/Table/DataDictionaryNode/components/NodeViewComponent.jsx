@@ -29,7 +29,7 @@ const NodeViewComponent = ({
   const csvBtnDownloadConfig = {
     image: IconDownloadPTSV,
     fileType: "tsv",
-    prefix: pdfDownloadConfig?.downloadPrefix || "ICDC_Data_Loading_Template-",
+    prefix: pdfDownloadConfig?.downloadPrefix || "Data_Loading_Template-",
   };
 
   const isFileManifest = node.handle === "file";
@@ -127,7 +127,8 @@ const NodeViewComponent = ({
                 )}
               </div>
             </div>
-            <div style={{ paddingRight: "10px"}}>
+            {/* leave out download feature
+            <div style={{ paddingRight: "10px"}}>                
               <ButtonGroup>
                 {(isTemplate || (isFileManifest && isTemplate)) && (
                   <DownloadButton
@@ -154,8 +155,10 @@ const NodeViewComponent = ({
                   documentData={node}
                   fileName={createFileName(node.handle, pdfDownloadConfig?.prefix)}
                 />
-              </ButtonGroup>
-            </div>
+                </ButtonGroup>
+           </div>
+               */}
+
           </div>
         </div>
       </div>

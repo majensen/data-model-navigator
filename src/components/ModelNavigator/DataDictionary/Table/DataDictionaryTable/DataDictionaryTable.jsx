@@ -11,26 +11,18 @@ import {
 } from '../../utils';
 import DataDictionaryCategory from '../DataDictionaryCategory';
 
-// const pdfDownloadConfig = {
-//   type: 'document',
-//   prefix: 'ICDC_Data_Model ',
-//   landscape: true,
-// };
-
-
 /**
  * Little components presents an overview of the types in a dictionary organized by category
  *
  * @param {dictionary} params
  */
 const DataDictionaryTable = ({
-  classes, model, highlightingNodeID, onExpandNode, dictionaryName, pdfDownloadConfig,
+  classes, model, highlightingNodeID, expandNode, dictionaryName, pdfDownloadConfig,
 }) => {
   const c2nl = category2NodeList(model);
   const { nodesCount, propertiesCount } = getNodePropertyCount(model);
   return (
     <>
-      {/* <DownloadLinkWrapper> */}
       <p className={classes.tableInfo}>
         <span>{dictionaryName}</span>
         <span> dictionary has </span>
@@ -39,12 +31,6 @@ const DataDictionaryTable = ({
         <span>{propertiesCount}</span>
         <span> properties </span>
       </p>
-      {/* <DownloadButton
-          config={{ ...pdfDownloadConfig, type: 'document' }}
-          documentData={sortByCategory(c2nl, dictionary)}
-          fileName={createFileName('', pdfDownloadConfig.prefix)}
-        /> */}
-      {/* </DownloadLinkWrapper> */}
       <div className={classes.tableBody}>
         {Object.keys(c2nl).map((category) => (
           <DataDictionaryCategory
@@ -52,7 +38,7 @@ const DataDictionaryTable = ({
             nodes={c2nl[category]}
             category={category}
             highlightingNodeID={highlightingNodeID}
-            onExpandNode={onExpandNode}
+            exxpandNode={expandNode}
             pdfDownloadConfig={pdfDownloadConfig}
           />
         ))}
@@ -64,14 +50,14 @@ const DataDictionaryTable = ({
 DataDictionaryTable.propTypes = {
   model: PropTypes.object,
   highlightingNodeID: PropTypes.string,
-  onExpandNode: PropTypes.func,
+  expandNode: PropTypes.func,
   dictionaryName: PropTypes.string,
 };
 
 DataDictionaryTable.defaultProps = {
   model: PropTypes.object,
   highlightingNodeID: null,
-  onExpandNode: () => {},
+  expandNode: () => {},
   dictionaryName: '',
 };
 

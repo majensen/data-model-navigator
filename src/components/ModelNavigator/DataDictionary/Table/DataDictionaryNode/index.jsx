@@ -1,15 +1,12 @@
 /* eslint-disable react/forbid-prop-types */
 import React from "react";
 import PropTypes from "prop-types";
-// import { PDFDownloadLink } from '@react-pdf/renderer';
-// eslint-disable-next-line no-unused-vars
 import { withStyles } from "@material-ui/core";
 import { downloadTemplate } from "../../Utils/utils";
 import { getCategoryColor } from "../../NodeCategories/helper";
 import DataDictionaryPropertyTable from "../DataDictionaryPropertyTable";
 import "./DataDictionaryNode.css";
 import styles from "./DataDictionaryNode.style";
-// import PdfDocument from '../../NodePDF';
 import NodeViewComponent from "./components/NodeViewComponent";
 
 const NODE_STATE = {
@@ -22,17 +19,17 @@ const DataDictionaryNode = ( props ) => {
   const notHorizontal = true; // supports landscape orientation
 
   const handleClickNode = (nodeID) => {
-    const { expanded, onExpandNode } = props;
+    const { expanded, expandNode } = props;
     if (!expanded) {
-      onExpandNode(nodeID, NODE_STATE.OPEN);
+      expandNode(nodeID, NODE_STATE.OPEN);
     } else {
-      onExpandNode(nodeID, NODE_STATE.CLOSE);
+      expandNode(nodeID, NODE_STATE.CLOSE);
     }
   };
 
   const handleCloseNode = () => {
-    const { onExpandNode } = props;
-    onExpandNode(null);
+    const { expandNode } = props;
+    expandNode(null);
   };
 
   const handleDownloadTemplate = (e, format) => {
@@ -48,8 +45,8 @@ const DataDictionaryNode = ( props ) => {
       <div
         className={classes.node}
         style={{ borderLeftColor: getCategoryColor(node.category) }}
-        onClick={() => this.handleClickNode(node.handle)}
-        onKeyPress={() => this.handleClickNode(node.handle)}
+        onClick={() => handleClickNode(node.handle)}
+        onKeyPress={() => handleClickNode(node.handle)}
         role="button"
         tabIndex={0}
       >
@@ -86,13 +83,13 @@ DataDictionaryNode.propTypes = {
   node: PropTypes.object.isRequired,
   description: PropTypes.string,
   expanded: PropTypes.bool,
-  onExpandNode: PropTypes.func,
+  expandNode: PropTypes.func,
 };
 
 DataDictionaryNode.defaultProps = {
   description: "",
   expanded: false,
-  onExpandNode: () => {},
+  expandNode: () => {},
 };
 
 export default withStyles(styles)(DataDictionaryNode);

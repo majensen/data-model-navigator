@@ -17,7 +17,7 @@ const DataDictionaryCategory = ({
   category,
   highlightingNodeID,
   pdfDownloadConfig,
-  onExpandNode,
+  expandNode,
   nodes,
   assetConfig,
 }) => {
@@ -61,7 +61,7 @@ const DataDictionaryCategory = ({
           description={node.desc}
           pdfDownloadConfig={pdfDownloadConfig}
           expanded={highlightingNodeID && highlightingNodeID.includes(node.handle)}
-          onExpandNode={onExpandNode}
+          expandNode={expandNode}
         />
       ))}
     </div>
@@ -77,12 +77,12 @@ DataDictionaryCategory.propTypes = {
     })
   ).isRequired,
   highlightingNodeID: PropTypes.string,
-  onExpandNode: PropTypes.func,
+  expandNode: PropTypes.func,
 };
 
 DataDictionaryCategory.defaultProps = {
   highlightingNodeID: null,
-  onExpandNode: () => {},
+  expandNode: () => {},
 };
 
 const mapStateToProps = (state) => ({
