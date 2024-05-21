@@ -16,11 +16,11 @@ import _ from 'lodash';
 // 'dictionary'->'model' is now an MDFReader instance
 
 export const generateNodeTree = (model, nextLevel = 2, interval = 2) => {
-  const nodes = model.nodes().map( n => n.handle );
+  const node_hdls = model.nodes().map( n => n.handle );
   /**
      * initialize level to zero for all the nodes
      */
-  const node2Level = nodes.reduce((acc, node) => { acc[node] = 0; return acc; }, {});
+  const node2Level = node_hdls.reduce((acc, node) => { acc[node] = 0; return acc; }, {});
   /**
      * check only distinct links are processed
      * edge1 = node1 -> node2, edge/link with be included on both nodes
@@ -33,10 +33,10 @@ export const generateNodeTree = (model, nextLevel = 2, interval = 2) => {
   const distinctLinks = {};
   const exploredSourceNodes = {};
   let maxLevel = 0;
-  nodes.forEach((node, index) => {
+  node_hdls.forEach((nhdl, index) => {
     // const links = dictionary[node].links.filter((item) => item.Src !== undefined);
     // links.forEach((link, linkIndex) => {
-    model.outgoing_edges().forEach( (edge) => {
+    model.outgoing_edges(nhdl).forEach( (edge) => {
       const source = edge.src;
       const target = edge.dst;
       if (target && source) {
@@ -93,9 +93,9 @@ export const generateNodeTree = (model, nextLevel = 2, interval = 2) => {
 
   // const nodeWithoutEdges = _.cloneDeep(nodes).filter((node) => dictionary[node].links
   //      && dictionary[node].links.length === 0);
-  const nodesWithoutEdges =  _.difference(nodes, model.edges().flatMap( e => [e.src, e.dst] ));
-  nodesWithoutEdges.forEach((node) => {
-    node2Level[node] = maxLevel;
+  const nodesWithoutEdges =  _.difference(node_hdls, model.edges().flatMap( e => [e.src, e.dst] ));
+  nodesWithoutEdges.forEach((nhdl) => {
+    node2Level[nhdl] = maxLevel;
   });
 
   /**
@@ -119,11 +119,11 @@ export const generateNodeTree = (model, nextLevel = 2, interval = 2) => {
 * @param {*} nodeTree
 */
 export const generateSubTree = (model, nodeTree) => {
-  const nodes = model.nodes().map( n => n.handle );
+  const node_hdls = model.nodes().map( n => n.handle );
   const subtree = {};
   let nextLevel = 0;
   for (const [key, value] of Object.entries(nodeTree)) {
-    const existingNodes = value.filter((item) => nodes.includes(item));
+    const existingNodes = value.filter((item) => node_hdls.includes(item));
     if (existingNodes.length > 0) {
       subtree[nextLevel] = existingNodes;
       nextLevel += 1;
@@ -132,22 +132,16 @@ export const generateSubTree = (model, nodeTree) => {
   return subtree;
 };
 
-/**
- * Calculates the node position based on node level
- *
- * @param {*} dictionary - filtered dictionary
- * @param {*} nodeTree - complete tree
- * @param {*} tabViewWidth - calculate the position
- * @returns postion of the nodes
- *
- */
+
+// use d3 force model to set initial position
+// 
 export const getNodePosition = ({
   model,
-  nodeTree,
   tabViewWidth,
   xInterval = 250, // hard code??
   yInterval = 90, // hard code??
 }) => {
+  
   const subtree = generateSubTree(model, nodeTree);
   const position = {};
   const x = tabViewWidth / 2;

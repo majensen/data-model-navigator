@@ -162,7 +162,7 @@ export const filterOptions = [
   'required',
   'preferred',
   'optional',
-  'uiDisplay',
+  // 'uiDisplay',
   'yes',
   'no',
 ];
@@ -190,7 +190,7 @@ export const graphViewConfig = {
       x: 0,
       y: 20,
       zoom: 0.7,
-      minZoom: 0.7,
+      minZoom: 0.1,
       maxZoom: 2,
     },
   },

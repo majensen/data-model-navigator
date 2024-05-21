@@ -78,6 +78,8 @@ const FacetFilters = ({
       : {}
   );
 
+  // this provides the data that is ultimately displayed:
+  // which is state.submission.checkbox
   const sideBarContent = useSelector((state) =>
     state.submission && state.submission.checkbox
       ? state.submission.checkbox

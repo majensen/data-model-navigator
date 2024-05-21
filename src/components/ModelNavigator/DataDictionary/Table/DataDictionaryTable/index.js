@@ -6,7 +6,7 @@ const ReduxDataDictionaryTable = (() => {
   const mapStateToProps = (state) => ({
     model: state.submission.model,
     highlightingNodeID: state.ddgraph.tableExpandNodeID,
-    dictionaryName: 'Dictionary Utils Viz',
+    dictionaryName: 'Model',
   });
 
   const mapDispatchToProps = (dispatch) => ({

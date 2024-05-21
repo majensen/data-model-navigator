@@ -115,14 +115,12 @@ const TableRow = ({
                     enums={enums.slice(0, config.maxNoOfItems)}
                     isSearchMode={isSearchMode}
                     typeMatchList={typeMatchList}
-                    property={property}
                   />
                 ) : (
                   <ListComponent
                     enums={enums}
                     isSearchMode={isSearchMode}
                     typeMatchList={typeMatchList}
-                    property={property}
                   />
                 )}
               </span>
@@ -130,7 +128,7 @@ const TableRow = ({
                 <ButtonComponent
                   label="...show more"
                   openHandler={() =>
-                    openBoxHandler(enums, typeMatchList, propertyKey)
+                    openBoxHandler(enums, typeMatchList, prop.handle)
                   }
                 />
               )}
@@ -158,7 +156,7 @@ const TableRow = ({
         <td className={classes.rowItem}>
           {key && !isSearchMode ? (
             <div className={classes.description}>
-              {displayKeyPropsDescription(property.description)}
+              {displayKeyPropsDescription(prop.desc)}
               {prop.tags('Labeled') && (
                 <div className={classes.labeled}>
                   <span className={classes.labeledSpan}>DISPLAYED AS:</span>{" "}

@@ -34,11 +34,11 @@ const DataDictionaryPropertyTable = ({
   const config = useSelector((state) => (state.submission && state.submission.ctrlVocabConfig
     ? state.submission.ctrlVocabConfig : ctrlConfig));
 
-  const openBoxHandler = (values, typeMatchList = [], propertyKey) => {
+  const openBoxHandler = (values, typeMatchList = [], prop_handle) => {
     setDisplay(true);
     setItems(values);
     setMatchedItems(typeMatchList);
-    setProperty(propertyKey);
+    setProperty(prop_handle);
   };
 
   const closeHandler = () => {

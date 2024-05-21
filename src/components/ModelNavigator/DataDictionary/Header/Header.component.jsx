@@ -89,14 +89,14 @@ const HeaderComponent = ({
                 README
               </Button>
             )}
-            <DownloadDropdownMenu
+            {/* <DownloadDropdownMenu
               config={{ ...pdfDownloadConfig, type: 'document' }}
               filteredDictionary={model}
               fullDictionary={fullDictionary}
               readMeContent={content}
               readMeConfig={config}
               loadingExampleConfig={loadingExampleConfig}
-            />
+            /> */}
           </div>
           <ReadMeComponent
             content={content}

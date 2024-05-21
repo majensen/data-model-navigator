@@ -10,7 +10,7 @@ import {
   setNodeHierarchy,
   setSelectedFilterValues,
 } from '../../Utils/filterUtil';
-import { generateNodeTree } from '../../ReactFlowGraph/Canvas/CanvasHelper';
+// import { generateNodeTree } from '../../ReactFlowGraph/Canvas/CanvasHelper';
 
 const initialState = {
   allActiveFilters: {},
@@ -19,7 +19,7 @@ const initialState = {
   activeFilter: false,
   filtersCleared: false,
   filterGroup: '',
-  filterHashMap: new Map(),
+  filterHashMap: {},
   filterConfig: {}
 };
 
@@ -113,35 +113,39 @@ const moduleReducers = (state = initialState, action) => {
 
   switch (action.type) {
     case actionTypes.RECEIVE_DICTIONARY:
-      const filterConfig = (payload && payload.facetfilterConfig)
-      ? payload.facetfilterConfig : defaultFilterConfig;
       const model = payload.model;
-      filtered = generateSubjectCountsAndFilterData(model); // <-
       return ({
         ...state,
         model: model,
-        nodeHierarchy: model.nodes().map( (n) => n.handle ),
         properties: payload.properties, 
         nodeTypes: model.nodes().map( (n) => n.handle ),
         file_nodes: model.tagged_items('Category','data_file'),
-        allActiveFilters: getAllFilters(filterConfig.facetFilters), // <-
-        unfilteredDictionary: model, //*?
-        node2Level: generateNodeTree(model),
-        filteredDictionary: model, //*?
-        filterHashMap: initializeFilterHashMap(model, filterConfig.filterSections), // <-
-        subjectCountObject: filtered, // <- (see above var)
-        facetfilterConfig: filterConfig,
+        // node2Level: generateNodeTree(model),  - not needed with force layout (guess)
+        pageConfig: payload.pageConfig,
         readMeConfig: payload.readMeConfig,
         graphViewConfig: payload.graphViewConfig,
         assetConfig: payload.assetConfig,
         ctrlVocabConfig: payload.ctrlVocabConfig,
-        checkbox: {
-          data: setSubjectCount(filterConfig.facetFilters, filtered.subjectCounts), // <-
-        },
-        pageConfig: payload.pageConfig,
         loadingExampleConfig: payload.loadingExampleConfig,
       });
 
+  case actionTypes.INIT_FILTER_CRAP:
+    const filterConfig = (payload && payload.facetfilterConfig) ?
+      payload.facetfilterConfig : defaultFilterConfig;
+    filtered = generateSubjectCountsAndFilterData({model}); 
+    return ({
+      ...state,
+      subjectCountObject: filtered, // <- (see above var)
+      nodeHierarchy: model.nodes().map( (n) => n.handle ),
+      filteredDictionary: model, //*?
+      filterHashMap: initializeFilterHashMap(model, filterConfig.filterSections), // <-
+      facetfilterConfig: filterConfig,
+      allActiveFilters: getAllFilters(filterConfig.facetFilters), // <-
+      unfilteredDictionary: model, //*?
+      checkbox: {
+        data: setSubjectCount(filterConfig.facetFilters, filtered.subjectCounts), // <-
+      },
+    });
     case actionTypes.FILTER_DATA_EXPLORER:
       return toggleCheckBox(payload, state);
 

@@ -59,7 +59,6 @@ const graphIconColors = {
 //   }
 //   return subgroupLinks;
 // };
-
 const generateNodes = (node_objs, edge_objs, windowWidth) => {
   const generatedNodes = node_objs.map((node_o, index) => {
     const cat = node_o.node.tags('Category');
@@ -102,8 +101,8 @@ const generateEdges = (edge_objs) => {
   const generatedEdges = edge_objs.map((edge_o, index) => {
     return {
       ...DEFAULT_EDGE_TYPE,
-      id: `${edge_o.name}-${edge_o.target.handle}`,
-      source: edge_o.name,
+      id: `${edge_o.source.handle}-${edge_o.name}-${edge_o.target.handle}`,
+      source: edge_o.source.handle,
       target: edge_o.target.handle,
     };
   });
@@ -155,22 +154,17 @@ export function createNodesAndEdges(
         })
         .filter((node_obj) => createAll || node_obj.count !== 0);
 
-  // const nameToNode = nodes.reduce((db, node) => {
-  //   db[node.id] = node;
-  //   return db;
-  // }, {});
-
   const hideDb = nodesToHide.reduce((db, name) => {
     db[name] = true;
     return db;
   }, {});
 
   const edge_objs = node_objs
-        .filter((obj) => model.outgoing_edges(obj.node.handle) > 0) // just outgoing edges, b/c Gen3
+        .filter((obj) => model.outgoing_edges(obj.node.handle).length > 0) // just outgoing edges, b/c Gen3
     .reduce(
       // add each node's links to the edge list
       (list, obj) => {
-        const newLinks = obj.node.outgoing_edges().map((edge) => ({
+        const newLinks = model.outgoing_edges(obj.node.handle).map((edge) => ({
           source: obj.node,
           target: model.nodes(edge.dst),
           name: edge.type,
@@ -180,22 +174,6 @@ export function createNodesAndEdges(
       },
       []
     )
-    // .reduce(
-    //   // add link subgroups to the edge list
-    //   (list, link) => {
-    //     let result = list;
-    //     if (link.target) {
-    //       // "subgroup" link entries in dictionary are not links themselves ...
-    //       result.push(link);
-    //     }
-    //     if (link.subgroup) {
-    //       const sgLinks = getSubgroupLinks(link, nameToNode, link.source.id);
-    //       result = result.concat(sgLinks);
-    //     }
-    //     return result;
-    //   },
-    //   []
-    // )
     .filter(
       // target type exist and is not in hide list
       (edge_obj) =>

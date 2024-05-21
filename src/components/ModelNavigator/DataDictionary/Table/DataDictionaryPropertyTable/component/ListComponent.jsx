@@ -146,7 +146,7 @@ const ListComponent = ({
   // const meanIndex = (length) => ((length % 2) ? length / 2 - 0.5 : length / 2);
   const customTheme = (expand && enums.length > maxNoOfItemDlgBox + maxNoOfItems)
     ? { overrides: { ...theme.overrides, ...threeColumnsView.overrides } }
-    : (items.length > maxNoOfItems)
+    : (enums.length > maxNoOfItems)
       ? { overrides: { ...theme.overrides, ...twoColumnsView.overrides } } : theme;
 
   const highlightMatchingProperties = (enum_val) => {

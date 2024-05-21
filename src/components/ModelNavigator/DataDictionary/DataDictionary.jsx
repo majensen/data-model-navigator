@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Button, withStyles } from "@material-ui/core";
 import ReduxDictionarySearcher from "./Search/DictionarySearcher";
 import ReduxDictionarySearchHistory from "./Search/DictionarySearchHistory";
-import ReduxFacetFilters from "./Search/Filter/ReduxFacetFilter";
+// import ReduxFacetFilters from "./Search/Filter/ReduxFacetFilter";
 import HeaderComponent from "./Header";
 import DictionaryView from "./DictionaryView/DictionaryView";
 import {
@@ -46,7 +46,7 @@ function DataDictionary({
           <ReduxDictionarySearchHistory
             onClickSearchHistoryItem={handleClickSearchHistoryItem}
           />
-          <ReduxFacetFilters />
+          {/* <ReduxFacetFilters /> */}
         </div>
         <DictionaryView
           pdfDownloadConfig={pdfDownloadConfig}

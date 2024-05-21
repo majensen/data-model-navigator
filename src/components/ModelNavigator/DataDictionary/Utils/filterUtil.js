@@ -19,84 +19,159 @@ export const getState = (storeKey, store) => store.getState()[storeKey];
  * @return {obj}
  */
 export function allFilters() {
-  // { category:[], assignment:[], class:[], inclusion:[], uiData:[] }
+  // returns { category:[], assignment:[], class:[], inclusion:[], uiData:[] }
   const emptyFilters = facetFilters.reduce((acc, facet) => (
     { ...acc, [facet.datafield]: [] }
   ), {});
-  return emptyFilters;
+  return emptyFilters; //Obj of arrs
 }
 
 export const getAllFilters = (data) => {
   const emptyFilters = data.reduce((acc, facet) => (
     { ...acc, [facet.datafield]: [] }
   ), {});
-  return emptyFilters;
+  return emptyFilters; //Obj of arrs
 };
 
 // data (a.k.a "payload") - an element of facetFilters
 
 // you're not creating variables.
-export const createFilters = (facet, currentAllActiveFilters) => {
-  // why would you do Object.entries and only use the key?
-  const filter = Object.keys(currentAllActiveFilters).reduce((acc, [key]) => {
-    if (facet.datafield === key) {
-      return facet.isChecked
-        ? { ...acc, [key]: [...currentAllActiveFilters[key], ...[facet.name]] }
-        : { ...acc, [key]: currentAllActiveFilters[key].filter((item) => item !== facet.name) };
+// ckbox_data = {
+//   groupName: item.groupName,
+//   section: item.section,
+//   name: item.name,
+//   datafield: item.datafield,
+//   isChecked: !item.isChecked,
+// };
+export const createFiltersFromChecked = (ckbox_data, currentActiveFilters) => {
+  const filter = Object.entries(currentActiveFilters).reduce((acc, [thisFacetName]) => {
+    if (ckbox_data.datafield === thisFacetName) {
+      return ckbox_data.isChecked
+        ? { ...acc, [thisFacetName]: [...currentActiveFilters[thisFacetName], ...[ckbox_data.name]] }
+      : { ...acc, [thisFacetName]:
+          currentActiveFilters[thisFacetName].filter((item) => item !== ckbox_data.name) };
     }
-    return { ...acc, [key]: currentAllActiveFilters[key] };
+    return { ...acc, [thisFacetName]: currentActiveFilters[thisFacetName] };
   }, {});
-  return filter;
+  return filter; //Arr of kvs
+};
+
+
+// filterSections - from nav.config.js - lc handles for each of the
+// controls in the facet area
+// this routine indicates that a "filterHashMap" just
+// has simple string keys (filter options), so it's not even a "hash" map,
+// and values which are Arrays of pairs (the node handle and the node).
+// could be a simple Object with simple node values. -- How? Because the nodes
+// include their own names as attributes, that's how.
+
+// FacetFilter (e.g., "Filter By Nodes")
+//   FilterSection (e.g. "Category")
+//     FilterOption (e.g. "Administrative") 
+
+// so the "hashMap" is indexing Nodes by filterOption (lowest level, chosen by checking ckbox)
+// collect nodes, not key-node pairs
+// now a "hashMap" is just an Object whose keys are filterOptions and values are
+// Arrays of model nodes.
+export const initializeFilterHashMap = (model, filterSections) => {
+  let hMap = {}; // new Map();
+  // 'options' are tag values
+  filterOptions.forEach((option) => { hMap[option] = [];}); // hashMap.set(option, []));
+  model.nodes()
+    .forEach((node) => {
+      filterSections.forEach( (section) => {
+        // these sections are about nodes
+        const opt = node.tags(_.capitalize(section));
+        switch (section) {
+        case 'category':
+        case 'assignment':
+        case 'class':
+          if (opt.length > 0) {
+            hMap[opt].push(node);
+          }
+          break;
+        // these sections are about props of nodes
+        case 'uiDisplay':
+        case 'inclusion': {
+          // determine for which filter options a node has props defined
+          let node_options = new Set();
+          node.props()
+            .flatMap( (p) => p.tags() )
+            .map( (t) => t[0] )
+            .forEach( (opt) => { node_options.add(opt); });
+          node_options
+            .forEach((opt) => {
+              hMap[opt].push(node);
+              // if (hashMap.get(opt)) {
+              //   hashMap.set(opt,[...hashMap.get(opt), ...[[node.handle, node]] ]);
+              // }
+            });
+          break;
+        }
+        default:
+          break;
+        }});
+      });
+  return hMap; // Obj of arrs of nodes
 };
 
 // new handle explorer filter - what?
-export const newHandleExplorerFilter = (selectedFilters, filterHashMap) => {
+// this emits the vaunted "filteredDictionary"
+
+//eliminate these Arrays of key-value pairs
+// changed name from newHandleExplorerFilter
+// the "filteredDictionary" is just (eventually) an Object of model nodes with
+// their handles as keys,  or an Array of nodes
+export const makeFilteredDictionary = (selectedFilters, filterHashMap) => {
   let filteredDict = [];
   let alternateFilteredDict = [];
 
+  //filters- object that could have keys that are filteredDict keys
+  // terrible name - this doesn't say anything
   const includeMultiFilterValue = (filteredDict, filters) => {
-    // filteredDict - an array of 2-elt arrays; the 2nd elt is an object
+    // filteredDict - an array of model nodes
     const filterValue = filteredDict.filter(
-      ([, entry]) => filters.some(
-        f => entry[f.toLowerCase()] &&
-          entry[f.toLowerCase()] > 0)
-        );
-    return filterValue;
+      (node) => filters.some( f => node.props()
+                              .flatMap( p => p.tags()
+                                        .map(([,opt]) => opt))
+                              .includes(f) > 0 )
+    );
+    return filterValue; // Arr of nodes
   };
 
   // so, in this beautiful data structure "selectedFilters", evidently the
   // first and second elements of an array are secretly special.
-  selectedFilters.forEach(([key, value], index) => {
+  // builds the "filteredDict"
+  selectedFilters.forEach(([section, optarr], index) => {
     switch (index) {
       case 0: {
-        value.forEach((filterValue) => {
-          filteredDict = [
-            ...filteredDict,
-            ...filterHashMap.get(filterValue.toLowerCase()),
-          ];
+        optarr.forEach((opt) => {
+          filteredDict = filteredDict.concat(filterHashMap[opt.toLowerCase()]);
         });
         break;
       }
       case 1: {
-        if (key === 'inclusion' || key === 'uiDisplay') {
-          if (value.length > 1) {
-            filteredDict = includeMultiFilterValue(filteredDict, value);
+        if (section === 'inclusion' || section === 'uiDisplay') {
+          if (optarr.length > 1) {
+            filteredDict = includeMultiFilterValue(filteredDict, optarr);
           } else {
-            value.forEach((filterValue) => {
-              alternateFilteredDict = [
+            optarr.forEach((opt) => {
+              alternateFilteredDict = filteredDict.filter( (node) => 
+                
+                [
                 ...filteredDict.filter(
-                  ([, thisValue]) => thisValue[key]
-                    && thisValue[key][filterValue.toLowerCase()]
-                    && thisValue[key][filterValue.toLowerCase()].length > 0)
-              ];
+                  ([, thisValue]) => thisValue[section]
+                    && thisValue[section][opt.toLowerCase()]
+                    && thisValue[section][opt.toLowerCase()].length > 0)
+                ]);
             });
             filteredDict = alternateFilteredDict;
           }
           break;
         }
-        value.forEach((filterValue) => {
+        optarr.forEach((filterValue) => {
           const valueFilteredDict = filteredDict.filter(
-            ([, thisValue]) => thisValue[key] === filterValue.toLowerCase());
+            ([, thisValue]) => thisValue[section] === filterValue.toLowerCase());
           const updateValueFilteredDict = (valueFilteredDict.length > 0)
                 ? valueFilteredDict
                 : [...filteredDict, ...filterHashMap.get(filterValue.toLowerCase())];
@@ -110,25 +185,25 @@ export const newHandleExplorerFilter = (selectedFilters, filterHashMap) => {
       }
 
       default: {
-        if (key === 'inclusion' || key === 'uiDisplay') {
-          if (value.length > 1) {
-            filteredDict = includeMultiFilterValue(filteredDict, value);
+        if (section === 'inclusion' || section === 'uiDisplay') {
+          if (optarr.length > 1) {
+            filteredDict = includeMultiFilterValue(filteredDict, optarr);
           } else {
-            value.forEach((filterValue) => {
+            optarr.forEach((filterValue) => {
               alternateFilteredDict = [
                 ...filteredDict.filter(
-                  ([, thisValue]) => thisValue[key]
-                    && thisValue[key][filterValue.toLowerCase()]
-                    && thisValue[key][filterValue.toLowerCase()].length > 0),
+                  ([, thisValue]) => thisValue[section]
+                    && thisValue[section][filterValue.toLowerCase()]
+                    && thisValue[section][filterValue.toLowerCase()].length > 0),
               ];
             });
             filteredDict = alternateFilteredDict;
           }
           break;
         }
-        value.forEach((filterValue) => {
+        optarr.forEach((filterValue) => {
           const valueFilteredDict = filteredDict.filter(
-            ([, thisValue]) => thisValue[key] === filterValue.toLowerCase());
+            ([, thisValue]) => thisValue[section] === filterValue.toLowerCase());
           filteredDict.push(...valueFilteredDict);
         });
         break;
@@ -136,67 +211,20 @@ export const newHandleExplorerFilter = (selectedFilters, filterHashMap) => {
     }
   });
 
-  return Object.fromEntries(filteredDict);
+  return Object.fromEntries(filteredDict); //returns an Object
 };
 
-// filterSections - from nav.config.js - lc handles for each of the
-// controls in the facet area
-// this routine indicates that a "filterHashMap" just
-// has simple string keys (filter options), so it's not even a "hash" map,
-// and values which are Arrays of pairs (the node handle and the node).
-// could be a simple Object with simple node values. -- How? Because the nodes
-// include their own names as attributes, that's how.
+// subjectCountObj returned from generateSubjectcontsAndFilterData...
+export const setSubjectCount = (facetFilters, subjectCountObj) => facetFilters.map((section) =>
+  ({
+    ...section,
+    checkboxItems: section.checkboxItems.map((item) =>
+      ({ ...item, subjects:subjectCountObj[item.name.toLowerCase()]})
+    ),
+  })
+);
 
-export const initializeFilterHashMap = (model, filterSections) => {
-  const hashMap = new Map();
-  // 'options' are tag values
-  filterOptions.forEach((option) => hashMap.set(option, []));
-  model.nodes()
-    .forEach((node) => {
-      filterSections.forEach( (section) => {
-        switch (section) {
-        case 'category':
-        case 'assignment':
-        case 'class':
-          if (hashMap && hashMap.get(node.tags(_.capitalize(section)))) {
-            hashMap.set(node.tags(_.capitalize(section)),
-                    [...hashMap.get(node.tags(_.capitalize(section))), ...[[node.handle, node]]]);
-          }
-          break;
-        case 'uiDisplay':
-        case 'inclusion': {
-          // determine for which filter options a node has props defined
-          let node_options = new Set();
-          node.props()
-            .flatMap( (p) => p.tags() )
-            .map( (t) => t[0] )
-            .forEach( (opt) => { node_options.add(opt); });
-          node_options
-            .forEach((opt) => {
-              if (hashMap.get(opt)) {
-                hashMap.set(opt,[...hashMap.get(opt), ...[[node.handle, node]] ]);
-              }
-            });
-          break;
-        }
-        default:
-          break;
-        }});
-      });
-  return hashMap;
-};
-
-export const setCheckboxItems = (checkboxItems, subjectCountObj) => checkboxItems.map((elem) => ({
-  ...elem,
-  subjects: subjectCountObj[elem.name.toLowerCase()],
-}));
-
-export const setSubjectCount = (checkboxData, subjectCountObj) => checkboxData.map((elem) => ({
-  ...elem,
-  checkboxItems: setCheckboxItems(elem.checkboxItems, subjectCountObj),
-}));
-
-export const getSubjectItemCount = (model, filterBy = facetFilters, activeFilters) => {
+export const getSubjectItemCount = (model, filterBy = facetFilters) => {
   const subjectCountItems = {};
   filterBy.forEach((section) => {
     section.checkboxItems.forEach((item) => {
@@ -233,7 +261,7 @@ const subjectCountBasedOnExclusionAndInclusionFilter = (
       inclusionDictionary.push(...filterHashMap.get(val.toLowerCase()));
     });
   });
-  inclusionDictionary = Object.fromEntries(inclusionDictionary);
+  inclusionDictionary = Object.fromEntries(inclusionDictionary); //now this in an object.
   const inclusionSectionCounts = getSubjectItemCount(inclusionDictionary, selectedSections);
   const selectedSectionCounts = getSubjectItemCount(filteredDictionary, selectedSections);
   const filteredDictCounts = getSubjectItemCount(filteredDictionary);
@@ -253,7 +281,7 @@ const subjectCountBasedOnExclusionAndInclusionFilter = (
   if (processedFilters.length > 2) {
     const currentSelection = selectedSections.filter((item) => item.datafield === currentFilter.datafield)[0];
     const otherFilters = processedFilters.filter((item) => item[0] !== currentFilter.datafield);
-    const otherInclusionDictionary = newHandleExplorerFilter(otherFilters, filterHashMap);
+    const otherInclusionDictionary = makeFilteredDictionary(otherFilters, filterHashMap);
     const otherSelectionCounts = getSubjectItemCount(otherInclusionDictionary, selectedSections);
     if (currentSelection) {
       currentSelection.checkboxItems.forEach((item) => {
@@ -279,19 +307,27 @@ const subjectCountBasedOnExclusionAndInclusionFilter = (
 // 121:      filtered = generateSubjectCountsAndFilterData(dictionary);
 // 151:      filtered = generateSubjectCountsAndFilterData(state.unfilteredDictionary);
 
-export const generateSubjectCountsAndFilterData = (data, allActiveFilters = allFilters({}), currentFilter) => {
+export const generateSubjectCountsAndFilterData = (
+  args,
+  allActiveFilters = allFilters({}),
+  currentFilter
+) => {
   const processedFilters = Object.entries(allActiveFilters)
     .filter(([, value]) => value.length > 0);
-  //* * initial state when there is no active filters */
+  //* * initial state when there ARE no active filters */
 
+  // essentially polymorphic based on arg signature.
   // here, evidently, if unfilteredDictionary is not set, the inference is that
   // arg 'data' is not state, but a dictionary.
   const {
-    unfilteredDictionary, filterHashMap, facetfilterConfig, properties,
-  } = data;
+    model,
+    filterHashMap,
+    facetfilterConfig,
+    properties,
+  } = args;
+  
   if (processedFilters.length == 0) {
-    const dictionary = (!unfilteredDictionary) ? data : unfilteredDictionary; // terrible hack; fix the arguments instead
-    return { subjectCounts: getSubjectItemCount(dictionary), dictionary };
+    return { subjectCounts: getSubjectItemCount(model), model };
   }
 
   //* * check active filters */
@@ -299,7 +335,7 @@ export const generateSubjectCountsAndFilterData = (data, allActiveFilters = allF
   const selectedSections = facetfilterConfig.facetFilters.filter((section) => filterSections
     .indexOf(section.datafield) !== -1);
 
-  const filteredDictionary = newHandleExplorerFilter(processedFilters, filterHashMap);
+  const filteredDictionary = makeFilteredDictionary(processedFilters, filterHashMap);
   const filteredDictCounts = getSubjectItemCount(filteredDictionary);
 
   const { inclusion, uiDisplay } = allActiveFilters;
@@ -307,12 +343,12 @@ export const generateSubjectCountsAndFilterData = (data, allActiveFilters = allF
 
   // evidently, if we get here, 'data' is state
   if (inclusion?.length > 0 || uiDisplay?.length > 0) {
-    return inclusionFilterHelper(data, allActiveFilters, currentFilter);
+    return inclusionFilterHelper(args, allActiveFilters, currentFilter);
   }
   //* * filter by only nodes - any search filter item that filters the node (this excludes inclusion) */
   //* * filter by only one subject or one section */
   if (processedFilters.length == 1) {
-    const selectedSectionCounts = getSubjectItemCount(unfilteredDictionary, selectedSections);
+    const selectedSectionCounts = getSubjectItemCount(model, selectedSections);
     const combinedSubjectCounts = { ...filteredDictCounts, ...selectedSectionCounts };
     return { subjectCounts: combinedSubjectCounts, dictionary: filteredDictionary };
   }
@@ -330,7 +366,7 @@ export const generateSubjectCountsAndFilterData = (data, allActiveFilters = allF
 /** * toggle check box action */
 export const toggleCheckBoxAction = (payload, state) => {
   const currentAllFilters = payload === {} ? allFilters()
-    : createFilters(payload, state.allActiveFilters);
+    : createFiltersFromChecked(payload, state.allActiveFilters);
   if (_.isEqual(currentAllFilters, allFilters())) {
     clearAllFilters();
   }
@@ -469,15 +505,18 @@ const getPropertySubjectCountAndFilterDictionary = (model, inclusionFilter) => {
   return { count: subjectCount, dictionary: filterDictionary };
 };
 
-const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
+const inclusionFilterHelper = (args, allActiveFilters, currentFilter) => {
     const processedFilters = Object.entries(allActiveFilters)
         .filter(([, value]) => value.length > 0);
     //** initial state when there is no active filters */
-    const { unfilteredDictionary, filterHashMap, facetfilterConfig, properties } = data;
+  const {
+    model,
+    filterHashMap,
+    facetfilterConfig,
+    properties
+  } = args;
     if (processedFilters.length == 0) {
-    // same terrible hack here:
-      const dictionary = (!unfilteredDictionary) ? data : unfilteredDictionary;
-      return { subjectCounts: getSubjectItemCount(dictionary), dictionary: dictionary };
+        return { subjectCounts: getSubjectItemCount(model), model };
     }
 
     //** check active filters */
@@ -485,7 +524,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
     const selectedSections = facetfilterConfig.facetFilters.filter(section => filterSections
         .indexOf(section.datafield) !== -1);
 
-    let filteredDictionary = newHandleExplorerFilter(processedFilters, filterHashMap);
+    let filteredDictionary = makeFilteredDictionary(processedFilters, filterHashMap);
     const filteredDictCounts = getSubjectItemCount(filteredDictionary);
 
     //** if any inclusion filter is active - inclusion behavior for both filter by inclusion and nodes */
@@ -504,8 +543,8 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
     const filterWithoutInclusion = processedFilters.filter(section => (section[0] !== inclusionItem && section[0] !== uiDisplayItem));
 
     //** generate inclusion filtered dictionary */
-    const inclusionDictionary = newHandleExplorerFilter(filterByInclusion, filterHashMap);
-    const noneInclusionDictionary = newHandleExplorerFilter(filterWithoutInclusion, filterHashMap);
+    const inclusionDictionary = makeFilteredDictionary(filterByInclusion, filterHashMap);
+    const noneInclusionDictionary = makeFilteredDictionary(filterWithoutInclusion, filterHashMap);
     //** select exclusion filter dictionary filteredDictionary if filter item is more than 2 */
     const selectDictionary = (processedFilters.length < 4) ? inclusionDictionary : filteredDictionary;
 
@@ -514,7 +553,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
     const uiDisplayFilterItems = facetfilterConfig.facetFilters.filter(section => section.datafield === uiDisplayItem)[0];
 
     let facetSectionCount = filteredDictCounts;
-    let propsFilter = getPropertySubjectCountAndFilterDictionary(unfilteredDictionary, filterByInclusion);
+    let propsFilter = getPropertySubjectCountAndFilterDictionary(model, filterByInclusion);
     let inclusionSubjectCount = propsFilter.count;
 
   // the rest of this mess is a series of if stmts handling the following cases:
@@ -528,7 +567,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
   
     //** When all inclusion facet search filter are active*/
     if (filterByInclusion.length === 2 && filterWithoutInclusion.length == 0) {
-        const filter = getPropertySubjectCountAndFilterDictionary(unfilteredDictionary, filterByInclusion);
+        const filter = getPropertySubjectCountAndFilterDictionary(model, filterByInclusion);
         inclusionSubjectCount = filter.count;
         filteredDictionary = filter.dictionary;
         const otherFilterItem = (currentFilter.datafield !== inclusionItem)
@@ -541,7 +580,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
         const allInclusionFilterItem = [["inclusion", ["Preferred", "Required", "Optional"]],
         ...filterByUiDisplay];
         const inclusionFilters = (!activeInclusionFilter) ? allInclusionFilterItem : currentrFilter;
-        const currentPropsFilter = getPropertySubjectCountAndFilterDictionary(unfilteredDictionary, inclusionFilters);
+        const currentPropsFilter = getPropertySubjectCountAndFilterDictionary(model, inclusionFilters);
         const currentPropsFilterCount = currentPropsFilter.count;
         facetSectionCount = getSubjectItemCount(filter.dictionary);
         inclusionFilterItems.checkboxItems.forEach(item => {
@@ -556,8 +595,8 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
 
     if (filterByInclusion.length === 1 && filterWithoutInclusion.length === 0) {
         //filter dictionary by inclusion
-        const nonInclusionSectionCounts = getSubjectItemCount(unfilteredDictionary, selectedSections);
-        const filter = getPropertySubjectCountAndFilterDictionary(unfilteredDictionary, filterByInclusion);
+        const nonInclusionSectionCounts = getSubjectItemCount(model, selectedSections);
+        const filter = getPropertySubjectCountAndFilterDictionary(model, filterByInclusion);
         inclusionSubjectCount = filter.count;
         if ((inclusion.length > 0 && uiDisplay.length === 0)) {
             uiDisplayFilterItems.checkboxItems.forEach(item => {
@@ -596,7 +635,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
             const activeInclusionFilters = getPropertySubjectCountAndFilterDictionary(filteredDictionary, filterByInclusion);
             const activeInclusionSubjectCount = activeInclusionFilters.count;
 
-            const inclusionFilterOnUnFilteredDictionary = getPropertySubjectCountAndFilterDictionary(unfilteredDictionary, filterByInclusion);
+            const inclusionFilterOnUnFilteredDictionary = getPropertySubjectCountAndFilterDictionary(model, filterByInclusion);
             const subjectCount1 = getSubjectItemCount(inclusionFilterOnFilteredDictionary.dictionary);
             const subjectCount2 = getSubjectItemCount(inclusionFilterOnUnFilteredDictionary.dictionary);
 
@@ -731,7 +770,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
             const activeInclusionFilters = getPropertySubjectCountAndFilterDictionary(filteredDictionary, filterByInclusion);
             const activeInclusionSubjectCount = activeInclusionFilters.count;
 
-            const inclusionFilterOnUnFilteredDictionary = getPropertySubjectCountAndFilterDictionary(unfilteredDictionary, filterByInclusion);
+            const inclusionFilterOnUnFilteredDictionary = getPropertySubjectCountAndFilterDictionary(model, filterByInclusion);
             // const subjectCount1 = getSubjectItemCount(inclusionFilterOnFilteredDictionary.dictionary);
             // const subjectCount2 = getSubjectItemCount(inclusionFilterOnUnFilteredDictionary.dictionary);
 
@@ -748,7 +787,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
             });
 
             const otherFilters = filterWithoutInclusion.filter(item => item[0] !== currentFilter.datafield);
-            const otherInclusionDictionary = newHandleExplorerFilter(otherFilters, filterHashMap);
+            const otherInclusionDictionary = makeFilteredDictionary(otherFilters, filterHashMap);
             const otherFilterByInclusion = getPropertySubjectCountAndFilterDictionary(otherInclusionDictionary, filterByInclusion);
             const otherSelectionCounts = getSubjectItemCount(otherFilterByInclusion.dictionary, selectedSections);
             selectedSections.forEach(section => {
@@ -793,7 +832,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
             const currentSelection = selectedSections.filter(item => item.datafield === currentFilter.datafield)[0];
             if (currentSelection) {
                 const otherFilters = filterWithoutInclusion.filter(item => item[0] !== currentFilter.datafield);
-                const otherInclusionDictionary = newHandleExplorerFilter(otherFilters, filterHashMap);
+                const otherInclusionDictionary = makeFilteredDictionary(otherFilters, filterHashMap);
                 const otherFilterByInclusion = getPropertySubjectCountAndFilterDictionary(otherInclusionDictionary, filterByInclusion);
                 const otherSelectionCounts = getSubjectItemCount(otherFilterByInclusion.dictionary, selectedSections);
                 currentSelection.checkboxItems.forEach(item => {
@@ -814,7 +853,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
         inclusionSubjectCount = propsFilter.count;
         const currentSelection = selectedSections.filter(item => item.datafield === currentFilter.datafield)[0];
         const otherFilters = processedFilters.filter(item => item[0] !== currentFilter.datafield);
-        const otherInclusionDictionary = newHandleExplorerFilter(otherFilters, filterHashMap);
+        const otherInclusionDictionary = makeFilteredDictionary(otherFilters, filterHashMap);
         const otherSelectionCounts = getSubjectItemCount(otherInclusionDictionary, selectedSections, currentFilter);
         if (currentSelection) {
             const overideSubjectCount = {};
@@ -895,7 +934,7 @@ const inclusionFilterHelper = (data, allActiveFilters, currentFilter) => {
         inclusionSubjectCount = propsFilter.count;
         const currentSelection = selectedSections.filter(item => item.datafield === currentFilter.datafield)[0];
         const otherFilters = processedFilters.filter(item => item[0] !== currentFilter.datafield);
-        const otherInclusionDictionary = newHandleExplorerFilter(otherFilters, filterHashMap);
+        const otherInclusionDictionary = makeFilteredDictionary(otherFilters, filterHashMap);
         const otherSelectionCounts = getSubjectItemCount(otherInclusionDictionary, selectedSections, currentFilter);
         if (currentSelection) {
             const overideSubjectCount = {};

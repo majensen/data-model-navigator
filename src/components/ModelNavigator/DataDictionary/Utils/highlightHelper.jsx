@@ -261,15 +261,15 @@ export const getMatchInsideProperty = (propertyIndex, propertyKey, prop, allMatc
 
 export const getMatchesSummaryForProperties = (allProperties, allMatches) => {
   const matchedPropertiesSummary = [];
-  allProperties.forEach( (property, propertyIndex) => {
+  allProperties.forEach( (prop, propertyIndex) => {
     const {
       nameMatch,
       descriptionMatch,
       typeMatchList,
-    } = getMatchInsideProperty(propertyIndex, property.handle, property, allMatches);
+    } = getMatchInsideProperty(propertyIndex, prop.handle, prop, allMatches);
     const summaryItem = {
-      propertyKey,
-      property,
+      prop_handle: prop.handle,
+      prop,
       nameMatch,
       descriptionMatch,
       typeMatchList,

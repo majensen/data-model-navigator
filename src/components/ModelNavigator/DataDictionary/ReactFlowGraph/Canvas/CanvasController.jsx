@@ -1,33 +1,79 @@
 /* eslint no-unused-vars: 0 */
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import { forceSimulation, forceLink, forceManyBody, forceX, forceY } from 'd3-force';
 import { connect } from 'react-redux';
 import {
   addEdge,
   useNodesState,
   useEdgesState,
+  useReactFlow,
+  useStore,
 } from 'reactflow';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import _ from 'lodash';
+import { collide } from './collide.js';
 import CanvasView from './CanvasView';
 import { createNodesAndEdges } from '../GraphUtils/MDFutils';
 import { getDistinctCategoryItems, setMatchingNodeTitle, getCategoryIconUrl } from './util';
 import {
   onNodeDragStart, onPanelViewClick, onViewChange, setReactFlowGraphData,
 } from '../../Store/actions/graph';
-import { getNodePosition } from './CanvasHelper';
+// import { getNodePosition } from './CanvasHelper';
 import defaultIcon from './assets/graph_icon/study.svg';
 
-/**
- * Handles all canvas state
- * 1. nodes
- * 2. edges
- * 3. positioning of nodes with BFS
- * 4. tracks search mode
- * @param {*} param0
- * @returns canvas component
- */
+const simulation = forceSimulation()
+  .force('charge', forceManyBody().strength(-1000))
+  .force('x', forceX().x(0).strength(0.05))
+  .force('y', forceY().y(0).strength(0.05))
+  .force('collide', collide())
+  .alphaTarget(0.05)
+  .stop();
+
+const numTicks = 20;
+
+const getLayoutedElements = (
+  nodes, edges, isSearchMode,
+  defaultIcon, searchResults,
+  currentSearchKeyword) => {
+    nodes.forEach(
+      (node) => {
+        if (!node.data.icon) {
+          node.data.icon = defaultIcon;
+        }
+      });
+    if (isSearchMode) {
+      const matchingNodeTitle = setMatchingNodeTitle(searchResults);
+      nodes.forEach(
+        (node) => {
+          if(matchingNodeTitle[node.id]) {
+            node.data.matchedNodeNameQuery = currentSearchKeyword;
+          }
+        });
+    }
+    // must clone edges, since simulation
+    // replaces source and target with
+    // actual node objects, and we need
+    // the simple handles for rendering
+    // in flowgraph
+    let sim_edges = _.cloneDeep(edges);
+    simulation.nodes(nodes).force(
+      'link',
+      forceLink(sim_edges)
+        .id((d) => d.id)
+        .strength(0.1)
+        .distance(100)
+    );
+    simulation.tick(numTicks);
+    nodes.forEach(
+      (node) => {
+        node.position.x = node.x;
+        node.position.y = node.y;
+      });
+    return {nodes, edges};
+  };
+
 
 const CanvasController = ({
 //   flowData,
@@ -39,14 +85,14 @@ const CanvasController = ({
   isSearchMode,
   onClearSearchResult,
   setGraphData,
-  nodeTree,
+  // nodeTree,
   unfilteredDictionary,
   highlightedNodes,
   graphViewConfig,
   onGraphPanelClick,
   assetConfig,
 }) => {
-  if (tabViewWidth === 0 || !graphViewConfig) {
+  if (tabViewWidth === 0 || !graphViewConfig || !model) {
     return <CircularProgress />;
   }
 
@@ -70,63 +116,22 @@ const CanvasController = ({
     * 2. title
     * 3. highlight node based on matching search query to desc, properties and title
     */
-  const getLayoutedElements = (nodes_, edges_, nodeInternals, direction = 'TB') => {
-    /**
-         * highlight node based on matching search query to desc, properties and title
-         * setMatchingNodeTitle return indexes to highlight node title (string)
-         */
-    var nodes = _.cloneDeep(nodes_);
-    var edges = _.cloneDeep(edges_);
-    if (isSearchMode) {
-      const matchingNodeTitle = setMatchingNodeTitle(searchResults);
-      nodes.forEach((node) => {
-        if (matchingNodeTitle[node.id]) {
-          node.data.matchedNodeNameQuery = currentSearchKeyword; // eslint-disable-line
-        }
-      });
-    }
-    /**
-         * assign node position
-         * canvas configuration
-         * 1. custom node tree
-         * 2. xInterval & yInterval
-         */
-    const { canvas } = graphViewConfig;
-    if (model && nodeTree) {
-      const nodePosition = getNodePosition({
-        model,
-        nodeTree: canvas?.nodeTree || nodeTree,
-        tabViewWidth,
-        ...canvas?.fit,
-      });
-      nodes.forEach((node) => {
-        if (!node.data.icon) {
-          node.data.icon = defaultIcon; // eslint-disable-line
-        }
-        const position = nodePosition[node.id];
-        node.position = { // eslint-disable-line
-          x: position[0],
-          y: position[1],
-        };
-      });
-    }
-    return { nodes, edges };
-  };
-
   /**
      * update states
      * 1. nodes and edges
      * 2. toggle between on/off for search mode
      */
+
   useEffect(() => {
     const flowData = createNodesAndEdges({ model }, true, []);
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(
-      flowData.nodes,
-      flowData.edges,
-    );
-    setNodes(layoutedNodes);
-    setEdges(layoutedEdges);
+    const {nodes: layoutNodes, edges: layoutEdges} = getLayoutedElements(
+      flowData.nodes, flowData.edges, isSearchMode,
+      defaultIcon, searchResults, currentSearchKeyword);
+    setGraphData(flowData);
+    setNodes(layoutNodes);
+    setEdges(layoutEdges);
   }, [model, currentSearchKeyword]);
+
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(
@@ -161,7 +166,7 @@ const mapStateToProps = (state) => ({
   isSearchMode: state.ddgraph.isSearchMode,
   currentSearchKeyword: state.ddgraph.currentSearchKeyword,
   searchResults: state.ddgraph.searchResult,
-  nodeTree: state.submission.node2Level,
+  // nodeTree: state.submission.node2Level,
   highlightedNodes: state.ddgraph.highlightedNodes,
   unfilteredDictionary: state.submission.unfilteredDictionary,
   graphViewConfig: state.ddgraph.graphViewConfig,
