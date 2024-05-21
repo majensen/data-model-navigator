@@ -5,9 +5,6 @@ import { withStyles } from '@material-ui/core';
 import './DataDictionaryTable.css';
 import {
   createFileName,
-  category2NodeList,
-  sortByCategory,
-  getNodePropertyCount,
 } from '../../utils';
 import DataDictionaryCategory from '../DataDictionaryCategory';
 
@@ -19,26 +16,24 @@ import DataDictionaryCategory from '../DataDictionaryCategory';
 const DataDictionaryTable = ({
   classes, model, highlightingNodeID, expandNode, dictionaryName, pdfDownloadConfig,
 }) => {
-  const c2nl = category2NodeList(model);
-  const { nodesCount, propertiesCount } = getNodePropertyCount(model);
   return (
     <>
       <p className={classes.tableInfo}>
         <span>{dictionaryName}</span>
         <span> dictionary has </span>
-        <span>{nodesCount}</span>
+        <span>{model.nodes().length}</span>
         <span> nodes and </span>
-        <span>{propertiesCount}</span>
+        <span>{model.props().length}</span>
         <span> properties </span>
       </p>
       <div className={classes.tableBody}>
-        {Object.keys(c2nl).map((category) => (
+        {model.tag_kvs('Category').map(([,category]) => (
           <DataDictionaryCategory
             key={category}
-            nodes={c2nl[category]}
+            nodes={model.tagged_items('Category', category)}
             category={category}
             highlightingNodeID={highlightingNodeID}
-            exxpandNode={expandNode}
+            expandNode={expandNode}
             pdfDownloadConfig={pdfDownloadConfig}
           />
         ))}
