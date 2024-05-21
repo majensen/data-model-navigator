@@ -1,6 +1,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from "react";
 import { connect } from "react-redux";
+import _ from 'lodash';
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core";
 import {
@@ -8,7 +9,6 @@ import {
   getCategoryStyle,
   tableNodeCategoryList,
 } from "../../NodeCategories/helper";
-import { capitalizeFirstLetter } from "../../utils";
 import DataDictionaryNode from "../DataDictionaryNode";
 import styles from "./DataDictionaryCategory.style";
 
@@ -47,7 +47,7 @@ const DataDictionaryCategory = ({
         width: '32px'}
         }/>
         <div className={classes.title}>
-          <span>{capitalizeFirstLetter(category)} </span>
+          <span>{_.capitalize(category)} </span>
         </div>
       </div>
       <div

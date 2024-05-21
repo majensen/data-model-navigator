@@ -8,11 +8,6 @@ import {
 } from '../../utils';
 import DataDictionaryCategory from '../DataDictionaryCategory';
 
-/**
- * Little components presents an overview of the types in a dictionary organized by category
- *
- * @param {dictionary} params
- */
 const DataDictionaryTable = ({
   classes, model, highlightingNodeID, expandNode, dictionaryName, pdfDownloadConfig,
 }) => {

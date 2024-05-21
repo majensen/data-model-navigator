@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   withStyles,
@@ -22,7 +22,6 @@ import {
   prepareSearchData,
   searchKeyword,
   getSearchSummary,
-  ZERO_RESULT_FOUND_MSG,
   formatText,
 } from "./searchHelper";
 import styles from "./DictionarySearcher.style";
@@ -58,14 +57,15 @@ function DictionarySearcher({
   const [errorMsg, setErrorMsg] = useState("");
   const [suggestionList, setSuggestionList] = useState([]);
   const [text, setText] = useState("");
+
+  const autoCompleteRef = useRef(null);
   
   // this is probably not right??
-  // useEffect( () => {
-  //   if (currentSearchKeyword) {
-  //     autoCompleteRef.current.setInputText(currentSearchKeyword)
-  //     search(currentSearchKeyword);
-  //   }
-  // }, [currentSearchKeyword, autoCompleteRef]);
+  useEffect( () => {
+    if (currentSearchKeyword) {
+      autoCompleteRef.current.setInputText(currentSearchKeyword);
+    }
+  }, [currentSearchKeyword, autoCompleteRef]);
 
   // componentDidMount() {
   //   // resume search status after switching back from other pages
@@ -76,22 +76,19 @@ function DictionarySearcher({
   // }
 
   // these probably don't belong here
-  // const onClearResult = () => {
-  //   dispatch({ type: "CLEAR_RESULT" });
-  // };
-
-  //       {
-  //   resetSearchResult();
-  //   autoCompleteRef.current.clearInput();
-  // };
+//  const onClearResult = () => {
+//    dispatch({ type: "CLEAR_RESULT" });
+//  };
+//    resetSearchResult();
+//    autoCompleteRef.current.clearInput();
+//  };
   const launchClearSearchFromOutside = () => {
-   //  onClearResult();
+//     onClearResult();
   };
 
   const launchSearchFromOutside = (keyword) => {
-    // autoCompleteRef.current.setInputText(keyword);
-    // search(keyword);
-  };
+    autoCompleteRef.current.setInputText(keyword);
+   };
   ////
   
   const clearFilterHandler = () => {
@@ -110,6 +107,7 @@ function DictionarySearcher({
           </div>
           <div className={classes.searchInput}>
             <AutoComplete
+              ref={autoCompleteRef}
               className="hermo"
               suggestionList={suggestionList}
               inputPlaceHolderText="Search in Dictionary"
@@ -161,7 +159,7 @@ function DictionarySearcher({
                    </List>
                  </>
                ) : (
-                 <p>{ZERO_RESULT_FOUND_MSG}</p>
+                 <p>No results found.</p>
                ))}
               {hasError && <p>{errorMsg}</p>}
             </div>

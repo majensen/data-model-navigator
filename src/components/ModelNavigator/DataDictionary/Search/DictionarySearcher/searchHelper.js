@@ -4,8 +4,6 @@ import {
   getType,
 } from '../../Utils/utils';
 
-export const ZERO_RESULT_FOUND_MSG = '0 results found. Please try another keyword.';
-
 const lc = (str) => `${str}`.toLowerCase();
 /**
  * Prepare search items for Fuse.io library
@@ -38,7 +36,6 @@ export const prepareSearchData = (model) => {
 };
 
 export const ERR_KEYWORD_TOO_SHORT = 'Keyword too short, try longer keyword.';
-export const ERR_KEYWORD_TOO_LONG = 'Keyword too long (more than 32).';
 
 export const filterMatches = (results, keyword) => {
   if (results && results.length > 0) {
@@ -88,10 +85,7 @@ export const searchKeyword = (searchData, keyword) => {
   }
   // 32 is length limitation of Fuse search library
   if (keyword.length > 32) {
-    return {
-      result: [],
-      errorMsg: ERR_KEYWORD_TOO_LONG,
-    };
+    keyword = keyword.substring(0,32);
   }
   const halfLength = Math.round(keyword.length / 2);
   const minMatchCharLength = Math.min(Math.max(halfLength, 10), keyword.length);
@@ -134,7 +128,7 @@ export const searchKeyword = (searchData, keyword) => {
       };
     })
     .filter(resItem => resItem.matches.length > 0);
-  const errorMsg = (result && result.length > 0) ? '' : ZERO_RESULT_FOUND_MSG;
+  const errorMsg = (result && result.length > 0) ? '' : "No results found.";
   filterMatches(result, keyword);
   return {
     result,

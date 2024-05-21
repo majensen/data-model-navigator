@@ -13,6 +13,7 @@ export default function AutoCompleteInputReducer(state, action) {
     return ({
       ...state,
       isSearching: true,
+      isSearchFinished: false,
       hasError: false,
       errorMsg: '',
       searchResult: { matchedNodes: [], summary: {} },
@@ -22,6 +23,7 @@ export default function AutoCompleteInputReducer(state, action) {
     return({
       ...state,
       isSearching: false,
+      isSearchFinished: true,
       hasError: true,
       errorMsg: action.errorMsg,
       searchResult: { matchedNodes: [], summary: {} },
@@ -30,6 +32,7 @@ export default function AutoCompleteInputReducer(state, action) {
     return({
       ...state,
       isSearching: false,
+      isSearchFinished: true,
       hasError: false,
       currentSearchKeyword: action.keyword,
       searchResult: {

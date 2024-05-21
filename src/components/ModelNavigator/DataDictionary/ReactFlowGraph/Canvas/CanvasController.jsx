@@ -31,7 +31,7 @@ const simulation = forceSimulation()
   .alphaTarget(0.05)
   .stop();
 
-const numTicks = 20;
+const numTicks = 20; // number of simulation ticks to get initial layout
 
 const getLayoutedElements = (
   nodes, edges, isSearchMode,
@@ -52,10 +52,8 @@ const getLayoutedElements = (
           }
         });
     }
-    // must clone edges, since simulation
-    // replaces source and target with
-    // actual node objects, and we need
-    // the simple handles for rendering
+    // must clone edges, since simulation replaces source and target with
+    // actual node objects, and we need the simple handles for rendering
     // in flowgraph
     let sim_edges = _.cloneDeep(edges);
     simulation.nodes(nodes).force(
