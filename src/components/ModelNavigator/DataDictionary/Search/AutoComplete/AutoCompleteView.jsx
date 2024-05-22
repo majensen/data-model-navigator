@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import clsx from 'clsx';
@@ -17,16 +17,13 @@ function AutoComplete({
 
 //  const emptySuggestionsClassModifier = suggestionList.length === 0 // eslint-disable-line
 //        ? 'auto-complete--empty-suggestion-list' : '';
-
-  const [suggestionList, setSuggestionList] = useState([]);
-  const [clickedSuggestionItem, setClickedSuggestionItem] = useState([])
+  const {
+    suggestionList,
+    setSuggestionList,
+    clickedSuggestionItem,
+    setClickedSuggestionItem,
+  } = useContext(SuggestionContext);
   return (
-    <SuggestionContext.Provider value={{
-                                  suggestionList,
-                                  setSuggestionList,
-                                  clickedSuggestionItem,
-                                  setClickedSuggestionItem,
-                                }}>
       <div
         className={
           clsx(classes.autoComplete,
@@ -45,7 +42,6 @@ function AutoComplete({
           classes={classes}
         />
       </div>
-    </SuggestionContext.Provider>
   );
 }
 

@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import PropTypes from "prop-types";
 import {
   withStyles,
@@ -15,7 +15,9 @@ import { createFilterOptions } from "@material-ui/lab";
 import AutoComplete from "../AutoComplete/AutoCompleteView";
 import {
   SearchDataContext,
+  SearchResultContext,
   SearchHistoryContext,
+  SuggestionContext,
 } from "../SearchContext";
 
 import {
@@ -31,7 +33,7 @@ import SearchThemeConfig from "./SearchThemeConfig";
 function DictionarySearcher({
   activeFiltersCount,
   classes,
-  currentSearchKeyword,
+  // currentSearchKeyword,
   model,
   hidePropertyTable,
   onClearAllFilter,
@@ -43,29 +45,22 @@ function DictionarySearcher({
   onStartSearching,
 }) {
   
-  const [searchData, setSearchData] = useState(prepareSearchData(model));
-  const [searchHistoryItems, setSearchHistoryItems] = useState([]);
-
-  const [isSearching, setIsSearching] = useState(false);
-  const [isSearchFinished, setIsSearchFinished] = useState(false);
-  const [searchResult, setSearchResult] = useState(
-    {
-      matchedNodes: [],
-      summary: {},
-    });
-  const [hasError, setHasError] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [suggestionList, setSuggestionList] = useState([]);
-  const [text, setText] = useState("");
-
+  const {currentSearchKeyword, searchResult,
+         isSearchFinished, hasError, errorMsg} = useContext(SearchResultContext);
+  const {suggestionList} = useContext(SuggestionContext);
+  const {searchData, setSearchData} = useContext(SearchDataContext);
+  
+  if (!searchData) {
+    setSearchData( prepareSearchData(model) );
+  }
   const autoCompleteRef = useRef(null);
   
   // this is probably not right??
-  useEffect( () => {
-    if (currentSearchKeyword) {
-      autoCompleteRef.current.setInputText(currentSearchKeyword);
-    }
-  }, [currentSearchKeyword, autoCompleteRef]);
+  // useEffect( () => {
+  //   if (currentSearchKeyword) {
+  //     autoCompleteRef.current.setInputText(currentSearchKeyword);
+  //   }
+  // }, [currentSearchKeyword, autoCompleteRef]);
 
   // componentDidMount() {
   //   // resume search status after switching back from other pages
@@ -98,8 +93,6 @@ function DictionarySearcher({
   };
  
   return (
-    <SearchHistoryContext.Provider value={{searchHistoryItems, setSearchHistoryItems}}>
-    <SearchDataContext.Provider value={searchData}>
       <div className={classes.searcher}>
         <SearchThemeConfig>
           <div className={classes.searchBarTitle}>
@@ -166,8 +159,6 @@ function DictionarySearcher({
           )}
         </div>
       </div>
-    </SearchDataContext.Provider>
-    </SearchHistoryContext.Provider>
   );
   
 }
@@ -178,8 +169,14 @@ DictionarySearcher.propTypes = {
   onSearchResultUpdated: PropTypes.func,
   onSearchHistoryItemCreated: PropTypes.func,
   onSearchResultCleared: PropTypes.func,
+  onClearAllFilter: PropTypes.func,
+  onClickBlankSpace: PropTypes.func,
   onSaveCurrentSearchKeyword: PropTypes.func,
+  onSearchResultCleared: PropTypes.func,
+  onSearchResultUpdated: PropTypes.func,
+  onSearchHistoryItemCreated: PropTypes.func,
   currentSearchKeyword: PropTypes.string,
+  hidePropertyTable: PropTypes.func,  
   onStartSearching: PropTypes.func,
 };
 
@@ -188,7 +185,14 @@ DictionarySearcher.defaultProps = {
   onSearchResultUpdated: () => {},
   onSearchHistoryItemCreated: () => {},
   onSearchResultCleared: () => {},
+  onClearAllFilter: () => {},
+  onClickBlankSpace: () => {},
   onSaveCurrentSearchKeyword: () => {},
+  onSearchResultCleared: () => {},
+  onSearchResultUpdated: () => {},
+  onSearchHistoryItemCreated: () => {},
+  onSaveCurrentSearchKeyword: () => {},
+  hidePropertyTable: () => {},
   currentSearchKeyword: "",
   onStartSearching: () => {},
 };

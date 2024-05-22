@@ -94,7 +94,7 @@ function SuggestionItemDiv({ classes, suggestionItem, i }) {
       className={ classes.suggestionItem }
       onClick={ handleClickItem }
       role="button"
-      tabIndex={0} // why not $i?
+      tabIndex={i} // 
     >
       <PaintItemOld suggestionItem={suggestionItem} classes={classes}/>
     </div>
