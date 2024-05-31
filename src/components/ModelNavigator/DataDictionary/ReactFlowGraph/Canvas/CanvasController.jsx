@@ -167,7 +167,7 @@ const mapStateToProps = (state) => ({
   // nodeTree: state.submission.node2Level,
   highlightedNodes: state.ddgraph.highlightedNodes,
   unfilteredDictionary: state.submission.unfilteredDictionary,
-  graphViewConfig: state.ddgraph.graphViewConfig,
+  //graphViewConfig: state.ddgraph.graphViewConfig,
   assetConfig: state.ddgraph.assetConfig,
 });
 

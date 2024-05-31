@@ -16,7 +16,7 @@ MDFReader.add_parse_hook(
   }
 );
 
-export default function loadMDFDictionary(...urls) {
+export default function loadMDFModel(...urls) {
   let ps = urls.map( (url) => {
     return axios.get(url)
       .then( (r) => { return r.data; } );

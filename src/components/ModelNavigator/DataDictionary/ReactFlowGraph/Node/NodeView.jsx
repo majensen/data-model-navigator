@@ -55,7 +55,7 @@ const NodeView = ({
   };
 
   /**
-   * light node based on reasult of search query
+   * light node based on result of search query
    */
   useEffect(() => {
     if (!expandNodeView) {
@@ -143,7 +143,7 @@ const NodeView = ({
                         )}
                       </>
                     ) : (
-                      `${label}`.toLowerCase()
+                      {`${label}`.toLowerCase()}
                     )}
                   </div>
                 </div>
