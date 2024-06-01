@@ -143,7 +143,9 @@ const NodeView = ({
                         )}
                       </>
                     ) : (
-                      {`${label}`.toLowerCase()}
+                      <>
+                        {`${label}`.toLowerCase()}
+                      </>
                     )}
                   </div>
                 </div>
