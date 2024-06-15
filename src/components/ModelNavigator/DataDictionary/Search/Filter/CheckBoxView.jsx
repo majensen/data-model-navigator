@@ -40,9 +40,9 @@ function CheckBoxView(props) {
     classes,
     checkboxItem,
     handleToggle,
-    sideBarItem,
-    facetSectionVariables,
-    defaultFacetSectionVariables,
+    facetItem,
+    facetSectionProps,
+    defaultFacetSectionProps,
     backgroundColor,
     dataDictionary,
   } = props;
@@ -63,7 +63,7 @@ function CheckBoxView(props) {
         button
         alignItems={alignment}
         selected={checkboxItem.isChecked}
-        onClick={handleToggle({ ...checkboxItem, ...sideBarItem })}
+        onClick={handleToggle({ ...checkboxItem, ...facetItem })}
         className={classes.nested}
         style={getStyles()}
         classes={{
@@ -73,7 +73,7 @@ function CheckBoxView(props) {
         role="presentation"
       >
         <Checkbox
-          id={`checkbox_${sideBarItem.groupName}_${checkboxItem.name}`}
+          id={`checkbox_${facetItem.groupName}_${checkboxItem.name}`}
           icon={<CheckBoxBlankIcon style={{ fontSize: 18 }} />}
           checkedIcon={
             <CheckBoxIcon
@@ -83,9 +83,9 @@ function CheckBoxView(props) {
             />
           }
           style={{
-            color: facetSectionVariables[sideBarItem.section]
+            color: facetSectionProps[facetItem.section]
               .checkBoxBorderColor
-              ? facetSectionVariables[sideBarItem.section].checkBoxBorderColor
+              ? facetSectionProps[facetItem.section].checkBoxBorderColor
               : "#137fbe",
           }}
           checked={checkboxItem.isChecked}
@@ -127,11 +127,11 @@ function CheckBoxView(props) {
         <div className={classes.panelSubjectText}>
           <span
             style={{
-              color: facetSectionVariables[sideBarItem.section]
-                ? facetSectionVariables[sideBarItem.section].color
-                  ? facetSectionVariables[sideBarItem.section].color
+              color: facetSectionProps[facetItem.section]
+                ? facetSectionProps[facetItem.section].color
+                  ? facetSectionProps[facetItem.section].color
                   : ""
-                : defaultFacetSectionVariables.color,
+                : defaultFacetSectionProps.color,
             }}
           >
             &nbsp;

@@ -24,6 +24,10 @@ import {
   resetIcon,
   defaultFacetSectionVariables,
 } from "../../../config/nav.config";
+import {
+  selectFacetSectionProps,
+  selectFiltersSelected,
+} from "../../../../../features/filter/filterSlice";
 import CheckBoxView from "./CheckBoxView";
 import styles from "./FacetFilters.style";
 import FacetFilterThemeProvider from "./FacetFilterThemeConfig";
@@ -56,11 +60,9 @@ const FacetFilters = ({
   onSortSection,
   onClearGroupFilter,
 }) => {
-  const activeFilters = useSelector((state) =>
-    state.submission && state.submission.allActiveFilters
-      ? state.submission.allActiveFilters
-      : {}
-  );
+
+  const activeFilters = useSelector(selectFiltersSelected);
+
   const activeFiltersCount = Object.entries(activeFilters).reduce(
     (acc, [key, val]) => acc + val.length,
     0 // eslint-disable-line no-unused-vars
@@ -72,11 +74,7 @@ const FacetFilters = ({
       : {}
   );
 
-  const facetSectionVariables = useSelector((state) =>
-    state.submission && state.submission.facetfilterConfig
-      ? state.submission.facetfilterConfig.facetSectionVariables
-      : {}
-  );
+  const facetSectionProps = useSelector(selectFacetSectionProps);
 
   // this provides the data that is ultimately displayed:
   // which is state.submission.checkbox

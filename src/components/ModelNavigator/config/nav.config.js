@@ -13,7 +13,7 @@ export const types = {
   MULTIPLICITY: 'multiplicity',
 };
 
-export const defaultFacetSectionVariables = {
+export const defaultFacetSectionProps = {
   color: '#000000',
   checkBoxColorsOne: '#0d71a3',
   checkBoxColorsTwo: '#0d71a3',
@@ -92,7 +92,7 @@ export const facetFilters = [
   },
 ];
 
-export const facetSectionVariables = {
+export const facetSectionProps = {
   'Filter By Nodes': {
     color: '#0D71A3',
     checkBoxColorsOne: '#E3F4FD',
@@ -174,7 +174,7 @@ export const controlVocabConfig = {
 
 export const filterConfig = {
   facetFilters,
-  facetSectionVariables,
+  facetSectionProps,
   resetIcon,
   baseFilters,
   filterSections,
