@@ -33,6 +33,7 @@ export const facetFilters = [
     datafield: 'category',
     section: 'Filter By Nodes',
     tooltip: 'category',
+    type: 'node',
     show: true,
     checkboxItems: [
       { name: 'Administrative', isChecked: false, group: 'category' },
@@ -50,6 +51,7 @@ export const facetFilters = [
     datafield: 'assignment',
     section: 'Filter By Nodes',
     tooltip: 'assignment',
+    type: 'node',
     show: true,
     checkboxItems: [
       { name: 'Core', isChecked: false, group: 'assignment' },
@@ -61,6 +63,7 @@ export const facetFilters = [
     datafield: 'class',
     section: 'Filter By Nodes',
     tooltip: 'class',
+    type: 'node',
     show: true,
     checkboxItems: [
       { name: 'Primary', isChecked: false, group: 'class' },
@@ -72,6 +75,7 @@ export const facetFilters = [
     datafield: 'inclusion',
     section: 'Filter By Property',
     tooltip: 'inclusion',
+    type: 'prop',
     show: true,
     checkboxItems: [
       { name: 'Optional', isChecked: false, group: 'optional' },
@@ -84,6 +88,7 @@ export const facetFilters = [
     datafield: 'uiDisplay',
     section: 'Filter By Property',
     tooltip: 'inclusion',
+    type: 'prop',
     show: true,
     checkboxItems: [
       { name: 'no', isChecked: false, group: 'no' },

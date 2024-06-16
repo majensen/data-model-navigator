@@ -1,11 +1,16 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import { Checkbox, ListItem, ListItemText, Divider, Tooltip } from "@material-ui/core";
 import {
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxBlankIcon,
 } from "@material-ui/icons";
+import {
+  selectCheckboxState,
+  filterSelectorToggled,
+} from "../../../../../features/filter/filterSlice";
 import _ from "lodash";
 
 const styles = {
@@ -46,7 +51,7 @@ function CheckBoxView(props) {
     backgroundColor,
     dataDictionary,
   } = props;
-
+  const dispatch = useDispatch();
   const getStyles = () => {
     if (checkboxItem.isChecked) {
       return {
@@ -55,14 +60,17 @@ function CheckBoxView(props) {
       };
     }
   };
-
+  const checkboxState = useSelector(selectCheckboxState );
+  const isChecked = checkboxState 
+        ? checkboxState[`checkbox_${checkboxItem.group}_${checkboxItem.name}`]
+        : false;
   return (
     <>
       <ListItem
         width={1}
         button
         alignItems={alignment}
-        selected={checkboxItem.isChecked}
+        selected={isChecked}
         onClick={handleToggle({ ...checkboxItem, ...facetItem })}
         className={classes.nested}
         style={getStyles()}
@@ -88,7 +96,10 @@ function CheckBoxView(props) {
               ? facetSectionProps[facetItem.section].checkBoxBorderColor
               : "#137fbe",
           }}
-          checked={checkboxItem.isChecked}
+          checked={isChecked}
+          onChange={(event) => {
+            dispatch(filterSelectorToggled({checkBoxInfo:checkboxItem}))
+          }}
           tabIndex={-1}
           disableRipple
           color="secondary"
@@ -142,9 +153,9 @@ function CheckBoxView(props) {
       <Divider
         variant="middle"
         style={{
-          backgroundColor: checkboxItem.isChecked ? "#FFFFFF" : "#B1B1B1",
+          backgroundColor: isChecked ? "#FFFFFF" : "#B1B1B1",
           margin: "0px",
-          height: checkboxItem.isChecked ? "2px" : "1px",
+          height: isChecked ? "2px" : "1px",
         }}
       />
     </>
