@@ -52,25 +52,25 @@ function CheckBoxView(props) {
     dataDictionary,
   } = props;
   const dispatch = useDispatch();
+  const checkboxState = useSelector(selectCheckboxState );
+  // const isChecked = checkboxState 
+  //       ? checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]
+  //       : false;
   const getStyles = () => {
-    if (checkboxItem.isChecked) {
+    if (checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]) {
       return {
         backgroundColor: backgroundColor,
         boxShadow: "none",
       };
     }
   };
-  const checkboxState = useSelector(selectCheckboxState );
-  const isChecked = checkboxState 
-        ? checkboxState[`checkbox_${checkboxItem.group}_${checkboxItem.name}`]
-        : false;
   return (
     <>
       <ListItem
         width={1}
         button
         alignItems={alignment}
-        selected={isChecked}
+        selected={checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]}
         onClick={handleToggle({ ...checkboxItem, ...facetItem })}
         className={classes.nested}
         style={getStyles()}
@@ -81,7 +81,7 @@ function CheckBoxView(props) {
         role="presentation"
       >
         <Checkbox
-          id={`checkbox_${facetItem.groupName}_${checkboxItem.name}`}
+          id={`checkbox_${facetItem.tag}_${checkboxItem.value}`}
           icon={<CheckBoxBlankIcon style={{ fontSize: 18 }} />}
           checkedIcon={
             <CheckBoxIcon
@@ -96,9 +96,9 @@ function CheckBoxView(props) {
               ? facetSectionProps[facetItem.section].checkBoxBorderColor
               : "#137fbe",
           }}
-          checked={isChecked}
+          checked={checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]}
           onChange={(event) => {
-            dispatch(filterSelectorToggled({checkBoxInfo:checkboxItem}))
+            dispatch(filterSelectorToggled({tag:checkboxItem.tag, value:checkboxItem.value}))
           }}
           tabIndex={-1}
           disableRipple
@@ -153,9 +153,11 @@ function CheckBoxView(props) {
       <Divider
         variant="middle"
         style={{
-          backgroundColor: isChecked ? "#FFFFFF" : "#B1B1B1",
+          backgroundColor: checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]
+            ? "#FFFFFF" : "#B1B1B1",
           margin: "0px",
-          height: isChecked ? "2px" : "1px",
+          height: checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]
+            ? "2px" : "1px",
         }}
       />
     </>

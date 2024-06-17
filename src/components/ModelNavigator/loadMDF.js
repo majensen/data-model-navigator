@@ -8,9 +8,9 @@ MDFReader.add_parse_hook(
     this.props().
       forEach( (prop) => {
         let val = translate[prop.is_required] || "optional";
-        this.updateTags("inclusion", val, prop);
+        this.updateTags("Inclusion", val, prop);
         val = prop.tags().filter( (t) => t[0] == 'Labeled' ).length > 0 ? "yes" : "no";
-        this.updateTags("uiDisplay", val, prop);
+        this.updateTags("UI Display", val, prop);
       });
     return this;
   }

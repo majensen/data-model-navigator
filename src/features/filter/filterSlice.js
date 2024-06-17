@@ -13,7 +13,7 @@ let acc = {};
 facetFilters.flatMap(
     (filt) => {
       filt.checkboxItems.map((item) => {
-        acc[`checkbox_${item.group}_${item.name}`] = false;
+        acc[`checkbox_${item.tag}_${item.value}`] = false;
       });
     });
 
@@ -86,31 +86,52 @@ const filterSlice = createSlice({
     filterSelectorToggled(state, action) {
       // checkBoxInfo - filterConfig element plus isChecked
       // dispatch after modelReceived
-      const { checkBoxInfo } = action.payload;
-      // only task here is to determine which nodes should be hidden
-      state.checkboxState[`checkbox_${checkBoxInfo.group}_${checkBoxInfo.name}`] =
-        !state.checkboxState[`checkbox_${checkBoxInfo.group}_${checkBoxInfo.name}`];
-      const uniq = new Set();
-      state.filtersSelected.map( (filt) => { uniq.add(checkBoxInfo); } );
-      if (checkBoxInfo.isChecked) {
-        uniq.add(checkBoxInfo);
+      const {tag, value} = action.payload;
+      if (tag !== undefined || value !== undefined) {
+        // update checkboxes
+        state.checkboxState[`checkbox_${tag}_${value}`] =
+          !state.checkboxState[`checkbox_${tag}_${value}`];
+        const filter = {tag, value};
+        let fs = [];
+        // update filtersSelected
+        fs = _.cloneDeep(state.filtersSelected);
+        if (state.checkboxState[`checkbox_${tag}_${value}`]) {
+          fs.push(filter);
+        }
+        else {
+          fs = fs.filter( (item) => !(item.tag == tag && item.value == value) );
+        }
+        state.filtersSelected = fs;
+        // determine nodes to hide
+        state.hiddenNodes = calcHiddenNodes(state.filtersSelected,
+                                            state.fullTagMatrix,
+                                            state.allTaggedNodes);
+        
+        // calculate counts
+        state.displayedTagMatrix = calcNodeTagMatrix(state.model,
+                                                     state.configs.filterConfig.facetFilters,
+                                                     state.hiddenNodes);
       }
-      else {
-        uniq.delete(checkBoxInfo);
-      }
-      const fs = [];
-      uniq.forEach( (filt) => { fs.push(filt); } );
-      state.filterSelected = fs;
-      // determine nodes to hide
-      // 
-      state.hiddenNodes = calcHiddenNodes(state.filtersSelected,
-                                          state.fullTagMatrix,
-                                          state.allTaggedNodes);
-      
-      state.displayedTagMatrix = calcNodeTagMatrix(state.model,
-                                              state.configs.filterConfig.facetFilters,
-                                              state.hiddenNodes);
     },
+    filterGroupCleared(state, action) {
+      const {facetItem} = action.payload;
+      // update checkboxes
+      facetItem.checkboxItems.forEach( (item) => {
+        state.checkboxState[`checkbox_${item.tag}_${item.value}`] = false;
+      });
+      // update filtersSelected
+      const fs = _.cloneDeep(state.filtersSelected);
+      state.filtersSelected = fs.filter( (item) =>
+        item.tag !== _.toLower(facetItem.tag) );
+    },
+    allFiltersCleared(state, action) {
+      // reset all checkboxes
+      Object.keys(state.checkboxState).forEach( (key) => {
+          state.checkboxState[key] = false; });
+      // reset filtersSelected
+      state.filtersSelected = [];
+    },
+
   }
 });
 
@@ -122,14 +143,14 @@ function calcHiddenNodes(filtersSelected, fullTagMatrix, allTaggedNodes) {
   let nodes = {};
   let universe = new Set();
   let arrUniverse = [];
-  filtersSelected.forEach( ({group, name}) => {
-    if (!nodes[group]) {
-      nodes[group] = new Set();
+  filtersSelected.forEach( ({tag, value}) => {
+    if (!nodes[tag]) {
+      nodes[tag] = new Set();
     }
     // OR/union within group (= tag key)
-    fullTagMatrix[group][name].nodes
+    fullTagMatrix[tag][value].nodes
       .forEach( (hndl) => {
-        nodes[group].add(hndl);
+        nodes[tag].add(hndl);
         universe.add(hndl);
       } );
   });
@@ -147,7 +168,7 @@ function calcHiddenNodes(filtersSelected, fullTagMatrix, allTaggedNodes) {
 function calcNodeTagMatrix(model, facetFilters, hiddenNodes) {
   let nc = {};
   const facetTypes = facetFilters.map( facetFilter => facetFilter.type );
-  facetTypes.filter( type => type.entity == 'node')
+  facetTypes.filter( type => type.entity === 'node')
     .forEach( (type) => {
       model.tag_kvs(type.tag)
         .forEach(
@@ -166,7 +187,7 @@ function calcNodeTagMatrix(model, facetFilters, hiddenNodes) {
             nc[key][val] = info;
           });
     });
-  facetTypes.filter( type => type.entity == 'prop')
+  facetTypes.filter( type => type.entity === 'prop')
     .forEach( (type) => {
       model.tag_kvs(type.tag)
         .forEach( ([key, val]) => {
@@ -202,7 +223,10 @@ export const {
   modelReceived,
   configsLoaded,
   hiddenNodesUpdated,
-  filterSelectorToggled } = filterSlice.actions;
+  filterSelectorToggled,
+  filterGroupCleared,
+  allFiltersCleared
+} = filterSlice.actions;
 // use as dispatch(modelReceived({model}), dispatch(configsLoaded({configs})
 
 export default filterSlice.reducer;
@@ -213,12 +237,5 @@ export const selectFilterConfig = state => state.filter.configs.filterConfig;
 export const selectFacetFilters = state => state.filter.configs.filterConfig.facetFilters;
 export const selectDisplayedTagMatrix = state => state.filter.displayedTagMatrix;
 export const selectCheckboxState = state => state.filter.checkboxState;
-export const selectFiltersSelected = createSelector( // xfm Set to Array
-  state => state.filter.filtersSelected,
-  filtersSelected => {
-    let fsArray = [];
-    filtersSelected.forEach( (elt) => { fsArray.push(elt); } );
-    return fsArray;
-    }
-);
+export const selectFiltersSelected = state => state.filter.filtersSelected;
 export const selectFacetSectionProps = state => state.filter.configs.filterConfig.facetSectionProps;
