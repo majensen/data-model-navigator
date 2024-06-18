@@ -108,9 +108,13 @@ const filterSlice = createSlice({
                                             state.allTaggedNodes);
         
         // calculate counts
-        state.displayedTagMatrix = calcNodeTagMatrix(state.model,
-                                                     state.configs.filterConfig.facetFilters,
-                                                     state.hiddenNodes);
+        if (state.hiddenNodes.length === 0) {
+          state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
+        } else {
+          state.displayedTagMatrix = calcNodeTagMatrix(state.model,
+                                                       state.configs.filterConfig.facetFilters,
+                                                       state.hiddenNodes);
+        }
       }
     },
     filterGroupCleared(state, action) {
@@ -123,6 +127,19 @@ const filterSlice = createSlice({
       const fs = _.cloneDeep(state.filtersSelected);
       state.filtersSelected = fs.filter( (item) =>
         item.tag !== _.toLower(facetItem.tag) );
+      // determine nodes to hide
+      state.hiddenNodes = calcHiddenNodes(state.filtersSelected,
+                                          state.fullTagMatrix,
+                                          state.allTaggedNodes);
+      
+      // calculate counts
+      if (state.hiddenNodes.length === 0) {
+        state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
+      } else {
+        state.displayedTagMatrix = calcNodeTagMatrix(state.model,
+                                                     state.configs.filterConfig.facetFilters,
+                                                     state.hiddenNodes);
+      }
     },
     allFiltersCleared(state, action) {
       // reset all checkboxes
@@ -130,6 +147,10 @@ const filterSlice = createSlice({
           state.checkboxState[key] = false; });
       // reset filtersSelected
       state.filtersSelected = [];
+      // clear hidden nodes
+      state.hiddenNodes = []
+      // reset displayed counts to totals
+      state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
     },
 
   }
@@ -236,6 +257,7 @@ export const selectConfigs = state => state.filter.configs;
 export const selectFilterConfig = state => state.filter.configs.filterConfig;
 export const selectFacetFilters = state => state.filter.configs.filterConfig.facetFilters;
 export const selectDisplayedTagMatrix = state => state.filter.displayedTagMatrix;
+export const selectFullTagMatrix = state => state.filter.fullTagMatrix;
 export const selectCheckboxState = state => state.filter.checkboxState;
 export const selectFiltersSelected = state => state.filter.filtersSelected;
 export const selectFacetSectionProps = state => state.filter.configs.filterConfig.facetSectionProps;

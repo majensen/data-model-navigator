@@ -9,6 +9,8 @@ import {
 } from "@material-ui/icons";
 import {
   selectCheckboxState,
+  selectFullTagMatrix,
+  selectDisplayedTagMatrix,
   filterSelectorToggled,
 } from "../../../../../features/filter/filterSlice";
 import _ from "lodash";
@@ -53,9 +55,8 @@ function CheckBoxView(props) {
   } = props;
   const dispatch = useDispatch();
   const checkboxState = useSelector(selectCheckboxState );
-  // const isChecked = checkboxState 
-  //       ? checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]
-  //       : false;
+  const displayedTagMatrix = useSelector(selectDisplayedTagMatrix);
+  const fullTagMatrix = useSelector(selectFullTagMatrix);
   const getStyles = () => {
     if (checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]) {
       return {
@@ -146,7 +147,13 @@ function CheckBoxView(props) {
             }}
           >
             &nbsp;
-            {checkboxItem.subjects}
+            {displayedTagMatrix[checkboxItem.tag]
+             ? (displayedTagMatrix[checkboxItem.tag][checkboxItem.value]
+                ? displayedTagMatrix[checkboxItem.tag][checkboxItem.value].count
+                : fullTagMatrix[checkboxItem.tag][checkboxItem.value].count)
+             : (fullTagMatrix[checkboxItem.tag]
+                ? fullTagMatrix[checkboxItem.tag][checkboxItem.value].count
+                : "")}
           </span>
         </div>
       </ListItem>
