@@ -1,15 +1,32 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import { Icon, withStyles } from "@material-ui/core";
 import { legendIconUrl } from "../../NodeCategories/helper";
 import relationshipSvg from "../../NodeCategories/icons/Legend/lg_relationship_links.svg";
 import toggleSvg from "../../NodeCategories/icons/Legend/lg_link.svg";
 import Styles from "./LegendStyle";
-import { capitalizeFirstLetter } from "../../utils";
+import _ from 'lodash';
 import clsx from "clsx";
+import {
+  legendDisplayChanged,
+  selectLegendDisplayed,
+  selectGraphViewConfig,
+} from '../../../../../features/graph/graphSlice';
+import {
+  selectOverlayPropertyHidden,
+} from '../../../../../features/search/searchSlice';
 
-const Legend = ({ classes, categoryItems, styles, overlayPropertyHidden }) => {
-  const [display, setDisplay] = useState(true);
-  const toggleLegend = () => setDisplay(!display);
+const Legend = ({
+  classes,
+  categoryItems,
+  styles,
+  overlayPropertyHidden
+}) => {
+  const dispatch = useDispatch();
+  const display = useSelector( selectLegendDisplayed );
+  const graphViewConfig = useSelector( selectGraphViewConfig );
+  styles = styles ? styles : graphViewConfig?.legend?.styles;
+  const toggleLegend = () => dispatch(legendDisplayChanged(!display));
 
   /**
   * set legend position - scroll bar width varies based on browser so
@@ -30,7 +47,7 @@ const Legend = ({ classes, categoryItems, styles, overlayPropertyHidden }) => {
         <div className={classes.categoryIcon}>
           <img src={imgUrl} alt="icon" />
         </div>
-        <span className={classes.text}>{capitalizeFirstLetter(category)}</span>
+        <span className={classes.text}>{_.capitalize(category)}</span>
       </div>
     );
   });
@@ -53,7 +70,7 @@ const Legend = ({ classes, categoryItems, styles, overlayPropertyHidden }) => {
     <>
       <div
         className={clsx({
-          [classes.zvlaue]: overlayPropertyHidden,
+          [classes.zvalue]: overlayPropertyHidden,
           [classes.legendExpand]: display,
           [classes.legendCollapse]: !display,
         })}

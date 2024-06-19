@@ -29,36 +29,7 @@ const graphIconColors = {
   data_file: "#00ad0c",
   clinical: "#1b75bc",
 };
-/* eslint-disable no-console */
-/* eslint-disable no-param-reassign */
-/**
- * Get subgroup links from link
- * @param {object} link - array of links
- * @param {object} nameToNode - key (node name) value (node object) map
- * @param {string} sourceId - source id for subgroup links
- * This function traverse links recursively and return all nested subgroup lnks
- */
 
-// const getSubgroupLinks = (link, nameToNode, sourceId) => {
-//   let subgroupLinks = [];
-//   if (link.subgroup) {
-//     link.subgroup.forEach((sgLink) => {
-//       if (sgLink.subgroup) {
-//         subgroupLinks = subgroupLinks.concat(
-//           getSubgroupLinks(sgLink, nameToNode, sourceId)
-//         );
-//       } else {
-//         subgroupLinks.push({
-//           source: nameToNode[sourceId],
-//           target: nameToNode[sgLink.target_type],
-//           exists: 1,
-//           ...sgLink,
-//         });
-//       }
-//     });
-//   }
-//   return subgroupLinks;
-// };
 const generateNodes = (node_objs, edge_objs, windowWidth) => {
   const generatedNodes = node_objs.map((node_o, index) => {
     const cat = node_o.node.tags('Category');
@@ -138,7 +109,7 @@ export function createNodesAndEdges(
   createAll,
   nodesToHide = ["program"]
 ) {
-  const { model } = props;
+  const {model} = props;
   const node_objs = model.nodes()
         .filter( (node) => !nodesToHide.includes(node.handle) )
         .map((node) => {
@@ -196,5 +167,6 @@ export function createNodesAndEdges(
       (edge_obj) => createAll || edge_obj.exists || edge_obj.exists === undefined
     );
 
-  return generateFlowData(node_objs, edge_objs);
+  const flowData =  generateFlowData(node_objs, edge_objs);
+  return flowData;
 }

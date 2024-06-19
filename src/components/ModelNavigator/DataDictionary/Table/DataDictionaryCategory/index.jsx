@@ -19,7 +19,6 @@ const DataDictionaryCategory = ({
   pdfDownloadConfig,
   expandNode,
   nodes,
-  assetConfig,
 }) => {
   const categoryStyles = getCategoryStyle(category);
   const categoryColor = categoryStyles.color;
@@ -85,10 +84,6 @@ DataDictionaryCategory.defaultProps = {
   expandNode: () => {},
 };
 
-const mapStateToProps = (state) => ({
-  assetConfig: state.ddgraph.assetConfig,
-});
-
 export default withStyles(styles)(
-  connect(mapStateToProps, {})(DataDictionaryCategory)
+  connect(state => state, {})(DataDictionaryCategory)
 );

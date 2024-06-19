@@ -1,7 +1,14 @@
 import React from 'react';
+import clsx from 'clsx';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, withStyles } from '@material-ui/core';
 import styles from './ActionLayer.style';
-import clsx from 'clsx';
+import {
+  searchCleared,
+  selectIsSearchMode,
+  selectOverlayPropertyHidden,
+} from '../../../../../../features/search/searchSlice';
+
 
 /**
 * A layer over the graph.
@@ -9,14 +16,10 @@ import clsx from 'clsx';
 */
 const ActionLayer = ({
   classes,
-  isSearchMode = false,
-  handleClearSearchResult,
-  overlayPropertyHidden
 }) => {
-  const handleClearSearch = () => {
-    handleClearSearchResult();
-  }
-
+  const dispatch = useDispatch();
+  const isSearchMode = useSelector( selectIsSearchMode );
+  const overlayPropertyHidden = useSelector( selectOverlayPropertyHidden );
   return (
     <div className={clsx(classes.actionLayer, {
       [classes.zvalue]: !overlayPropertyHidden,
@@ -27,7 +30,7 @@ const ActionLayer = ({
             className={clsx(classes.clearSearch, {
               [classes.zvalue]: !overlayPropertyHidden,
             })}
-            onClick={handleClearSearch}
+            onClick={() => dispatch(searchResultCleared)}
             label="Clear Search Result"
           > Clear Search Result
             </Button>

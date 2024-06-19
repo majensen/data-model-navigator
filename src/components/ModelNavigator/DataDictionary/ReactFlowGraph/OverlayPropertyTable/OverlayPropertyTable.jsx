@@ -1,18 +1,25 @@
 /* eslint-disable max-len */
 /* eslint-disable react/forbid-prop-types */
-import React, { useRef } from "react";
-import PropTypes from "prop-types";
-import CloseRoundedIcon from "@material-ui/icons/CloseRounded";
-import IconButton from "@material-ui/core/IconButton";
-import { Grid, withStyles } from "@material-ui/core";
-// eslint-disable-next-line no-unused-vars
+import React, { useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import IconButton from '@material-ui/core/IconButton';
+import { Grid, withStyles } from '@material-ui/core';
+import _ from 'lodash';
+
 import {
   getNodeDescriptionFragment,
   getNodeTitleFragment,
-} from "../../Utils/highlightHelper";
+} from '../../Utils/highlightHelper';
 
-import { SearchResultItemShape } from "../../Utils/utils";
-import { capitalizeFirstLetter, createFileName } from "../../utils";
+import {
+  selectIsSearchMode,
+  selectSearchResult,
+} from '../../../../../features/search/searchSlice';
+import {
+  changedVisOverlayPropTable,
+  selectPropTableNode,
+} from '../../../../../features/graph/graphSlice';
 import {
   getCategoryBackground,
   getCategoryColor,
@@ -22,54 +29,52 @@ import DataDictionaryPropertyTable from "../../Table/DataDictionaryPropertyTable
 import styles from "./OverlayPropertyTable.style";
 import NodeViewComponent from "../../Table/DataDictionaryNode/components/NodeViewComponent";
 
-const OverlayPropertyTable = (
-  props
-) =>  {
+const OverlayPropertyTable = ({
+  classes,
+  matchedResult,
+  hidden,
+}) =>  {
+  const dispatch = useDispatch();
+  const isSearchMode = useSelector(selectIsSearchMode);
+  const node = useSelector( selectPropTableNode );
   const getTitle = () => {
-    if (props.isSearchMode) {
+    if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(
-        props.matchedResult.matches,
-        props.node.title,
+        matchedResult.matches,
+        node.title,
         "overlay-property-table__span"
       );
       return nodeTitleFragment;
     }
-    return props.node.title;
+    return node.title;
   };
 
   const getDescription = () => {
-    if (props.isSearchMode) {
+    if (isSearchMode) {
       const nodeDescriptionFragment = getNodeDescriptionFragment(
-        props.matchedResult.matches,
-        props.node.description,
+        matchedResult.matches,
+        node.description,
         "overlay-property-table__span"
       );
       return nodeDescriptionFragment;
     }
-    return props.node.description;
+    return node.description;
   };
 
   /**
-   * Close the whole overlay property table
-   */
-  const handleClose = () => {
-    this.props.onCloseOverlayPropertyTable();
-  };
-
-  /**
-   * Toggle the property tabl to display all properties
+   * Toggle the property table to display all properties
    */
   const handleOpenAllProperties = () => {
-    this.props.onOpenMatchedProperties();
+    // this.props.onOpenMatchedProperties();
   };
 
   /**
    * Toggle the property table to display matched properties only
    */
   const handleDisplayOnlyMatchedProperties = () => {
-    this.props.onCloseMatchedProperties();
+    // this.props.onCloseMatchedProperties();
   };
-  const { classes, isSearchMode, node, hidden } = props;
+
   const needHighlightSearchResult = isSearchMode;
   if (!node || hidden) {
     return (
@@ -106,13 +111,13 @@ const OverlayPropertyTable = (
                   style={{ color: "#FFF" }}
                   className={classes.categoryText}
                 >
-                  {capitalizeFirstLetter(node.category)}
+                  {_.capitalize(node.category)}
                 </h4>
               </div>
               <div>
                 <IconButton
                   className={classes.iconCloseRounded}
-                  onClick={this.handleClose}
+                  onClick={() => dispatch(changedVisOverlayPropTable(true))}
                 >
                   <CloseRoundedIcon
                     style={{ color: "#FFF", fontSize: "20px" }}
@@ -136,10 +141,10 @@ const OverlayPropertyTable = (
           >
             <NodeViewComponent
               node={node}
-              description={props.description}
+              description={node.desc}
               isSearchMode={isSearchMode}
-              matchedResult={props.matchedResult}
-              pdfDownloadConfig={props.pdfDownloadConfig}
+              matchedResult={matchedResult}
+              // pdfDownloadConfig={props.pdfDownloadConfig}
               propertyCount={Object.keys(node.properties).length}
               isOverlay={true}
             />
@@ -159,7 +164,7 @@ const OverlayPropertyTable = (
                 onlyShowMatchedProperties={false}
                 needHighlightSearchResult={needHighlightSearchResult}
                 // hideIsRequired={searchedNodeNotOpened}
-                matchedResult={props.matchedResult}
+                matchedResult={matchedResult}
                 isSearchMode={isSearchMode}
               />
             </div>
@@ -169,27 +174,5 @@ const OverlayPropertyTable = (
     </div>
   );
 }
-
-OverlayPropertyTable.propTypes = {
-  hidden: PropTypes.bool,
-  node: PropTypes.object,
-  onCloseOverlayPropertyTable: PropTypes.func,
-  isSearchMode: PropTypes.bool,
-  matchedResult: SearchResultItemShape,
-  onOpenMatchedProperties: PropTypes.func,
-  onCloseMatchedProperties: PropTypes.func,
-  isSearchResultNodeOpened: PropTypes.bool,
-};
-
-OverlayPropertyTable.defaultProps = {
-  hidden: true,
-  node: null,
-  onCloseOverlayPropertyTable: () => {},
-  isSearchMode: false,
-  matchedResult: {},
-  onOpenMatchedProperties: () => {},
-  onCloseMatchedProperties: () => {},
-  isSearchResultNodeOpened: false,
-};
 
 export default withStyles(styles)(OverlayPropertyTable);

@@ -3,7 +3,7 @@
 
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { forceSimulation, forceLink, forceManyBody, forceX, forceY } from 'd3-force';
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import {
   addEdge,
   useNodesState,
@@ -18,8 +18,18 @@ import CanvasView from './CanvasView';
 import { createNodesAndEdges } from '../GraphUtils/MDFutils';
 import { getDistinctCategoryItems, setMatchingNodeTitle, getCategoryIconUrl } from './util';
 import {
-  onNodeDragStart, onPanelViewClick, onViewChange, setReactFlowGraphData,
-} from '../../Store/actions/graph';
+  reactFlowGraphInitialized,
+  //  onNodeDragStart, onPanelViewClick, onViewChange, setReactFlowGraphData,
+  reactFlowNodeDragStarted, reactFlowPanelClicked, reactFlowGraphViewChanged,
+  reactFlowGraphDataCalculated,
+  selectGraphViewConfig,
+  selectAssetConfig
+} from '../../../../../features/graph/graphSlice';
+import {
+  selectIsSearchMode,
+  selectCurrentSearchKeyword,
+  selectSearchResult,
+} from '../../../../../features/search/searchSlice';
 // import { getNodePosition } from './CanvasHelper';
 import defaultIcon from './assets/graph_icon/study.svg';
 
@@ -31,12 +41,11 @@ const simulation = forceSimulation()
   .alphaTarget(0.05)
   .stop();
 
-const numTicks = 20; // number of simulation ticks to get initial layout
+const numTicks = 20; // number of simulation ticks to get initial layout - put in config later
 
 const getLayoutedElements = (
-  nodes, edges, isSearchMode,
-  defaultIcon, searchResults,
-  currentSearchKeyword) => {
+  nodes, edges, isSearchMode, defaultIcon,
+  searchResults, currentSearchKeyword) => {
     nodes.forEach(
       (node) => {
         if (!node.data.icon) {
@@ -74,40 +83,33 @@ const getLayoutedElements = (
 
 
 const CanvasController = ({
-//   flowData,
-  ddgraph,
-  currentSearchKeyword,
-  tabViewWidth,
   model,
-  searchResults,
-  isSearchMode,
-  onClearSearchResult,
-  setGraphData,
-  // nodeTree,
-  unfilteredDictionary,
-  highlightedNodes,
   graphViewConfig,
-  onGraphPanelClick,
-  assetConfig,
+  tabViewWidth,
+  onClearSearchResult,
+  highlightedNodes,
 }) => {
-  if (tabViewWidth === 0 || !graphViewConfig || !model) {
+  if (tabViewWidth === 0 || !model) {
     return <CircularProgress />;
   }
-
+  const dispatch = useDispatch();
+  const isSearchMode = useSelector( selectIsSearchMode );
+  const searchResults = useSelector( selectSearchResult );
+  const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
+  
+  // leave in React std form for flowGraph
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [categories, setCategories] = useState([]);
-  const [iconsURL, setIconsURL] = useState({});
+  
+  // const [iconsURL, setIconsURL] = useState({});
 
   /**
      * initalize category item for Legend
      */
-  useEffect(() => {
-    const cats = _.uniq(model.tag_kvs('Category').map(([,val]) => val));
-    setCategories(cats);
-    const urls = getCategoryIconUrl(cats, `${assetConfig?.iconUrl}`);
-    setIconsURL(urls);
-  }, []);
+  // useEffect(() => {
+  //   // const urls = getCategoryIconUrl(cats, `${assetConfig?.iconUrl}`);
+  //   // setIconsURL(urls);
+  // }, []);
 
   /** node
     * 1. position (x, y)
@@ -121,11 +123,11 @@ const CanvasController = ({
      */
 
   useEffect(() => {
-    const flowData = createNodesAndEdges({ model }, true, []);
+    const flowData = createNodesAndEdges({model}, true, []);
     const {nodes: layoutNodes, edges: layoutEdges} = getLayoutedElements(
       flowData.nodes, flowData.edges, isSearchMode,
       defaultIcon, searchResults, currentSearchKeyword);
-    setGraphData(flowData);
+    dispatch(reactFlowGraphDataCalculated({flowData}));
     setNodes(layoutNodes);
     setEdges(layoutEdges);
   }, [model, currentSearchKeyword]);
@@ -149,31 +151,20 @@ const CanvasController = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      categories={categories}
       onClearSearchResult={onClearSearchResult}
       highlightedNodes={highlightedNodes}
       graphViewConfig={graphViewConfig}
       canvasWidth={tabViewWidth}
-      onGraphPanelClick={onGraphPanelClick}
+      onGraphPanelClick={() => dispatch(reactFlowPanelClicked)}
     />
   );
 };
 
-const mapStateToProps = (state) => ({
-  ddgraph: state.ddgraph,
-  isSearchMode: state.ddgraph.isSearchMode,
-  currentSearchKeyword: state.ddgraph.currentSearchKeyword,
-  searchResults: state.ddgraph.searchResult,
-  // nodeTree: state.submission.node2Level,
-  highlightedNodes: state.ddgraph.highlightedNodes,
-  unfilteredDictionary: state.submission.unfilteredDictionary,
-  //graphViewConfig: state.ddgraph.graphViewConfig,
-  assetConfig: state.ddgraph.assetConfig,
-});
 
-const mapDispatchToProps = (dispatch) => ({
-  setGraphData: (graphData) => { dispatch(setReactFlowGraphData(graphData)); },
-  onGraphPanelClick: () => { dispatch(onPanelViewClick()); },
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   setGraphData: (graphData) => { dispatch(setReactFlowGraphData(graphData)); },
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CanvasController);
+// export default connect((state) => state, mapDispatchToProps)(CanvasController);
+
+export default CanvasController;
