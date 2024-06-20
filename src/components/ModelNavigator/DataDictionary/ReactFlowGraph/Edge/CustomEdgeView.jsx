@@ -1,6 +1,10 @@
 import React, { memo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core';
 import { getStraightPath } from 'reactflow';
+import {
+  selectIsSearchMode
+} from '../../../../../features/search/searchSlice';
 import Styles from './CustomEdgeStyle';
 
 const CustomEdgeView = ({
@@ -12,10 +16,10 @@ const CustomEdgeView = ({
   sourcePosition,
   targetPosition,
   style = {},
-  data,
+  // data,
   markerEnd,
-  isSearchMode
 }) => {
+  const isSearchMode = useSelector( selectIsSearchMode );
   const [edgePath] = getStraightPath({
     sourceX,
     sourceY,

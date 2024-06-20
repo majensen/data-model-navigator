@@ -18,7 +18,7 @@ import {
 } from '../../../../../features/search/searchSlice';
 import {
   changedVisOverlayPropTable,
-  selectPropTableNode,
+  selectPropTableNodeID,
 } from '../../../../../features/graph/graphSlice';
 import {
   getCategoryBackground,
@@ -31,12 +31,14 @@ import NodeViewComponent from "../../Table/DataDictionaryNode/components/NodeVie
 
 const OverlayPropertyTable = ({
   classes,
+  model,
   matchedResult,
   hidden,
 }) =>  {
   const dispatch = useDispatch();
   const isSearchMode = useSelector(selectIsSearchMode);
-  const node = useSelector( selectPropTableNode );
+  const nodeID = useSelector( selectPropTableNodeID );
+  const node = model.nodes( nodeID );
   const getTitle = () => {
     if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(

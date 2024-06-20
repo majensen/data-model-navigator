@@ -3,7 +3,7 @@
 
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { forceSimulation, forceLink, forceManyBody, forceX, forceY } from 'd3-force';
-import { connect, useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   addEdge,
   useNodesState,
@@ -93,6 +93,8 @@ const CanvasController = ({
     return <CircularProgress />;
   }
   const dispatch = useDispatch();
+
+  dispatch(reactFlowGraphInitialized({model, graphViewConfig}));
   const isSearchMode = useSelector( selectIsSearchMode );
   const searchResults = useSelector( selectSearchResult );
   const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
@@ -146,6 +148,7 @@ const CanvasController = ({
 
   return (
     <CanvasView
+      model={model}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
@@ -159,12 +162,5 @@ const CanvasController = ({
     />
   );
 };
-
-
-// const mapDispatchToProps = (dispatch) => ({
-//   setGraphData: (graphData) => { dispatch(setReactFlowGraphData(graphData)); },
-// });
-
-// export default connect((state) => state, mapDispatchToProps)(CanvasController);
 
 export default CanvasController;

@@ -7,8 +7,8 @@ import ReactFlow, {
   useReactFlow,
   useViewport,
 } from 'reactflow';
-import NodeView from '../Node/ReduxNodeView';
-import EdgeView from '../Edge/ReduxEdgeView';
+import NodeView from '../Node/NodeView';
+import EdgeView from '../Edge/CustomEdgeView';
 import Styles from './CanvasStyle';
 import { getMinZoom } from './util';
 import LegendView from '../Legend/LegendView';
@@ -40,6 +40,7 @@ const edgeTypes = {
  */
 const CustomFlowView = ({
   classes,
+  model,
   nodes,
   edges,
   onConnect,
@@ -93,6 +94,7 @@ const CustomFlowView = ({
       className={classes.reactFlowView}
     >
       <OverlayPropertyTable
+        model={model}
         matchedResult={""}
         hidden={true}
       />
@@ -125,6 +127,7 @@ const CustomFlowView = ({
 
 const CanvasView = ({
   classes,
+  model,
   nodes,
   edges,
   onConnect,
@@ -144,6 +147,7 @@ const CanvasView = ({
         <ActionLayer  />
         <ReactFlowProvider>
           <CustomFlowView
+            model={model}
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}

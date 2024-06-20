@@ -8,7 +8,7 @@ export default () => ({
     borderBottomLeftRadius: "10px 10px",
     paddingBottom: "15px",
   },
-  zvlaue: {
+  zvalue: {
     zIndex: "10",
   },
   legendCollapse: {

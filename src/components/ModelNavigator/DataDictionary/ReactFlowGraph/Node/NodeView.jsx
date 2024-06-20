@@ -1,38 +1,54 @@
 import React, { memo, useState, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { Handle, useReactFlow, useStoreApi } from "reactflow";
 import clsx from "clsx";
 import Styles from "./NodeStyle";
 import { highlightMatchingTitle, setMatchingNodeClasses } from "./util";
+import {
+  reactFlowPanelClicked,
+  reactFlowNodeClicked,
+  reactFlowNodeFocused,
+  reactFlowNodeDisplayChanged,
+  changedVisOverlayPropTable,
+  selectFocusedNodeID,
+  selectHighlightingNode,
+  selectNodeDisplayed,
+} from '../../../../../features/graph/graphSlice';
+import {
+  selectIsSearchMode,
+  selectCurrentSearchKeyword,
+  selectMatchedNodes,
+} from '../../../../../features/search/searchSlice';
+
 
 const NodeView = ({
   classes,
   id,
   handleId,
-  data,
-  onViewTable,
-  isSearchMode,
-  ddgraph,
-  currentSearchKeyword,
-  onClickNode,
+  data, //must be named 'data' per ReactFlow
   expandNodeView,
-  onCollapseNodeView,
-  highlightingNode,
-  onNodeFocus,
-  focusedNodeId,
 }) => {
-  const [display, setDisplay] = useState(false);
+  
+  const dispatch = useDispatch();
+
+  const isSearchMode = useSelector( selectIsSearchMode );
+  const display = useSelector( selectNodeDisplayed );
+  const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
+  const highlightingNodeID = useSelector( selectHighlightingNode );
+  const focusedNodeID = useSelector( selectFocusedNodeID );
+  const matchedNodesInfo = useSelector( selectMatchedNodes );
   /**
    * expand node in normal mode (when search mode is false)
    * use view option to adjust the fontSize on property dialog
    */
   const expandNode = () => {
     const view = localStorage.getItem("reactflowGraphView");
-    onClickNode(id);
-    setDisplay(!display);
-    if (display) {
-      onCollapseNodeView();
+    dispatch(reactFlowNodeClicked({id, isSearchMode}));
+    dispatch(reactFlowNodeDisplayChanged(!display));
+    if (display) { // ??
+      dispatch(reactFlowPanelClicked());
     }
   };
   const {
@@ -50,8 +66,8 @@ const NodeView = ({
 
   //dispatch event - on table view
   const displayOverviewTable = () => {
-    onClickNode(id);
-    onViewTable(false);
+    dispatch(reactFlowNodeClicked(id));
+    dispatch(changedVisOverlayPropTable(false));
   };
 
   /**
@@ -59,31 +75,31 @@ const NodeView = ({
    */
   useEffect(() => {
     if (!expandNodeView) {
-      setDisplay(false);
+      dispatch(reactFlowNodeDisplayChanged(false));
     } else {
       if (`${label}`.toLowerCase() === highlightingNode?.id) {
-        setDisplay(true);
+        dispatch(reactFlowNodeDisplayChanged(true));
       } else {
-        setDisplay(false);
+        dispatch(reactFlowNodeDisplayChanged(false));
       }
     }
   }, [expandNodeView, highlightingNode]);
 
   useEffect(() => {
-    if (`${label}`.toLowerCase() !== focusedNodeId?.id) {
-      setDisplay(false);
+    if (`${label}`.toLowerCase() !== focusedNodeID?.id) {
+      dispatch(reactFlowNodeDisplayChanged(false));
     }
-  }, [focusedNodeId]);
+  }, [focusedNodeID]);
 
   /**
    * highlight nodes based on search query
    */
-  const nodeClasses = setMatchingNodeClasses(ddgraph, label, classes, category);
+  const nodeClasses = setMatchingNodeClasses(matchedNodesInfo, label, classes, category);
   /**
    * button on focus
    */
   const nodeFocusEvent = () => {
-    onNodeFocus(id);
+    dispatch(reactFlowNodeFocused(id));
   };
 
   return (

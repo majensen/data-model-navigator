@@ -13,6 +13,9 @@ const initialState = {
   currentSearchKeyword: '',
   searchResult: [],
   overlayPropertyHidden: true,
+  matchedNodeIDs:[],
+  matchedNodeIDsInNameAndDescription: [],
+  matchedNodeIDsInProperties: [],  
   isSearchMode: false,
   isSearching: false,
 };
@@ -40,5 +43,23 @@ export const selectIsSearchMode = state => state.search.isSearchMode;
 export const selectOverlayPropertyHidden = state => state.search.overlayPropertyHidden;
 export const selectCurrentSearchKeyword = state => state.search.currentSearchKeyword;
 export const selectSearchResult = state => state.search.searchResult;
+export const selectMatchedNodeIDs = state => state.search.matchedNodeIDs;
+export const selectMatchedNodeIDsInProperties = state => state.search.matchedNodeIDsInProperties;
+export const selectMatchedNodeIDsInNameAndDescription = state => state.search.matchedNodeIDsInNameAndDescription;
 
+export const selectMatchedNodes = createSelector(
+  [
+    selectMatchedNodeIDs,
+    selectMatchedNodeIDsInProperties,
+    selectMatchedNodeIDsInNameAndDescription,
+  ], (
+    matchedNodeIDs,
+    matchedNodeIDsInProperties,
+    matchedNodeIDsInNameAndDescription
+  ) => (
+    {matchedNodeIDs,
+     matchedNodeIDsInNameAndDescription,
+     matchedNodeIDsInProperties,
+    }));
+  
   
