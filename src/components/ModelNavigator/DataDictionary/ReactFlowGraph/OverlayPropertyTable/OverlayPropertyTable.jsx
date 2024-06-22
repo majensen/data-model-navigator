@@ -118,7 +118,7 @@ const OverlayPropertyTable = ({
               <div>
                 <IconButton
                   className={classes.iconCloseRounded}
-                  onClick={() => dispatch(changedVisOverlayPropTable(true))}
+                  onClick={() => dispatch(changedVisOverlayPropTable("hide"))}
                 >
                   <CloseRoundedIcon
                     style={{ color: "#FFF", fontSize: "20px" }}

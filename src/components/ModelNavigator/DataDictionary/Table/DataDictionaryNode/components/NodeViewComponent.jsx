@@ -1,10 +1,11 @@
 import React from "react";
+import _ from 'lodash';
 import { Button, Grid, withStyles } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import styles from "./NodeViewComponent.style";
-import { capitalizeFirstLetter, createFileName } from "../../../utils";
+import { createFileName } from "../../../utils";
 import IconDownloadPDF from "../../icons/icon_download_PDF.svg";
 import IconDownloadPTSV from "../../icons/icon_download_TSV.svg";
 import DownloadButton from "../../../NodePDF/DownloadButton";
@@ -20,9 +21,9 @@ const NodeViewComponent = ({
   description,
   isSearchMode,
   matchedResult,
+  propertyCount,
   pdfDownloadConfig,
   fileManifestConfig,
-  propertyCount,
   isExpanded,
   isOverlay,
 }) => {
@@ -35,17 +36,16 @@ const NodeViewComponent = ({
   const isFileManifest = node.handle === "file";
   const isTemplate = node.tags('Template') === "Yes";
   const fileManifestDownloadSettings = fileManifestConfig || defaultConfig;
-
   const getTitle = () => {
     if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(
         matchedResult.matches,
-        capitalizeFirstLetter(node.handle),
+        _.capitalize(node.handle),
         "data-dictionary-property-table__span"
       );
       return nodeTitleFragment;
     }
-    return capitalizeFirstLetter(node.handle);
+    return _.capitalize(node.handle);
   };
 
   const getDescription = (description) => {
@@ -110,7 +110,7 @@ const NodeViewComponent = ({
                     <span className={classes.nodeLabel}>
                       <span>Assignment:</span>
                       <span className={classes.nodeAssignment}>
-                        {capitalizeFirstLetter(node.assignment)}
+                        {_.capitalize(node.assignment)}
                       </span>
                     </span>
                   </>
@@ -120,7 +120,7 @@ const NodeViewComponent = ({
                     <span className={classes.nodeLabel}>
                       Class:
                       <span className={classes.nodeClass}>
-                        {capitalizeFirstLetter(node.tags('Class'))}
+                        {_.capitalize(node.tags('Class'))}
                       </span>
                     </span>
                   </>
