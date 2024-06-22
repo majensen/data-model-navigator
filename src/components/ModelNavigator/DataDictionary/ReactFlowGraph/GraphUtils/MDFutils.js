@@ -109,7 +109,7 @@ export function createNodesAndEdges(
   createAll,
   nodesToHide = ["program"]
 ) {
-  const {model} = props;
+  const model = globalThis.model; // eslint-disable-line no-undef
   const node_objs = model.nodes()
         .filter( (node) => !nodesToHide.includes(node.handle) )
         .map((node) => {

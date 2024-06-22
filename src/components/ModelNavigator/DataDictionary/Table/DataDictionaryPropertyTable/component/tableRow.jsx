@@ -11,11 +11,10 @@ import ButtonComponent from "./ButtonComponent";
 import KeyIconSvg from "../../../../assets/key_icon.svg";
 import { controlVocabConfig as ctrlConfig } from "../../../../config/nav.config";
 import "../DataDictionaryPropertyTable.css";
-import DownloadFileTypeBtn from "./DownloadFileTypeBtn";
+// import DownloadFileTypeBtn from "./DownloadFileTypeBtn";
 
 const TableRow = ({
   classes,
-  propertyKeysList,
   onlyShowMatchedProperties,
   matchedPropertiesSummary,
   properties,

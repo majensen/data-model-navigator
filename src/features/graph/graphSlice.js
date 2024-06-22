@@ -15,21 +15,20 @@ const initialState = {
   graphViewConfig: {},
   graphBoundingBox: [],
   legendDisplayed: false,
-  nodeDisplayed: false,
+  expandedNodeID: null,
+  foregroundedNodes: [],
   legendItems: [],
   categories: [],
   hoveringNode: null,
   focusedNodeID: null,
   highlightingNodeID: null,
-  highlightedNodeIDs: [],
   relatedNodeIDs: [],
   secondHighlightingNodeID: null,
   dataModelStructure: null,
   canvasBoundingRect: { top: 0, left: 0 },
   needReset: false,
-  expandNodeView: false,
   tableExpandNodeIDs: [],
-  overlayPropertyHidden: true,
+  overlayTableHidden: true,
   graphNodesSVGElements: null,
   matchedNodeIDs: [],
   matchedNodeIDsInProperties: [],
@@ -46,11 +45,9 @@ const graphSlice = createSlice({
   initialState,
   reducers: {
     reactFlowGraphInitialized(state, action) {
-      const { model, graphViewConfig } = action.payload;
-      // state.model = () => model;
-      // state.graphConfig = graphConfig;
+      const { graphViewConfig } = action.payload;
       state.graphViewConfig = graphViewConfig; //??
-      state.categories =  _.uniq(model.tag_kvs('Category').map(([,val]) => val));
+      state.categories =  _.uniq(globalThis.model.tag_kvs('Category').map(([,val]) => val)); // eslint-disable-line no-undef
     },
     reactFlowGraphDataCalculated(state, action) {
       const { flowData } = action.payload;
@@ -82,14 +79,14 @@ const graphSlice = createSlice({
     // graph nodes svg elements updated
 
     reactFlowPanelClicked(state, action) {
-      state.expandNodeView = false;
+
     },
     reactFlowNodeDragStarted(state, action) {
-      state.expandNodeView = false;
+
     },
-    reactFlowNodeExpanded(state, action) {
-      state.expandNodeView = true;
-    },
+    // reactFlowNodeExpanded(state, action) {
+
+    // },
     reactFlowNodeDisplayChanged(state, action) {
       const display = action.payload;
       state.nodeDisplayed = display;
@@ -104,17 +101,20 @@ const graphSlice = createSlice({
       state.focusedNodeId = nodeID;
     },
     reactFlowNodeClicked(state, action) {
-      const {id, isSearchMode, model} = action.payload;
-      if (state.highlightedNodes.includes(id)) {
-        state.highlightedNodes = _.filter(state.highlightedNodes, elt => elt.id === id);
+      const {id: nodeID, isSearchMode} = action.payload;
+      if (state.expandedNodeID == nodeID) {
+        state.expandedNodeID = null;
       } else {
-        state.highlightedNodes.push(id);
+        state.expandedNodeID = nodeID;
       }
-      state.highlightingMatchedNodeID = id;
-      state.highlightingNode = model.nodes(id);
+      state.highlightingMatchedNodeID = nodeID;
+      state.highlightingNodeID = nodeID;
       state.highlightingMatchedNodeOpened = false;
-      state.overlayPropertyHidden = isSearchMode ? false : true;
-      state.expandNodeView = isSearchMode ? false : true;
+      state.overlayTableHidden = isSearchMode ? false : true;
+    },
+    changedVisOverlayPropTable(state, action) {
+      const vis = action.payload;
+      state.overlayTableHidden = vis == 'hide' ? true : false;
     },
     legendDisplayChanged(state, action) {
       const display = action.payload;
@@ -123,11 +123,6 @@ const graphSlice = createSlice({
     canvasWidthChanged(state, action) {
       const width  = action.payload;
       state.graphViewConfig.canvasWidth = width;
-    },
-    graphTableViewToggled(state, action) {
-      const isGraphView = action.payload;
-      state.isGraphView = !isGraphView; // toggle HERE
-      state.overlayPropertyHidden = true; // ? should toggle?
     },
     graphLegendCalculated(state, action) {
       const legendItems = action.payload;
@@ -150,10 +145,6 @@ const graphSlice = createSlice({
     // graph update second highlighting node candidates
     // graph update path related to second highlighting node
     // graph update data model structure
-    changedVisOverlayPropTable(state, action) {
-      const isHidden = action.payload;
-      state.overlayPropertyHidden = isHidden;
-    },
     canvasResetRequested(state, action) {
       const needReset = action.payload;
       state.needReset = needReset;
@@ -195,8 +186,15 @@ export const selectCategories = state => state.graph.categories;
 export const selectCanvasWidth = state => state.graph.graphViewConfig.canvasWidth;
 export const selectHighlightingMatchedNodeID = state => state.graph.highlightingMatchedNodeID;
 export const selectHighlightingNodeID = state => state.graph.highlightingNodeID;
+export const selectHighlightedNodes = state => state.graph.selectHighlightedNodes;
+export const selectExpandedNodeID = state => state.graph.expandedNodeID;
 export const selectFocusedNodeID = state => state.graph.focusedNodeID;
-export const selectNodeDisplayed = state => state.graph.nodeDisplayed;
+// export const selectNodeDisplayed = state => state.graph.nodeDisplayed;
+export const selectOverlayTableHidden = state => state.graph.overlayTableHidden;
+export const selectNodeIsExpanded = (state, nodeID) => state.graph.expandedNodeID == nodeID;
+export const selectNodeIsForegrounded = (state, nodeID) => state.graph.foregroundedNodes.includes(nodeID);
+
+
 export const selectPropTableNodeID = createSelector(
   [selectIsSearchMode, selectHighlightingMatchedNodeID, selectHighlightingNodeID],
   (isSearchMode, matchedNodeID, highlightingNodeID) => {

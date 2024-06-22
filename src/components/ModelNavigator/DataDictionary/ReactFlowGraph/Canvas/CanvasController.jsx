@@ -83,18 +83,17 @@ const getLayoutedElements = (
 
 
 const CanvasController = ({
-  model,
   graphViewConfig,
   tabViewWidth,
   onClearSearchResult,
   highlightedNodes,
 }) => {
-  if (tabViewWidth === 0 || !model) {
+  if (tabViewWidth === 0 || !globalThis.model) { // eslint-disable-line no-undef
     return <CircularProgress />;
   }
   const dispatch = useDispatch();
 
-  dispatch(reactFlowGraphInitialized({model, graphViewConfig}));
+  //dispatch(reactFlowGraphInitialized({graphViewConfig}));
   const isSearchMode = useSelector( selectIsSearchMode );
   const searchResults = useSelector( selectSearchResult );
   const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
@@ -125,14 +124,14 @@ const CanvasController = ({
      */
 
   useEffect(() => {
-    const flowData = createNodesAndEdges({model}, true, []);
+    const flowData = createNodesAndEdges(globalThis.model, true, []); //eslint-disable-line no-undef
     const {nodes: layoutNodes, edges: layoutEdges} = getLayoutedElements(
       flowData.nodes, flowData.edges, isSearchMode,
       defaultIcon, searchResults, currentSearchKeyword);
     dispatch(reactFlowGraphDataCalculated({flowData}));
     setNodes(layoutNodes);
     setEdges(layoutEdges);
-  }, [model, currentSearchKeyword]);
+  }, []);
 
 
   const onConnect = useCallback(
@@ -148,17 +147,12 @@ const CanvasController = ({
 
   return (
     <CanvasView
-      model={model}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      onClearSearchResult={onClearSearchResult}
-      highlightedNodes={highlightedNodes}
       graphViewConfig={graphViewConfig}
-      canvasWidth={tabViewWidth}
-      onGraphPanelClick={() => dispatch(reactFlowPanelClicked)}
     />
   );
 };

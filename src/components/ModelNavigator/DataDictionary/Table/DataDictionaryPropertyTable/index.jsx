@@ -3,37 +3,37 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { SearchResultItemShape } from '../../Utils/utils';
 import {
   getMatchesSummaryForProperties,
 } from '../../Utils/highlightHelper';
 import DialogBox from './component/DialogComponent';
-import { controlVocabConfig as ctrlConfig } from '../../../config/nav.config';
+import { controlVocabConfig as config } from '../../../config/nav.config';
 import TableHead from './component/tableHead';
 import TableRow from './component/tableRow';
 
+import {
+  selectIsSearchMode,
+} from '../../../../../features/search/searchSlice';
+
 const DataDictionaryPropertyTable = ({
   classes,
+  title,
+  node,
   onlyShowMatchedProperties,
-  properties, // list of model properties
   hasBorder,
   needHighlightSearchResult,
   matchedResult,
   hideIsRequired,
-  tideIsRequired,
-  isSearchMode,
-  title,
 }) => {
   const [display, setDisplay] = useState(false);
   const [items, setItems] = useState([]);
   const [matchedItem, setMatchedItems] = useState([]);
   const [property, setProperty] = useState('');
 
-  const config = useSelector((state) => (state.submission && state.submission.ctrlVocabConfig
-    ? state.submission.ctrlVocabConfig : ctrlConfig));
-
+  const isSearchMode = useSelector( selectIsSearchMode );
+  const properties = node.props(); // eslint-disable-line no-undef
   const openBoxHandler = (values, typeMatchList = [], prop_handle) => {
     setDisplay(true);
     setItems(values);
@@ -46,9 +46,7 @@ const DataDictionaryPropertyTable = ({
     setItems([]);
   };
 
-  const propertyKeysList = properties.map( p => p.handle );
-
-  const needHighLgSearchResult = onlyShowMatchedProperties
+  const needHighlight = onlyShowMatchedProperties
     || needHighlightSearchResult;
   const matchedPropertiesSummary = needHighlightSearchResult
     ? getMatchesSummaryForProperties(
@@ -62,11 +60,10 @@ const DataDictionaryPropertyTable = ({
         <TableHead hideIsRequired={hideIsRequired} />
         <tbody>
           <TableRow
-            propertyKeysList={propertyKeysList}
             onlyShowMatchedProperties={onlyShowMatchedProperties}
             matchedPropertiesSummary={matchedPropertiesSummary}
             properties={properties}
-            needHighlightSearchResult={needHighLgSearchResult}
+            needHighlightSearchResult={needHighlight}
             hideIsRequired={hideIsRequired}
             openBoxHandler={openBoxHandler}
             isSearchMode={isSearchMode}
@@ -91,25 +88,6 @@ const DataDictionaryPropertyTable = ({
     </div>
   );
 }
-
-DataDictionaryPropertyTable.propTypes = {
-  properties: PropTypes.object.isRequired,
-  requiredProperties: PropTypes.array,
-  hasBorder: PropTypes.bool,
-  needHighlightSearchResult: PropTypes.bool,
-  matchedResult: SearchResultItemShape,
-  hideIsRequired: PropTypes.bool,
-  onlyShowMatchedProperties: PropTypes.bool,
-};
-
-DataDictionaryPropertyTable.defaultProps = {
-  requiredProperties: [],
-  hasBorder: true,
-  needHighlightSearchResult: false,
-  matchedResult: {},
-  hideIsRequired: false,
-  onlyShowMatchedProperties: false,
-};
 
 const styles = () => ({
   propertyTable: {

@@ -1,42 +1,47 @@
-/* eslint-disable react/forbid-prop-types */
 import React from "react";
-import PropTypes from "prop-types";
+import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from "@material-ui/core";
-import { downloadTemplate } from "../../Utils/utils";
+// import { downloadTemplate } from "../../Utils/utils";
 import { getCategoryColor } from "../../NodeCategories/helper";
 import DataDictionaryPropertyTable from "../DataDictionaryPropertyTable";
 import "./DataDictionaryNode.css";
 import styles from "./DataDictionaryNode.style";
 import NodeViewComponent from "./components/NodeViewComponent";
+import {
+  tableNodeExpanded,
+} from '../../../../../features/graph/graphSlice';
 
 const NODE_STATE = {
   OPEN: "open",
   CLOSE: "close",
 };
 
-const DataDictionaryNode = ( props ) => {
-  const { classes, node, pdfDownloadConfig, description, expanded } = props;
-  const notHorizontal = true; // supports landscape orientation
-
+const DataDictionaryNode = ({
+  classes,
+  node, // this is an mdf-reader node, not a flowgraph node
+  // pdfDownloadConfig,
+  description,
+  expanded
+}) => {
+  const dispatch = useDispatch();
+  
   const handleClickNode = (nodeID) => {
-    const { expanded, expandNode } = props;
     if (!expanded) {
-      expandNode(nodeID, NODE_STATE.OPEN);
+      dispatch(tableNodeExpanded(NODE_STATE.OPEN));
     } else {
-      expandNode(nodeID, NODE_STATE.CLOSE);
+      dispatch(tableNodeExpanded(NODE_STATE.CLOSED));
     }
   };
 
   const handleCloseNode = () => {
-    const { expandNode } = props;
-    expandNode(null);
+      dispatch(tableNodeExpanded(NODE_STATE.CLOSED));
   };
 
-  const handleDownloadTemplate = (e, format) => {
-    const { node } = props;
-    e.stopPropagation(); // no toggling
-    downloadTemplate(format, node.handle);
-  };
+  // const handleDownloadTemplate = (e, format) => {
+  //   const { node } = props;
+  //   e.stopPropagation(); // no toggling
+  //   downloadTemplate(format, node.handle);
+  // };
 
 
   const propertyCount = node.props().length;
@@ -54,7 +59,7 @@ const DataDictionaryNode = ( props ) => {
           node={node}
           isExpanded={expanded}
           description={description}
-          pdfDownloadConfig={pdfDownloadConfig}
+          // pdfDownloadConfig={pdfDownloadConfig}
           propertyCount={propertyCount}
         />
       </div>
@@ -78,18 +83,5 @@ const DataDictionaryNode = ( props ) => {
     </>
   );
 }
-
-DataDictionaryNode.propTypes = {
-  node: PropTypes.object.isRequired,
-  description: PropTypes.string,
-  expanded: PropTypes.bool,
-  expandNode: PropTypes.func,
-};
-
-DataDictionaryNode.defaultProps = {
-  description: "",
-  expanded: false,
-  expandNode: () => {},
-};
 
 export default withStyles(styles)(DataDictionaryNode);

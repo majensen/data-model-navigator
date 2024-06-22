@@ -31,14 +31,13 @@ import NodeViewComponent from "../../Table/DataDictionaryNode/components/NodeVie
 
 const OverlayPropertyTable = ({
   classes,
-  model,
+  nodeID,
   matchedResult,
   hidden,
 }) =>  {
   const dispatch = useDispatch();
   const isSearchMode = useSelector(selectIsSearchMode);
-  const nodeID = useSelector( selectPropTableNodeID );
-  const node = model.nodes( nodeID );
+  const node = nodeID ? globalThis.model.nodes( nodeID ) : null; // eslint-disable-line no-undef
   const getTitle = () => {
     if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(
@@ -147,7 +146,7 @@ const OverlayPropertyTable = ({
               isSearchMode={isSearchMode}
               matchedResult={matchedResult}
               // pdfDownloadConfig={props.pdfDownloadConfig}
-              propertyCount={Object.keys(node.properties).length}
+              propertyCount={node.props().length}
               isOverlay={true}
             />
           </div>
@@ -159,15 +158,11 @@ const OverlayPropertyTable = ({
             <div className={classes.property}>
               <DataDictionaryPropertyTable
                 title={node.title}
-                properties={node.properties}
-                requiredProperties={node.required}
-                preferredProperties={node.preferred}
-                hasBorder={false}
+                node={node}
                 onlyShowMatchedProperties={false}
                 needHighlightSearchResult={needHighlightSearchResult}
-                // hideIsRequired={searchedNodeNotOpened}
+                hideIsRequired={false}
                 matchedResult={matchedResult}
-                isSearchMode={isSearchMode}
               />
             </div>
           </div>

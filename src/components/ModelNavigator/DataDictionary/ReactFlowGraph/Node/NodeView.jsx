@@ -13,8 +13,10 @@ import {
   reactFlowNodeDisplayChanged,
   changedVisOverlayPropTable,
   selectFocusedNodeID,
-  selectHighlightingNode,
+  selectHighlightingNodeID,
   selectNodeDisplayed,
+  selectNodeIsExpanded,
+  selectNodeIsForegrounded,
 } from '../../../../../features/graph/graphSlice';
 import {
   selectIsSearchMode,
@@ -22,21 +24,20 @@ import {
   selectMatchedNodes,
 } from '../../../../../features/search/searchSlice';
 
-
 const NodeView = ({
   classes,
   id,
   handleId,
   data, //must be named 'data' per ReactFlow
-  expandNodeView,
 }) => {
-  
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
+  
   const isSearchMode = useSelector( selectIsSearchMode );
-  const display = useSelector( selectNodeDisplayed );
+  const expand = useSelector( state => selectNodeIsExpanded(state, id) );
+  const foreground = useSelector( state => selectNodeIsForegrounded(state, id) );
   const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
-  const highlightingNodeID = useSelector( selectHighlightingNode );
+  const highlightingNodeID = useSelector( selectHighlightingNodeID );
   const focusedNodeID = useSelector( selectFocusedNodeID );
   const matchedNodesInfo = useSelector( selectMatchedNodes );
   /**
@@ -44,12 +45,12 @@ const NodeView = ({
    * use view option to adjust the fontSize on property dialog
    */
   const expandNode = () => {
-    const view = localStorage.getItem("reactflowGraphView");
+    // const view = localStorage.getItem("reactflowGraphView"); ???
     dispatch(reactFlowNodeClicked({id, isSearchMode}));
-    dispatch(reactFlowNodeDisplayChanged(!display));
-    if (display) { // ??
-      dispatch(reactFlowPanelClicked());
-    }
+    // dispatch(reactFlowNodeDisplayChanged(!display));
+    // if (display) { // ??
+    //   dispatch(reactFlowPanelClicked());
+    // }
   };
   const {
     label,
@@ -65,28 +66,17 @@ const NodeView = ({
   } = data;
 
   //dispatch event - on table view
-  const displayOverviewTable = () => {
-    dispatch(reactFlowNodeClicked(id));
-    dispatch(changedVisOverlayPropTable(false));
+  const displayOverlayTable = () => {
+    // dispatch(reactFlowNodeClicked(id));
+    dispatch(changedVisOverlayPropTable('show'));
   };
 
   /**
    * light node based on result of search query
    */
-  useEffect(() => {
-    if (!expandNodeView) {
-      dispatch(reactFlowNodeDisplayChanged(false));
-    } else {
-      if (`${label}`.toLowerCase() === highlightingNode?.id) {
-        dispatch(reactFlowNodeDisplayChanged(true));
-      } else {
-        dispatch(reactFlowNodeDisplayChanged(false));
-      }
-    }
-  }, [expandNodeView, highlightingNode]);
 
   useEffect(() => {
-    if (`${label}`.toLowerCase() !== focusedNodeID?.id) {
+    if (`${label}`.toLowerCase() !== focusedNodeID) {
       dispatch(reactFlowNodeDisplayChanged(false));
     }
   }, [focusedNodeID]);
@@ -104,13 +94,13 @@ const NodeView = ({
 
   return (
     <>
-      <div className={clsx({ [classes.propDialog]: display })}>
+      <div className={clsx({ [classes.propDialog]: expand })}>
         <div
           className={
-            display ? classes.customNodeExpand : classes.customNodeCollapse
+            expand ? classes.customNodeExpand : classes.customNodeCollapse
           }
         >
-          {display && (
+          {expand && (
             <div className={classes.iconBar}>
               <CloseIcon className={classes.closeIcon} onClick={expandNode} aria-label="Close" />
             </div>
@@ -118,7 +108,7 @@ const NodeView = ({
           <div className={classes.contentWrapper}>
             <div
               className={clsx(classes.nodeTitle, {
-                [classes.btnPadding]: display,
+                [classes.btnPadding]: expand,
               })}
             >
               <div
@@ -126,9 +116,9 @@ const NodeView = ({
                   isSearchMode ? nodeClasses : classes.nodeButtonOuterWrapper
                 }
                 style={{
-                  border: display && "2px solid white",
+                  border: expand && "2px solid white",
                 }}
-                onClick={isSearchMode ? displayOverviewTable : expandNode}
+                onClick={isSearchMode ? displayOverlayTable : expandNode}
               >
                 <div className={classes.nodeButtonInnerWrapper}>
                   <div
@@ -168,7 +158,7 @@ const NodeView = ({
               </div>
             </div>
             <div
-              className={display ? classes.viewSection : classes.hideSection}
+              className={expand ? classes.viewSection : classes.hideSection}
             >
               <ul className={classes.list}>
                 <li className={classes.listItem}>
@@ -220,10 +210,10 @@ const NodeView = ({
             />
           </div>
         </div>
-        {display && (
+        {expand && (
           <button
             className={classes.viewPropBtn}
-            onClick={displayOverviewTable}
+            onClick={displayOverlayTable}
           >
             View Properties
           </button>

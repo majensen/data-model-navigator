@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from '@material-ui/core';
@@ -22,7 +23,11 @@ import OverlayPropertyTable from '../OverlayPropertyTable/OverlayPropertyTable';
 import {
   reactFlowPanelClicked,
   selectCategories,
+  selectHighlightedNodes,
+  selectOverlayTableHidden,
+  selectExpandedNodeID,
 } from '../../../../../features/graph/graphSlice';
+
 const nodeTypes = {
   custom: NodeView,
 };
@@ -31,27 +36,55 @@ const edgeTypes = {
   custom: EdgeView,
 };
 
-/**
- *
- * @param {*} param0
- * @returns
- * reactflow requires to create child component
- *  to add customize control buttons
- */
-const CustomFlowView = ({
+const CanvasView = ({
   classes,
-  model,
   nodes,
   edges,
   onConnect,
   onNodesChange,
   onEdgesChange,
   graphViewConfig,
-  highlightedNodes,
+}) => {
+  const dispatch = useDispatch();
+  const categories = useSelector( selectCategories );
+  return (
+    <>
+      <div className={classes.mainWindow}>
+        <LegendView
+          categoryItems={categories}
+        />
+        <ActionLayer  />
+        <ReactFlowProvider>
+          <CustomFlowView
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            classes={classes}
+            graphViewConfig={graphViewConfig}
+          />
+        </ReactFlowProvider>
+      </div>
+    </>
+);
+}
+
+const CustomFlowView = ({
+  classes,
+  nodes,
+  edges,
+  onConnect,
+  onNodesChange,
+  onEdgesChange,
+  graphViewConfig,
 }) => {
 
   const dispatch = useDispatch();
   const categories = useSelector( selectCategories );
+  const overlayTableHidden = useSelector( selectOverlayTableHidden );
+  const expandedNodeID = useSelector( selectExpandedNodeID );
+  const highlightedNodes = useSelector( selectHighlightedNodes );
   const { fitView } = useReactFlow();
   const { setViewport, zoomIn, zoomOut } = useReactFlow();
 
@@ -70,14 +103,6 @@ const CustomFlowView = ({
     setViewport({ x: fit?.x, y: fit?.y, zoom: getMinZoom({ width, ...fit }) }, { duration: 200 });
   }, [setViewport, width, fit]);
 
-  /**
-   * collapse all property dialog box
-   * @param {*} event
-   */
-  const onPanelClick = (event) => { // eslint-disable-line
-    dispatch(reactFlowPanelClicked());
-  };
-
   return (
     <ReactFlow
       nodes={nodes}
@@ -89,14 +114,14 @@ const CustomFlowView = ({
       edgeTypes={edgeTypes}
       minZoom={minZoom}
       maxZoom={fit?.maxZoom ? fit.maxZoom : 3}
-      onPanelClick={onPanelClick}
+      onPaneClick={(e) => dispatch(reactFlowPanelClicked())}
       fitView
       className={classes.reactFlowView}
     >
       <OverlayPropertyTable
-        model={model}
+        nodeID={expandedNodeID}
         matchedResult={""}
-        hidden={true}
+        hidden={overlayTableHidden}
       />
       {/* <MiniMap nodeColor={nodeColor} style={minimapStyle} pannable position='bottom-left' /> */}
       {/* <Controls position='top-left' /> */}
@@ -124,44 +149,5 @@ const CustomFlowView = ({
     </ReactFlow>
   );
 };
-
-const CanvasView = ({
-  classes,
-  model,
-  nodes,
-  edges,
-  onConnect,
-  onNodesChange,
-  onEdgesChange,
-  highlightedNodes,
-  graphViewConfig,
-}) => {
-  const dispatch = useDispatch();
-  const categories = useSelector( selectCategories );
-  return (
-    <>
-      <div className={classes.mainWindow}>
-        <LegendView
-          categoryItems={categories}
-        />
-        <ActionLayer  />
-        <ReactFlowProvider>
-          <CustomFlowView
-            model={model}
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            classes={classes}
-            highlightedNodes={highlightedNodes}
-            graphViewConfig={graphViewConfig}
-            onGraphPanelClick={() => dispatch(reactFlowPanelClicked)}
-          />
-        </ReactFlowProvider>
-      </div>
-    </>
-);
-}
 
 export default withStyles(Styles)(CanvasView);
