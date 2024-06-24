@@ -1,6 +1,6 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState, useEffect, useContext, useRef } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useRef, useContext } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import {
   withStyles,
   createTheme,
@@ -13,15 +13,20 @@ import {
 } from "@material-ui/core";
 import { createFilterOptions } from "@material-ui/lab";
 import AutoComplete from "../AutoComplete/AutoCompleteView";
+import ModelContext from "../../../Model/ModelContext";
 import {
-  SearchDataContext,
-  SearchResultContext,
-  SearchHistoryContext,
-  SuggestionContext,
-} from "../SearchContext";
+  allFiltersCleared,
+} from '../../../../../features/filter/filterSlice';
+import {
+  selectCurrentSearchKeyword,
+  selectSearchResult,
+  selectSuggestionList,
+  selectIsSearching,
+  selectLastSearchError,
+  selectSearchIsFinished,
+} from '../../../../../features/search/searchSlice';
 
 import {
-  prepareSearchData,
   searchKeyword,
   getSearchSummary,
   formatText,
@@ -33,8 +38,6 @@ import SearchThemeConfig from "./SearchThemeConfig";
 function DictionarySearcher({
   activeFiltersCount,
   classes,
-  // currentSearchKeyword,
-  model,
   hidePropertyTable,
   onClearAllFilter,
   onClickBlankSpace,
@@ -44,15 +47,14 @@ function DictionarySearcher({
   onSearchHistoryItemCreated,
   onStartSearching,
 }) {
+
+  const searchIsFinished = useSelector( selectSearchIsFinished );
+  const errorMsg = useSelector( selectLastSearchError )
+  const hasError = errorMsg.length > 0;
+  const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
+  const suggestionList = useSelector( selectSuggestionList );
+  const searchResult = useSelector( selectSearchResult );
   
-  const {currentSearchKeyword, searchResult,
-         isSearchFinished, hasError, errorMsg} = useContext(SearchResultContext);
-  const {suggestionList} = useContext(SuggestionContext);
-  const {searchData, setSearchData} = useContext(SearchDataContext);
-  
-  if (!searchData) {
-    setSearchData( prepareSearchData(model) );
-  }
   const autoCompleteRef = useRef(null);
   
   // this is probably not right??
@@ -62,13 +64,6 @@ function DictionarySearcher({
   //   }
   // }, [currentSearchKeyword, autoCompleteRef]);
 
-  // componentDidMount() {
-  //   // resume search status after switching back from other pages
-  //   if (currentSearchKeyword) {
-  //     autoCompleteRef.current.setInputText(currentSearchKeyword)
-  //     this.search(this.props.currentSearchKeyword);
-  //   }
-  // }
 
   // these probably don't belong here
 //  const onClearResult = () => {
@@ -121,7 +116,7 @@ function DictionarySearcher({
           </div>
         </SearchThemeConfig>
         <div className={classes.results}>
-          {isSearchFinished && (
+          {searchIsFinished && (
             <div>
               {!hasError &&
                (searchResult.matchedNodes.length > 0 ? (
@@ -163,38 +158,5 @@ function DictionarySearcher({
   
 }
 
-DictionarySearcher.propTypes = {
-  model: PropTypes.object.isRequired,
-  setIsSearching: PropTypes.func,
-  onSearchResultUpdated: PropTypes.func,
-  onSearchHistoryItemCreated: PropTypes.func,
-  onSearchResultCleared: PropTypes.func,
-  onClearAllFilter: PropTypes.func,
-  onClickBlankSpace: PropTypes.func,
-  onSaveCurrentSearchKeyword: PropTypes.func,
-  onSearchResultCleared: PropTypes.func,
-  onSearchResultUpdated: PropTypes.func,
-  onSearchHistoryItemCreated: PropTypes.func,
-  currentSearchKeyword: PropTypes.string,
-  hidePropertyTable: PropTypes.func,  
-  onStartSearching: PropTypes.func,
-};
-
-DictionarySearcher.defaultProps = {
-  setIsSearching: () => {},
-  onSearchResultUpdated: () => {},
-  onSearchHistoryItemCreated: () => {},
-  onSearchResultCleared: () => {},
-  onClearAllFilter: () => {},
-  onClickBlankSpace: () => {},
-  onSaveCurrentSearchKeyword: () => {},
-  onSearchResultCleared: () => {},
-  onSearchResultUpdated: () => {},
-  onSearchHistoryItemCreated: () => {},
-  onSaveCurrentSearchKeyword: () => {},
-  hidePropertyTable: () => {},
-  currentSearchKeyword: "",
-  onStartSearching: () => {},
-};
 
 export default withStyles(styles)(DictionarySearcher);

@@ -1,10 +1,5 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
-import {
-  selectIsSearchMode,
-  selectSearchResult,
-} from '../search/searchSlice';
-
 import _ from 'lodash';
 
 const initialState = {
@@ -196,25 +191,8 @@ export const selectNodeIsForegrounded = (state, nodeID) => state.graph.foregroun
 
 
 export const selectPropTableNodeID = createSelector(
-  [selectIsSearchMode, selectHighlightingMatchedNodeID, selectHighlightingNodeID],
-  (isSearchMode, matchedNodeID, highlightingNodeID) => {
-    if (isSearchMode) {
-      if (matchedNodeID) {
-        return matchedNodeID; 
-      } 
-      if (highlightingNodeID) {
-        return highlightingNodeID; // if this is a model node - if it is a graph node,
-        // find model node by the graph node and return
-      }
-      else { return null; }
-    } else { return null; }
+  [selectHighlightingMatchedNodeID, selectHighlightingNodeID],
+  (matchedNodeID, highlightingNodeID) => {
+    return matchedNodeID || highlightingNodeID || null;
   });
-export const selectSearchResultOfHighlighted = createSelector(
-  [selectIsSearchMode, selectSearchResult, selectHighlightingMatchedNodeID],
-  (isSearchMode, searchResult, matchedNodeID) => {
-    if (isSearchMode) {
-      return searchResult
-        .find( item => item.id == matchedNodeID );
-    }
-    return null;
-  });
+

@@ -1,8 +1,11 @@
-import React, { useRef, useContext } from 'react';
+import React, { useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import styles from './AutoCompleteSuggestnStyle';
-import { SuggestionContext } from '../SearchContext';
+import styles from './AutoCompleteSuggestionStyle';
+import {
+  suggestionItemClicked,
+  selectSuggestionList,
+} from '../../../../../features/search/searchSlice';
 
 /**
  * Wrap suggestion item into HTML, take following as an e.g.:
@@ -81,11 +84,9 @@ function PaintItem({ classes, suggestionItem }) {
 
 
 function SuggestionItemDiv({ classes, suggestionItem, i }) {
-  const { fullString, matchedPieceIndices } = suggestionItem;
-  const { setClickedSuggestionItem } = useContext(SuggestionContext);
-  
+  const dispatch = useDispatch();
   const handleClickItem = () => {
-    setClickedSuggestionItem(suggestionItem);
+    dispatch( suggestionItemClicked(suggestionItem) );
   };
 
   return (
@@ -104,7 +105,7 @@ function SuggestionItemDiv({ classes, suggestionItem, i }) {
 function AutoCompleteSuggestions({
   classes,
 }) {
-  const { suggestionList } = useContext(SuggestionContext);
+  const suggestionList = useSelector(selectSuggestionList);
   const divList = suggestionList.map(
     (suggestionItem, i) => (
       <SuggestionItemDiv
@@ -118,20 +119,5 @@ function AutoCompleteSuggestions({
     </div>
   );
 }
-
-
-export const SuggestionItem = {
-  fullString: PropTypes.string.isRequired,
-  matchedPieceIndices: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
-};
-  
-AutoCompleteSuggestions.propTypes = {
-  suggestionList: PropTypes.arrayOf(PropTypes.shape(SuggestionItem)),
-};
-
-AutoCompleteSuggestions.defaultProps = {
-  suggestionList: [],
-  onSuggestionItemClick: () => {},
-};
 
 export default withStyles(styles)(AutoCompleteSuggestions);

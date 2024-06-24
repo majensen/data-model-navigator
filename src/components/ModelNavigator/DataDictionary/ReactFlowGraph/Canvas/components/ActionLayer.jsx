@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, withStyles } from '@material-ui/core';
 import styles from './ActionLayer.style';
 import {
-  searchCleared,
+  searchResultCleared,
   selectIsSearchMode,
   selectOverlayPropertyHidden,
 } from '../../../../../../features/search/searchSlice';
@@ -30,7 +30,7 @@ const ActionLayer = ({
             className={clsx(classes.clearSearch, {
               [classes.zvalue]: !overlayPropertyHidden,
             })}
-            onClick={() => dispatch(searchResultCleared)}
+            onClick={() => dispatch(searchResultCleared())}
             label="Clear Search Result"
           > Clear Search Result
             </Button>

@@ -1,11 +1,13 @@
-import React, { useState, useContext } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import AutoCompleteInput from './AutoCompleteInput';
-import AutoCompleteSuggestions, { SuggestionItem } from './AutoCompleteSuggestions';
+import AutoCompleteSuggestions  from './AutoCompleteSuggestions';
+import {
+  selectSuggestionList,
+} from '../../../../../features/search/searchSlice';
 import './AutoComplete.css';
-import { SuggestionContext } from '../SearchContext';
 
 import styles from './AutoCompleteStyle';
 
@@ -15,14 +17,8 @@ function AutoComplete({
   inputTitle,
 }) {
 
-//  const emptySuggestionsClassModifier = suggestionList.length === 0 // eslint-disable-line
-//        ? 'auto-complete--empty-suggestion-list' : '';
-  const {
-    suggestionList,
-    setSuggestionList,
-    clickedSuggestionItem,
-    setClickedSuggestionItem,
-  } = useContext(SuggestionContext);
+  const suggestionList = useSelector( selectSuggestionList );
+
   return (
       <div
         className={
@@ -45,19 +41,5 @@ function AutoComplete({
   );
 }
 
-
-AutoComplete.propTypes = {
-  suggestionList: PropTypes.arrayOf(PropTypes.shape(SuggestionItem)),
-  inputPlaceHolderText: PropTypes.string,
-  inputTitle: PropTypes.string,
-  inputIcon: PropTypes.string,
-};
-
-AutoComplete.defaultProps = {
-  suggestionList: [],
-  inputPlaceHolderText: 'Search',
-  inputTitle: 'Search Input',
-  inputIcon: 'search',
-};
 
 export default withStyles(styles)(AutoComplete);

@@ -1,6 +1,5 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { withStyles } from "@material-ui/core";
 import Styles from "./DictionaryStyle";
 import Tab from "./Tab/Tab";
@@ -9,6 +8,11 @@ import TabThemeProvider from "./Tab/TabThemeConfig";
 import ReduxDataDictionaryTable from "../Table/DataDictionaryTable";
 import CanvasView from "../ReactFlowGraph/Canvas/CanvasController";
 import { setCanvasWidth, setGraphView } from "../Store/actions/graph";
+import {
+  searchResultCleared,
+} from '../../../../features/search/searchSlice';
+import {
+} from '../../../../features/graph/graphSlice';
 
 const tabItems = [
   {
@@ -25,14 +29,12 @@ const tabItems = [
 
 const DictionaryView = ({
   classes,
-  pdfDownloadConfig,
-  handleClearSearchResult,
   model,
   graphView,
   onSetGraphView,
   onWidthChange,
 }) => {
-  const [currentTab, setCurrentTab] = React.useState(0);
+  const [currentTab, setCurrentTab] = useState(0);
   /**
    * get witdh of the tab to position nodes in the graph view
    */
@@ -87,14 +89,13 @@ const DictionaryView = ({
                   <CanvasView
                     model={model}
                     tabViewWidth={tabViewWidth}
-                    onClearSearchResult={handleClearSearchResult}
                   />
                 </div>
               </TabPanel>
               <TabPanel value={currentTab} index={1}>
                 <div className={classes.tableView}>
                   <ReduxDataDictionaryTable
-                    pdfDownloadConfig={pdfDownloadConfig}
+                    // pdfDownloadConfig={pdfDownloadConfig}
                   />
                 </div>
               </TabPanel>

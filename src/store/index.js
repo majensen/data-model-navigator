@@ -8,16 +8,11 @@ import graphReducer from '../features/graph/graphSlice';
 import searchReducer from '../features/search/searchSlice';
 
 const store = configureStore({
-  reducer: {
+  reducer: { // order below matters
+    search: searchReducer, 
     filter: filterReducer,
     graph: graphReducer,
-    search: searchReducer,
   }
 });
-
-// store.injectReducer = (key, reducer) => {
-//   reducers[key] = reducer;
-//   store.replaceReducer(combineReducers(reducers));
-// };
 
 export default store;

@@ -1,15 +1,18 @@
-/* eslint-disable react/forbid-prop-types */
 import React from 'react';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 import './DataDictionaryTable.css';
-import {
-  createFileName,
-} from '../../utils';
+// import {
+//   createFileName,
+// } from '../../utils';
 import DataDictionaryCategory from '../DataDictionaryCategory';
 
 const DataDictionaryTable = ({
-  classes, model, highlightingNodeID, expandNode, dictionaryName, pdfDownloadConfig,
+  classes,
+  model,
+  highlightingNodeID,
+  expandNode,
+  dictionaryName,
+  // pdfDownloadConfig,
 }) => {
   return (
     <>
@@ -35,20 +38,6 @@ const DataDictionaryTable = ({
       </div>
     </>
   );
-};
-
-DataDictionaryTable.propTypes = {
-  model: PropTypes.object,
-  highlightingNodeID: PropTypes.string,
-  expandNode: PropTypes.func,
-  dictionaryName: PropTypes.string,
-};
-
-DataDictionaryTable.defaultProps = {
-  model: PropTypes.object,
-  highlightingNodeID: null,
-  expandNode: () => {},
-  dictionaryName: '',
 };
 
 const styles = () => ({

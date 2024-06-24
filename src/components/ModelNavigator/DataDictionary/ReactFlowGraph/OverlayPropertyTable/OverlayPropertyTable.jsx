@@ -15,10 +15,12 @@ import {
 import {
   selectIsSearchMode,
   selectSearchResult,
+  selectMatchedResult,
 } from '../../../../../features/search/searchSlice';
 import {
   changedVisOverlayPropTable,
   selectPropTableNodeID,
+  selectHighlightingMatchedNodeID,
 } from '../../../../../features/graph/graphSlice';
 import {
   getCategoryBackground,
@@ -32,12 +34,16 @@ import NodeViewComponent from "../../Table/DataDictionaryNode/components/NodeVie
 const OverlayPropertyTable = ({
   classes,
   nodeID,
-  matchedResult,
   hidden,
 }) =>  {
   const dispatch = useDispatch();
   const isSearchMode = useSelector(selectIsSearchMode);
   const node = nodeID ? globalThis.model.nodes( nodeID ) : null; // eslint-disable-line no-undef
+  const matchedNodeID = useSelector( selectHighlightingMatchedNodeID );
+  const matchedResult = useSelector(
+    (state, matchedNodeID) => selectMatchedResult(state, matchedNodeID)
+  );
+
   const getTitle = () => {
     if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(
@@ -143,7 +149,6 @@ const OverlayPropertyTable = ({
             <NodeViewComponent
               node={node}
               description={node.desc}
-              isSearchMode={isSearchMode}
               matchedResult={matchedResult}
               // pdfDownloadConfig={props.pdfDownloadConfig}
               propertyCount={node.props().length}

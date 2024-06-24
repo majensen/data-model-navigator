@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import { Button, Grid, withStyles } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -14,28 +15,34 @@ import {
   getNodeDescriptionFragment,
   getNodeTitleFragment,
 } from "../../../Utils/highlightHelper";
+import {
+  selectIsSearchMode,
+  selectMatchedResult
+} from '../../../../../../features/search/searchSlice';
+import {
+  selectHighlightingMatchedNodeID,
+} from '../../../../../../features/graph/graphSlice';
 
 const NodeViewComponent = ({
   classes,
   node,
   description,
-  isSearchMode,
   matchedResult,
   propertyCount,
-  pdfDownloadConfig,
-  fileManifestConfig,
+  // pdfDownloadConfig,
+  // fileManifestConfig,
   isExpanded,
   isOverlay,
 }) => {
-  const csvBtnDownloadConfig = {
-    image: IconDownloadPTSV,
-    fileType: "tsv",
-    prefix: pdfDownloadConfig?.downloadPrefix || "Data_Loading_Template-",
-  };
-
+  // const csvBtnDownloadConfig = {
+  //   image: IconDownloadPTSV,
+  //   fileType: "tsv",
+  //   prefix: pdfDownloadConfig?.downloadPrefix || "Data_Loading_Template-",
+  // };
+  const isSearchMode = useSelector( selectIsSearchMode );
   const isFileManifest = node.handle === "file";
   const isTemplate = node.tags('Template') === "Yes";
-  const fileManifestDownloadSettings = fileManifestConfig || defaultConfig;
+  // const fileManifestDownloadSettings = fileManifestConfig || defaultConfig;
   const getTitle = () => {
     if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(

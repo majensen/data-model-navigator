@@ -1,23 +1,23 @@
 /* eslint-disable no-unused-vars */
-import React, { useRef, useReducer, useContext } from 'react';
+import React, { useRef, useContext } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, withStyles } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import { compareTwoStrings } from "string-similarity";
 import './AutoCompleteInput.css';
 import CloseIcon from '@material-ui/icons/Close';
 import SearchIcon from '@material-ui/icons/Search';
 import styles from './AutoCompleteInputStyle';
-import { addSearchHistoryItems } from '../../Utils/utils';
+import { ModelContext } from '../../../Model/ModelContext';
 import {
+  prepareSearchData,
   searchKeyword,
-  getSearchSummary,
 } from '../DictionarySearcher/searchHelper.js';
 import {
-  SearchDataContext,
-  SearchResultContext,
-  SearchHistoryContext,
-  SuggestionContext,
-} from '../SearchContext';
+  searchStarted,
+  searchCompleted,
+  selectClickedSuggestionItem,
+  suggestionItemClicked,
+  suggestionItemReset,
+} from '../../../../../features/search/searchSlice';
 
 // import acInputReducer from './AutoCompleteInputReducer';
 
@@ -27,111 +27,25 @@ function AutoCompleteInput({
   inputTitle,
 }) {
 
-  // const [state, dispatch] = useReducer(acInputReducer, {
-  //   isSearching: false,
-  //   isSearchFinished: false,
-  //   searchResult: { matchedNodes: [], summary: {} },
-  //   currentSearchKeyword: '',
-  //   hasError: false,
-  //   inputText: '',
-  //   closeIconHidden: true,
-  // });
+  const dispatch = useDispatch();
   const closeIconHidden = false;
+  const clickedSuggestionItem = useSelector( selectClickedSuggestionItem );
+  const model = useContext(ModelContext);
+  const searchData = model ? prepareSearchData(model) : null;
   
-  const { searchData, setSearchData } = useContext(SearchDataContext);
-  const { isSearching, setIsSearching,
-          isSearchFinished, setIsSearchFinished,
-          searchResult, setSearchResult,
-          hasError, setHasError,
-          errorMsg, setErrorMsg,
-          currentSearchKeyword, setCurrentSearchKeyword } = useContext(SearchResultContext);
-  const {
-    suggestionList,
-    setSuggestionList,
-    clickedSuggestionItem,
-    setClickedSuggestionItem,
-  } = useContext(SuggestionContext);
-  const {
-    searchHistoryItems,
-    setSearchHistoryItems,
-  } = useContext(SearchHistoryContext);
-    
   let inputRef = useRef(null);
-  setClickedSuggestionItem(null);
   
-  const search = (str) => {
-    setIsSearching(true);
-    setIsSearchFinished(false);
-    setHasError(false);
-    const { result, errorMsg:msg } = searchKeyword(
+  const search = (str,save = true) => {
+    dispatch(searchStarted(str))
+    const { result, msg } = searchKeyword(
       searchData,
       `${str}`.toLowerCase()
     );
-    setIsSearching(false);
-    setIsSearchFinished(true);
-    if (!result || result.length === 0) {
-      setHasError(true);
-      setErrorMsg(msg);
-      setSuggestionList([]); 
-      return;
-    }
-    else {
-      const summary = getSearchSummary(result);
-      setHasError(false);
-      setCurrentSearchKeyword(str);
-      setSearchResult({
-        matchedNodes: result,
-        summary
-      })
-      setSuggestionList([]);
-      setSearchHistoryItems(
-        addSearchHistoryItems({
-          keywordStr: str,
-          matchedCount: summary.generalMatchedNodeIDs.length,
-        }));
-    }
+    dispatch(searchCompleted({result, errorMsg:msg, save}));
+    return (result && result.length > 0 ? result : null);
   };
 
-  const suggest = (str) => {
-    setIsSearching(true);
-    setIsSearchFinished(false);
-    const { result, errorMsg:msg } = searchKeyword(searchData, str);
-    setIsSearching(false);
-    setIsSearchFinished(true);
-    const summary = getSearchSummary(result);
-    const matchedStrings = {};
-    result.forEach((resItem) => {
-      resItem.matches.forEach((matchItem) => {
-        if (!matchedStrings[matchItem.value]) {
-          matchedStrings[matchItem.value] = {
-            matchedPieceIndices: matchItem.indices.map((arr) => [
-              arr[0],
-              arr[1] + 1,
-            ]),
-          };
-        }
-      });
-    });
-
-    const suggList = Object.keys(matchedStrings)
-          .sort(
-            (str1, str2) =>
-            compareTwoStrings(str2, str) -
-              compareTwoStrings(str1, str)
-          )
-          .map((s) => ({
-            fullString: s,
-            matchedPieceIndices: matchedStrings[s].matchedPieceIndices,
-          }));
-
-    setSearchResult({
-      matchedNodes: result,
-      summary
-    });
-    setSuggestionList(suggList);
-    // closeIconHidden:!inputRef.current.value ||
-    //   inputRef.current.value.length === 0,
-  };
+  const suggest = (str) => { search(str, false); }
         
   // handler produces a submitted search
   const handleSubmitInput = (inputText) => {
@@ -153,7 +67,7 @@ function AutoCompleteInput({
     if (inputRef.current) {
       inputRef.current.value = clickedSuggestionItem.fullString;
       handleSubmit();
-      setClickedSuggestionItem(null);
+      dispatch(suggestionItemReset());
     }
   }
   
@@ -212,18 +126,5 @@ function AutoCompleteInput({
     </div>
   );
 }
-
-            
-AutoCompleteInput.propTypes = {
-  placeHolderText: PropTypes.string,
-  icon: PropTypes.string,
-  inputTitle: PropTypes.string,
-};
-
-AutoCompleteInput.defaultProps = {
-  placeHolderText: 'Search',
-  icon: 'search',
-  inputTitle: 'Search Input',
-};
 
 export default withStyles(styles)(AutoCompleteInput);

@@ -1,4 +1,5 @@
 // isolate DataDictionary
+/* eslint-disable no-undef */
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom/client';
@@ -7,7 +8,7 @@ import {
   controlVocabConfig,
   graphViewConfig,
 } from './components/ModelNavigator/config/nav.config';
-import loadMDFModel from './components/ModelNavigator/loadMDF';
+import loadMDFModel from './components/ModelNavigator/Model/loadMDF';
 import store from './store';
 import CanvasController from "./components/ModelNavigator/DataDictionary/ReactFlowGraph/Canvas/CanvasController";
 
@@ -21,7 +22,7 @@ function getModel() {
     .then( (model) => model);
 }
 
-const model = await getModel();
+globalThis.model = await getModel();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

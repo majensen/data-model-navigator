@@ -1,8 +1,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useSelector, useDispatch } from "react-redux";
 import _ from 'lodash';
-import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core";
 import {
   defaultCategory,
@@ -16,10 +15,12 @@ const DataDictionaryCategory = ({
   classes,
   category,
   highlightingNodeID,
-  pdfDownloadConfig,
+  // pdfDownloadConfig,
   expandNode,
   nodes,
 }) => {
+  const highlightingNodeID = useSelector( selectHighlightingNodeID );
+
   const categoryStyles = getCategoryStyle(category);
   const categoryColor = categoryStyles.color;
   const background = categoryStyles.background
@@ -27,7 +28,8 @@ const DataDictionaryCategory = ({
     : categoryStyles.color;
   const iconURL = tableNodeCategoryList[category]
     ? tableNodeCategoryList[category].icon
-    : defaultCategory.icon;
+        : defaultCategory.icon;
+  
   return (
     <div>
       <div
@@ -58,30 +60,13 @@ const DataDictionaryCategory = ({
           node={node}
           key={node.handle}
           description={node.desc}
-          pdfDownloadConfig={pdfDownloadConfig}
+          // pdfDownloadConfig={pdfDownloadConfig}
           expanded={highlightingNodeID && highlightingNodeID.includes(node.handle)}
           expandNode={expandNode}
         />
       ))}
     </div>
   );
-};
-
-DataDictionaryCategory.propTypes = {
-  category: PropTypes.string.isRequired,
-  nodes: PropTypes.arrayOf(
-    PropTypes.shape({
-      handle: PropTypes.string.isRequired,
-      desc: PropTypes.string,
-    })
-  ).isRequired,
-  highlightingNodeID: PropTypes.string,
-  expandNode: PropTypes.func,
-};
-
-DataDictionaryCategory.defaultProps = {
-  highlightingNodeID: null,
-  expandNode: () => {},
 };
 
 export default withStyles(styles)(

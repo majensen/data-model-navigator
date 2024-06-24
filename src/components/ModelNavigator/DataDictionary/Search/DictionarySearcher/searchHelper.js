@@ -1,10 +1,20 @@
 import _ from 'lodash';
 import Fuse from 'fuse.js';
-import {
-  getType,
-} from '../../Utils/utils';
 
 const lc = (str) => `${str}`.toLowerCase();
+const searchHistoryLocalStorageKey = 'datadictionary:searchHistory';
+
+globalThis.searchData = null; //eslint-disable-line no-undef
+
+const getType = (prop) => {
+  if (prop.type == 'value_set') {
+    return prop.valueSet();
+  }
+  else {
+    return prop.type || 'UNDEFINED';
+  }
+}
+
 /**
  * Prepare search items for Fuse.io library
  * @params [Class MDFReader] model 
@@ -12,7 +22,10 @@ const lc = (str) => `${str}`.toLowerCase();
  */
 
 export const prepareSearchData = (model) => {
-  const searchData = model.nodes()
+  if (globalThis.searchData) { // eslint-disable-line no-undef
+    return globalThis.searchData // eslint-disable-line no-undef
+  }
+  globalThis.searchData = model.nodes() // eslint-disable-line no-undef
     .map((node) => {
       const properties = node.props().map((prop) => {
         let type = getType(prop);
@@ -32,7 +45,7 @@ export const prepareSearchData = (model) => {
         properties,
       };
     });
-  return searchData;
+  return globalThis.searchData; // eslint-disable-line no-undef
 };
 
 export const ERR_KEYWORD_TOO_SHORT = 'Keyword too short, try longer keyword.';
@@ -185,4 +198,50 @@ export const getSearchSummary = (result) => {
     matchedNodeIDsInProperties,
     generalMatchedNodeIDs,
   };
+};
+
+export const retrieveSearchHistoryItems = () => {
+  const items = JSON.parse(localStorage.getItem(searchHistoryLocalStorageKey));
+  return items;
+};
+
+export const storeSearchHistoryItem = (searchHistoryItem) => {
+  const { keywordStr } = searchHistoryItem;
+  if (!keywordStr || keywordStr.length === 0) return retrieveSearchHistoryItems();
+  const prevHistory = JSON.parse(localStorage.getItem(searchHistoryLocalStorageKey));
+  let newHistory = [];
+  if (prevHistory) newHistory = prevHistory.slice(0); // clone array
+
+  // if item already exists, need to remove item before adding to the beginning
+  if (prevHistory && prevHistory.find((item) => item.keywordStr === keywordStr)) {
+    const index = prevHistory.findIndex((item) => item.keywordStr === keywordStr);
+    newHistory = prevHistory.slice(0);
+    newHistory.splice(index, 1); // remove item
+  }
+  newHistory.unshift(searchHistoryItem); // add to the beginning
+  localStorage.setItem(searchHistoryLocalStorageKey, JSON.stringify(newHistory));
+  return newHistory;
+};
+
+export const clearSearchHistoryItems = () => {
+  const newHistory = [];
+  localStorage.setItem(searchHistoryLocalStorageKey, JSON.stringify(newHistory));
+  return newHistory;
+};
+
+export const calcMatchedStrings = (result) => {
+  const matchedStrings = {};
+  result.forEach((resItem) => {
+      resItem.matches.forEach((matchItem) => {
+        if (!matchedStrings[matchItem.value]) {
+          matchedStrings[matchItem.value] = {
+            matchedPieceIndices: matchItem.indices.map((arr) => [
+              arr[0],
+              arr[1] + 1,
+            ]),
+          };
+        }
+      });
+  });
+  return matchedStrings;
 };
