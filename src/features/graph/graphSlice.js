@@ -121,6 +121,10 @@ const graphSlice = createSlice({
       const vis = action.payload;
       state.overlayTableHidden = vis == 'hide' ? true : false;
     },
+    tabGraphViewChanged(state, action) {
+      const showGraphView = action.payload;
+      state.isGraphView = showGraphView;
+    },
     legendDisplayChanged(state, action) {
       const display = action.payload;
       state.legendDisplayed = display;
@@ -173,6 +177,7 @@ export const {
   reactFlowGraphViewChanged,
   clickedBlankSpace,
   graphLegendCalculated,
+  tabGraphViewChanged,
   legendDisplayChanged,
   canvasWidthChanged,
   graphTableViewToggled,
@@ -186,6 +191,7 @@ export default graphSlice.reducer;
 
 // export Selectors
 
+export const selectIsGraphView = state => state.graph.isGraphView;
 export const selectLegendDisplayed = state => state.graph.legendDisplayed;
 export const selectGraphViewConfig = state => state.graph.graphViewConfig;
 export const selectCategories = state => state.graph.categories;

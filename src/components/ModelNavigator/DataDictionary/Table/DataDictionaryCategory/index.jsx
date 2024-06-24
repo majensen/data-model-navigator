@@ -1,6 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from "react";
-import { connect, useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import _ from 'lodash';
 import { withStyles } from "@material-ui/core";
 import {
@@ -10,11 +10,13 @@ import {
 } from "../../NodeCategories/helper";
 import DataDictionaryNode from "../DataDictionaryNode";
 import styles from "./DataDictionaryCategory.style";
+import {
+  selectHighlightingNodeID,
+} from '../../../../../features/graph/graphSlice';
 
 const DataDictionaryCategory = ({
   classes,
   category,
-  highlightingNodeID,
   // pdfDownloadConfig,
   expandNode,
   nodes,
@@ -69,6 +71,4 @@ const DataDictionaryCategory = ({
   );
 };
 
-export default withStyles(styles)(
-  connect(state => state, {})(DataDictionaryCategory)
-);
+export default withStyles(styles)(DataDictionaryCategory);

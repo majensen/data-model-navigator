@@ -5,13 +5,15 @@ import Styles from "./DictionaryStyle";
 import Tab from "./Tab/Tab";
 import TabPanel from "./Tab/TabPanel";
 import TabThemeProvider from "./Tab/TabThemeConfig";
-import ReduxDataDictionaryTable from "../Table/DataDictionaryTable";
+import DataDictionaryTable from "../Table/DataDictionaryTable";
 import CanvasView from "../ReactFlowGraph/Canvas/CanvasController";
-import { setCanvasWidth, setGraphView } from "../Store/actions/graph";
 import {
   searchResultCleared,
 } from '../../../../features/search/searchSlice';
 import {
+  tabGraphViewChanged,
+  canvasWidthChanged,
+  selectIsGraphView,
 } from '../../../../features/graph/graphSlice';
 
 const tabItems = [
@@ -29,11 +31,10 @@ const tabItems = [
 
 const DictionaryView = ({
   classes,
-  model,
-  graphView,
-  onSetGraphView,
-  onWidthChange,
 }) => {
+
+  const dispatch = useDispatch();
+  const graphView = useSelector( selectIsGraphView );
   const [currentTab, setCurrentTab] = useState(0);
   /**
    * get witdh of the tab to position nodes in the graph view
@@ -41,12 +42,11 @@ const DictionaryView = ({
   const ref = useRef(null);
   const [tabViewWidth, setTabViewWidth] = useState(0);
   const setCanvasWidth = () => {
-    setTabViewWidth(ref.current.offsetWidth);
-    onWidthChange(ref.current.offsetWidth);
+    dispatch( canvasWidthChanged(ref.current.offsetWidth) );
   };
 
   useEffect(() => {
-    onWidthChange(ref.current.offsetWidth);
+    dispatch(canvasWidthChanged(ref.current.offsetWidth));
     window.addEventListener("resize", setCanvasWidth);
     return () => {
       window.removeEventListener("resize", setCanvasWidth);
@@ -67,7 +67,7 @@ const DictionaryView = ({
 
   const handleTabChange = (event, value) => {
     setCurrentTab(value);
-    onSetGraphView(value === 0);
+    dispatch( tabGraphViewChanged(value === 0) );
   };
 
   return (
@@ -87,14 +87,13 @@ const DictionaryView = ({
               <TabPanel value={currentTab} index={0}>
                 <div className={classes.graphView}>
                   <CanvasView
-                    model={model}
                     tabViewWidth={tabViewWidth}
                   />
                 </div>
               </TabPanel>
               <TabPanel value={currentTab} index={1}>
                 <div className={classes.tableView}>
-                  <ReduxDataDictionaryTable
+                  <DataDictionaryTable
                     // pdfDownloadConfig={pdfDownloadConfig}
                   />
                 </div>
@@ -107,18 +106,4 @@ const DictionaryView = ({
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    graphView: state.ddgraph.isGraphView,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => ({
-  onSetGraphView: (isGraphView) => dispatch(setGraphView(isGraphView)),
-  onWidthChange: (canvasWidth) => dispatch(setCanvasWidth(canvasWidth)),
-});
-
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withStyles(Styles)
-)(DictionaryView);
+export default   withStyles(Styles)(DictionaryView);

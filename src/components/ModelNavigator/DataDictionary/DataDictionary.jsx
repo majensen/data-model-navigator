@@ -1,31 +1,28 @@
-import React, { useState, useRef, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useRef, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, withStyles } from "@material-ui/core";
-import ReduxDictionarySearcher from "./Search/DictionarySearcher";
-import ReduxDictionarySearchHistory from "./Search/DictionarySearchHistory";
-// import ReduxFacetFilters from "./Search/Filter/ReduxFacetFilter";
+import DictionarySearcher from "./Search/DictionarySearcher";
+import DictionarySearchHistory from "./Search/DictionarySearchHistory";
+import FacetFiltersView from "./Search/Filter/FacetFiltersView";
 import HeaderComponent from "./Header";
 import DictionaryView from "./DictionaryView/DictionaryView";
-import {
-  SuggestionContext,
-  SearchHistoryContext,
-} from './Search/SearchContext';
 
+import {
+  tabGraphViewChanged,
+  selectIsGraphView,
+} from '../../../features/graph/graphSlice';
 import "./DataDictionary.css";
 
 function DataDictionary({
   classes,
-  onSetGraphView,
-  isGraphView,
-  pdfDownloadConfig,
-  model,
+  // pdfDownloadConfig,
 }) {
 
+  const dispatch = useDispatch();
   const dictionarySearcherRef = useRef(null);
-  const [searchHistoryItems, setSearchHistoryItems] = useState([]);
   
   useEffect(() => {
-    onSetGraphView(true);
+    dispatch(tabGraphViewChanged(true));
   }, []);
 
   const handleClickSearchHistoryItem = (keyword) => {
@@ -33,41 +30,27 @@ function DataDictionary({
   };
 
   const handleClearSearchResult = () => {
-    dictionarySearcherRef.current.launchClearSearchFromOutside();
+    dictionarySearcherRef.current.clearSearchFromOutside();
   };
 
   return (
-    <SearchHistoryContext.Provider value={{searchHistoryItems, setSearchHistoryItems}}>
     <div className={classes.dictionaryContainer}>
-      <HeaderComponent pdfDownloadConfig={pdfDownloadConfig} />
+      <HeaderComponent /> {/* pdfDownloadConfig={pdfDownloadConfig} /> */}
       <div className={classes.dataDictionary}>
         <div className={classes.sidebar}>
-          <ReduxDictionarySearcher ref={dictionarySearcherRef} />
-          <ReduxDictionarySearchHistory
+          <DictionarySearcher ref={dictionarySearcherRef} />
+          <DictionarySearchHistory
             onClickSearchHistoryItem={handleClickSearchHistoryItem}
           />
-          {/* <ReduxFacetFilters /> */}
+          <FacetFiltersView />
         </div>
         <DictionaryView
-          pdfDownloadConfig={pdfDownloadConfig}
+          // pdfDownloadConfig={pdfDownloadConfig}
           handleClearSearchResult={handleClearSearchResult}
-          model={model}
-          isGraphView={isGraphView}
         />
       </div>
     </div>
-    </SearchHistoryContext.Provider>
   );
-};
-
-DataDictionary.propTypes = {
-  onSetGraphView: PropTypes.func,
-  isGraphView: PropTypes.bool,
-};
-
-DataDictionary.defaultProps = {
-  onSetGraphView: () => {},
-  isGraphView: false,
 };
 
 const styles = () => ({

@@ -22,6 +22,7 @@ import {
   changedVisOverlayPropTable,
 } from '../../../../../features/graph/graphSlice';
 import {
+  searchResultCleared,
   selectCurrentSearchKeyword,
   selectSearchResult,
   selectSuggestionList,
@@ -59,7 +60,7 @@ function DictionarySearcher({
   
   const autoCompleteRef = useRef(null);
   
-  // this is probably not right??
+
   // useEffect( () => {
   //   if (currentSearchKeyword) {
   //     autoCompleteRef.current.setInputText(currentSearchKeyword);
@@ -74,8 +75,8 @@ function DictionarySearcher({
 //    resetSearchResult();
 //    autoCompleteRef.current.clearInput();
 //  };
-  const launchClearSearchFromOutside = () => {
-//     onClearResult();
+  const clearSearchFromOutside = () => {
+    dispatch(searchResultCleared());
   };
 
   const launchSearchFromOutside = (keyword) => {

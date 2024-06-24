@@ -112,6 +112,7 @@ export const selectOverlayPropertyHidden = state => state.search.overlayProperty
 export const selectCurrentSearchKeyword = state => state.search.currentSearchKeyword;
 export const selectSearchData = state => state.search.searchData;
 export const selectSearchResult = state => state.search.searchResult;
+export const selectSearchHistoryItems = state => state.search.searchHistoryItems;
 export const selectClickedSuggestionItem = state => state.search.clickedSuggestionItem;
 export const selectSuggestionList = state => state.search.suggestionList;
 export const selectMatchedNodeIDs = state => state.search.matchedNodeIDs;

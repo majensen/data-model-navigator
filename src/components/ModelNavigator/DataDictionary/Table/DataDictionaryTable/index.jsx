@@ -1,19 +1,19 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { withStyles } from '@material-ui/core';
 import './DataDictionaryTable.css';
 // import {
 //   createFileName,
 // } from '../../utils';
+import { ModelContext } from '../../../Model/ModelContext';
 import DataDictionaryCategory from '../DataDictionaryCategory';
 
 const DataDictionaryTable = ({
   classes,
-  model,
-  highlightingNodeID,
   expandNode,
   dictionaryName,
   // pdfDownloadConfig,
 }) => {
+  const model = useContext( ModelContext );
   return (
     <>
       <p className={classes.tableInfo}>
@@ -30,9 +30,7 @@ const DataDictionaryTable = ({
             key={category}
             nodes={model.tagged_items('Category', category)}
             category={category}
-            highlightingNodeID={highlightingNodeID}
             expandNode={expandNode}
-            pdfDownloadConfig={pdfDownloadConfig}
           />
         ))}
       </div>

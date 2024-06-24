@@ -1,25 +1,27 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from '@material-ui/core';
 import styles from './DictionarySearchHistory.style';
-import { SearchHistoryContext } from '../SearchContext';
+import {
+  selectSearchHistoryItems,
+} from '../../../../../features/search/searchSlice';
 
 function DictionarySearchHistory({
   classes,
   onClickSearchHistoryItem,
   onClearSearchHistoryItems,
 }) {
+
+  const searchHistoryItems = useSelector( selectSearchHistoryItems );
+
+  // these clicks are handled in DictionarySearcher....
   const handleClick = (keyword) => {
     onClickSearchHistoryItem(keyword);
   }
-
   const handleClearHistory = () => {
     onClearSearchHistoryItems();
   }
-  const {
-    searchHistoryItems,
-    setSearchHistoryItems,
-  } = useContext(SearchHistoryContext);
+  ////////////////
   
   var historyItems = []
   if (searchHistoryItems) {
@@ -71,22 +73,5 @@ function DictionarySearchHistory({
     </>
   );
 }
-
-const SearchHistoryItemShape = PropTypes.shape({
-  keywordStr: PropTypes.string,
-  matchedCount: PropTypes.number,
-});
-
-DictionarySearchHistory.propTypes = {
-  searchHistoryItems: PropTypes.arrayOf(SearchHistoryItemShape),
-  onClickSearchHistoryItem: PropTypes.func,
-  onClearSearchHistoryItems: PropTypes.func,
-};
-
-DictionarySearchHistory.defaultProps = {
-  searchHistoryItems: [],
-  onClickSearchHistoryItem: () => {},
-  onClearSearchHistoryItems: () => {},
-};
 
 export default withStyles(styles)(DictionarySearchHistory);
