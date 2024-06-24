@@ -1,7 +1,7 @@
 /* eslint no-unused-vars: 0 */
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { forceSimulation, forceLink, forceManyBody, forceX, forceY } from 'd3-force';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -14,6 +14,7 @@ import {
 import CircularProgress from '@material-ui/core/CircularProgress';
 import _ from 'lodash';
 import { collide } from './collide.js';
+import { ModelContext } from '../../../Model/ModelContext';
 import CanvasView from './CanvasView';
 import { createNodesAndEdges } from '../GraphUtils/MDFutils';
 import { getDistinctCategoryItems, setMatchingNodeTitle, getCategoryIconUrl } from './util';
@@ -88,7 +89,8 @@ const CanvasController = ({
   onClearSearchResult,
   highlightedNodes,
 }) => {
-  if (tabViewWidth === 0 || !globalThis.model) { // eslint-disable-line no-undef
+  const model = useContext( ModelContext );
+  if (tabViewWidth === 0 || !model) { // eslint-disable-line no-undef
     return <CircularProgress />;
   }
   const dispatch = useDispatch();
@@ -124,7 +126,7 @@ const CanvasController = ({
      */
 
   useEffect(() => {
-    const flowData = createNodesAndEdges(globalThis.model, true, []); //eslint-disable-line no-undef
+    const flowData = createNodesAndEdges(model, true, []); //eslint-disable-line no-undef
     const {nodes: layoutNodes, edges: layoutEdges} = getLayoutedElements(
       flowData.nodes, flowData.edges, isSearchMode,
       defaultIcon, searchResults, currentSearchKeyword);

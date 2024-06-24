@@ -27,6 +27,7 @@ const initialState = {
   searchData: null,
   suggestionList: [],
   clickedSuggestionItem: null,
+  clickedHistoryItem: null,
   isSearchMode: false,
   isSearching: false,
 };
@@ -89,6 +90,13 @@ const searchSlice = createSlice({
     suggestionItemReset(state, action) {
       state.clickedSuggestionItem = null;
     },
+    historyItemClicked(state, action) {
+      const historyItem = action.payload;
+      state.clickedHistoryItem = historyItem;
+    },
+    historyItemReset(state, action) {
+      state.clickedHistoryItem = null;
+    },
   },
 });
 
@@ -99,6 +107,8 @@ export const {
   searchCompleted,
   suggestionItemClicked,
   suggestionItemReset,
+  historyItemClicked,
+  historyItemReset,
 } = searchSlice.actions;
 
 export default searchSlice.reducer;
@@ -114,6 +124,7 @@ export const selectSearchData = state => state.search.searchData;
 export const selectSearchResult = state => state.search.searchResult;
 export const selectSearchHistoryItems = state => state.search.searchHistoryItems;
 export const selectClickedSuggestionItem = state => state.search.clickedSuggestionItem;
+export const selectClickedHistoryItem = state => state.search.clickedHistoryItem;
 export const selectSuggestionList = state => state.search.suggestionList;
 export const selectMatchedNodeIDs = state => state.search.matchedNodeIDs;
 export const selectMatchedNodeIDsInProperties = state => state.search.matchedNodeIDsInProperties;
@@ -122,19 +133,19 @@ export const selectSearchIsFinished = state => !state.search.isSearching && !!st
                                                   
 
 // note - to use the following, must get highlightingMatchedNodeID from graphSlice,
-// then useSelector( (state, h...ID) => selectMatchedResult(state, highlightingMatchedNodeID) ) 
+// then useSelector( (state) => selectMatchedResult(state, highlightingMatchedNodeID) ) 
 export const selectMatchedResult = createSelector(
   [selectSearchResult, (state, matchedNodeID) => matchedNodeID],
-  (isSearchMode, searchResult, matchedNodeID) => {
-    return searchResult && searchResult.find( (item) => item.id === matchedNodeID );
+  (searchResult, matchedNodeID) => {
+    return searchResult && searchResult.matchedNodes.find( (item) => item.id === matchedNodeID );
   });
 
-// useSelector( (state, matchedNodeID) => selectSearchResultOfHighlighted(state, matchedNodeID) )
-export const selectSearchResultOfHighlighted = createSelector(
-  [selectSearchResult, (state, matchedNodeID) => matchedNodeID],
-  (searchResult, matchedNodeID) => {
-    return searchResult.find( item => item.id == matchedNodeID );
-  });
+// useSelector( (state) => selectSearchResultOfHighlighted(state, matchedNodeID) )
+// export const selectSearchResultOfHighlighted = createSelector(
+//   [selectSearchResult, (state, matchedNodeID) => matchedNodeID],
+//   (searchResult, matchedNodeID) => {
+//     return searchResult.find( item => item.id == matchedNodeID );
+//   });
 
 
 export const selectMatchedNodes = createSelector(

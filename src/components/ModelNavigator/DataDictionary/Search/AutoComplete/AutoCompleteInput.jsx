@@ -14,9 +14,12 @@ import {
 import {
   searchStarted,
   searchCompleted,
-  selectClickedSuggestionItem,
   suggestionItemClicked,
   suggestionItemReset,
+  selectClickedSuggestionItem,
+  historyItemClicked,
+  historyItemReset,
+  selectClickedHistoryItem,
 } from '../../../../../features/search/searchSlice';
 
 // import acInputReducer from './AutoCompleteInputReducer';
@@ -30,6 +33,7 @@ function AutoCompleteInput({
   const dispatch = useDispatch();
   const closeIconHidden = false;
   const clickedSuggestionItem = useSelector( selectClickedSuggestionItem );
+  const clickedHistoryItem = useSelector( selectClickedHistoryItem );
   const model = useContext(ModelContext);
   const searchData = model ? prepareSearchData(model) : null;
   
@@ -70,7 +74,15 @@ function AutoCompleteInput({
       dispatch(suggestionItemReset());
     }
   }
-  
+
+  const handleClickedHistItem = () => {
+    if (inputRef.current) {
+      inputRef.current.value = clickedHistoryItem.keywordStr;
+      handleSubmit();
+      dispatch(historyItemReset());
+    }
+  }
+
   const handleClear = () =>  {
     inputRef.current.value = '';
     handleInputChange('');
@@ -84,6 +96,7 @@ function AutoCompleteInput({
   return (
     <div className={ classes.autoCompleteInput }>
       { clickedSuggestionItem && handleClickedSuggItem() }
+      { clickedHistoryItem && handleClickedHistItem() }
       <form
         className={ classes.autoCompleteInputForm }
         onSubmit={ handleSubmit }

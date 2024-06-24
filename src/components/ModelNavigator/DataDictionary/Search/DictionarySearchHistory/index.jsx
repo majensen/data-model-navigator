@@ -3,23 +3,23 @@ import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from '@material-ui/core';
 import styles from './DictionarySearchHistory.style';
 import {
+  searchResultCleared,
+  historyItemClicked,
   selectSearchHistoryItems,
 } from '../../../../../features/search/searchSlice';
 
 function DictionarySearchHistory({
   classes,
-  onClickSearchHistoryItem,
-  onClearSearchHistoryItems,
 }) {
 
+  const dispatch = useDispatch();
   const searchHistoryItems = useSelector( selectSearchHistoryItems );
 
-  // these clicks are handled in DictionarySearcher....
-  const handleClick = (keyword) => {
-    onClickSearchHistoryItem(keyword);
+  const handleClick = (item) => {
+    dispatch(historyItemClicked(item));
   }
   const handleClearHistory = () => {
-    onClearSearchHistoryItems();
+    dispatch(searchResultCleared());
   }
   ////////////////
   
@@ -32,7 +32,7 @@ function DictionarySearchHistory({
         <div
           className={classes.item}
           key={item.keywordStr}
-          onClick={() => handleClick(item.keywordStr)}
+          onClick={() => handleClick(item)}
           role="button"
           tabIndex={0}
         >

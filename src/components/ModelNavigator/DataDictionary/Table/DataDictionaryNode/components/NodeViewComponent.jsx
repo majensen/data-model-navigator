@@ -17,7 +17,7 @@ import {
 } from "../../../Utils/highlightHelper";
 import {
   selectIsSearchMode,
-  selectMatchedResult
+  selectMatchedResult,
 } from '../../../../../../features/search/searchSlice';
 import {
   selectHighlightingMatchedNodeID,
@@ -27,7 +27,6 @@ const NodeViewComponent = ({
   classes,
   node,
   description,
-  matchedResult,
   propertyCount,
   // pdfDownloadConfig,
   // fileManifestConfig,
@@ -42,6 +41,11 @@ const NodeViewComponent = ({
   const isSearchMode = useSelector( selectIsSearchMode );
   const isFileManifest = node.handle === "file";
   const isTemplate = node.tags('Template') === "Yes";
+  const highlightingMatchedNodeID = useSelector( selectHighlightingMatchedNodeID );
+  const matchedResult = useSelector(
+    (state) => selectMatchedResult(state, highlightingMatchedNodeID)
+  );
+
   // const fileManifestDownloadSettings = fileManifestConfig || defaultConfig;
   const getTitle = () => {
     if (isSearchMode) {
@@ -67,6 +71,11 @@ const NodeViewComponent = ({
     return description;
   };
 
+  if (!matchedResult) {
+    return (
+      <>
+      </>
+    ); }
   return (
     <div className={classes.container}>
       <div className={classes.titleAndDescContainer}>

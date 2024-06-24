@@ -6,7 +6,8 @@ import Tab from "./Tab/Tab";
 import TabPanel from "./Tab/TabPanel";
 import TabThemeProvider from "./Tab/TabThemeConfig";
 import DataDictionaryTable from "../Table/DataDictionaryTable";
-import CanvasView from "../ReactFlowGraph/Canvas/CanvasController";
+import CanvasController from "../ReactFlowGraph/Canvas/CanvasController";
+import { graphViewConfig } from '../../config/nav.config';
 import {
   searchResultCleared,
 } from '../../../../features/search/searchSlice';
@@ -86,8 +87,9 @@ const DictionaryView = ({
             <div className={classes.viewTableContainer}>
               <TabPanel value={currentTab} index={0}>
                 <div className={classes.graphView}>
-                  <CanvasView
+                  <CanvasController
                     tabViewWidth={tabViewWidth}
+                    graphViewConfig={graphViewConfig}
                   />
                 </div>
               </TabPanel>

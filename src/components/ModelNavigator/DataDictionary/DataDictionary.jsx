@@ -41,6 +41,7 @@ function DataDictionary({
           <DictionarySearcher ref={dictionarySearcherRef} />
           <DictionarySearchHistory
             onClickSearchHistoryItem={handleClickSearchHistoryItem}
+            onClearSearchHistory={handleClearSearchResult}
           />
           <FacetFiltersView />
         </div>

@@ -49,16 +49,19 @@ export const nodeColor = (node) => {
   * set node title for matching query 
   */
  export const setMatchingNodeTitle = (searchResult = []) => {
-    let matchedNodeNameIndices = {};
-    searchResult.forEach((item) => {
-      item.matches.forEach((matchItem) => {
-          const { value, key } = matchItem;
-        if (key === 'title') {
-          matchedNodeNameIndices[value] = matchItem.indices;
-        }
-      });
-    });
-    return matchedNodeNameIndices;
+   let matchedNodeNameIndices = {};
+   if (!searchResult) {
+     return null;
+   }
+   searchResult.forEach((item) => {
+     item.matches.forEach((matchItem) => {
+       const { value, key } = matchItem;
+       if (key === 'title') {
+         matchedNodeNameIndices[value] = matchItem.indices;
+       }
+     });
+   });
+   return matchedNodeNameIndices;
  }
 
 /**
