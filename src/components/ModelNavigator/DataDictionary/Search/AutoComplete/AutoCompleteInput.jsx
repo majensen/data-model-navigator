@@ -12,13 +12,17 @@ import {
   searchKeyword,
 } from '../DictionarySearcher/searchHelper.js';
 import {
+  changedVisAcCloseIcon,
   searchStarted,
   searchCompleted,
+  searchResultCleared,
   suggestionItemClicked,
   suggestionItemReset,
+  suggestionsCleared,
   selectClickedSuggestionItem,
   historyItemClicked,
   historyItemReset,
+  selectAcCloseIconHidden,
   selectClickedHistoryItem,
 } from '../../../../../features/search/searchSlice';
 
@@ -31,7 +35,7 @@ function AutoCompleteInput({
 }) {
 
   const dispatch = useDispatch();
-  const closeIconHidden = false;
+  const closeIconHidden = useSelector( selectAcCloseIconHidden );
   const clickedSuggestionItem = useSelector( selectClickedSuggestionItem );
   const clickedHistoryItem = useSelector( selectClickedHistoryItem );
   const model = useContext(ModelContext);
@@ -61,6 +65,7 @@ function AutoCompleteInput({
     if (inputText.length > 1) {
       suggest(inputText);
     }
+    dispatch(changedVisAcCloseIcon(!!inputText ? 'show' : 'hide'));
   }
 
   const handleChange = () => {
@@ -71,7 +76,7 @@ function AutoCompleteInput({
     if (inputRef.current) {
       inputRef.current.value = clickedSuggestionItem.fullString;
       handleSubmit();
-      dispatch(suggestionItemReset());
+      dispatch(suggestionsCleared());
     }
   }
 
@@ -86,6 +91,9 @@ function AutoCompleteInput({
   const handleClear = () =>  {
     inputRef.current.value = '';
     handleInputChange('');
+    dispatch(searchResultCleared());
+    dispatch(suggestionsCleared());
+    dispatch(changedVisAcCloseIcon('hide'));
   }
 
   const handleSubmit = (e) => {

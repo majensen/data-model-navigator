@@ -163,14 +163,6 @@ const FacetFilters = ({
     return facetSectionVariables[currentSection.sectionName]
       ? facetSectionVariables[currentSection.sectionName].checkBoxColorsOne
       : defaultFacetSectionVariables.checkBoxColorsOne;
-    // return index % 2 ? facetSectionVariables[currentSection.sectionName]
-    //   ? facetSectionVariables[currentSection.sectionName].checkBoxColorsTwo
-    //     ? facetSectionVariables[currentSection.sectionName].checkBoxColorsTwo : ''
-    //       : defaultFacetSectionVariables.checkBoxColorsTwo
-    //         : facetSectionVariables[currentSection.sectionName]
-    //           ? facetSectionVariables[currentSection.sectionName].checkBoxColorsOne
-    //             ? facetSectionVariables[currentSection.sectionName].checkBoxColorsOne
-    //               : '' : defaultFacetSectionVariables.checkBoxColorsOne;
   }
 
   const handleSectionChange = (panel) => (event, isExpanded) => {

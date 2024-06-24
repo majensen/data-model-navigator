@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core';
 import styles from './DictionarySearchHistory.style';
 import {
   searchResultCleared,
+  clearedHistory,
   historyItemClicked,
   selectSearchHistoryItems,
 } from '../../../../../features/search/searchSlice';
@@ -20,6 +21,7 @@ function DictionarySearchHistory({
   }
   const handleClearHistory = () => {
     dispatch(searchResultCleared());
+    dispatch(clearedHistory());
   }
   ////////////////
   

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   List,
@@ -19,13 +19,14 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from "@material-ui/icons";
 import _ from "lodash";
+import { ModelContext } from '../../../Model/ModelContext';
 import {
   resetIcon,
   defaultFacetSectionProps,
   filterConfig
 } from "../../../config/nav.config";
 import {
-  configsLoaded,
+  filtersInitRequested,
   filterSelectorToggled,
   allFiltersCleared,
   selectFiltersSelected,
@@ -63,6 +64,8 @@ const FacetFiltersView = ({
   onSortSection,
 }) => {
   const dispatch = useDispatch();
+  const model = useContext( ModelContext );
+  dispatch(filtersInitRequested(model));
 
   const { facetSectionProps, facetFilters } = filterConfig;
   
@@ -70,13 +73,6 @@ const FacetFiltersView = ({
   
   const selectedFilters = useSelector(selectFiltersSelected);
   const selectedFiltersCount = selectedFilters ? selectedFilters.length : 0;
-
-  const [checkBoxCount, setCheckBoxCount] = useState(3);
-
-  useEffect(() => {
-    setCheckBoxCount(showCheckboxCount);
-  }, []);
-
 
   const [sectionsExpanded, setSectionsExpanded] = useState(
     Object.keys(facetSectionProps).reduce((acc, filterKey) => {

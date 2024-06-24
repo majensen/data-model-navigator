@@ -33,10 +33,12 @@ function AutoComplete({
             inputTitle={ inputTitle }
           />
         </div>
-        <AutoCompleteSuggestions
-          className={classes.suggestions}
-          classes={classes}
-        />
+        { suggestionList && suggestionList.length > 0 && (
+          <AutoCompleteSuggestions
+            className={classes.suggestions}
+            classes={classes}
+          />
+        )}
       </div>
   );
 }

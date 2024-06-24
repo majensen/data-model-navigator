@@ -6,6 +6,7 @@ import {
   calcMatchedStrings,
   storeSearchHistoryItem,
   retrieveSearchHistoryItems,
+  clearSearchHistoryItems,
 } from '../../components/ModelNavigator/DataDictionary/Search/DictionarySearcher/searchHelper';
 
 import {
@@ -15,6 +16,7 @@ import {
 // matchedResult - getSearchResultItem
 
 const initialState = {
+  acCloseIconHidden: true,
   searchHistoryItems: retrieveSearchHistoryItems(),
   currentSearchKeyword: '',
   searchString: '',
@@ -39,6 +41,10 @@ const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
+    changedVisAcCloseIcon(state, action) {
+      const vis = action.payload;
+      state.acCloseIconHidden = vis == 'hide' ? true : false;
+    },
     searchResultCleared(state, action) {
       state.isSearchMode = false;
       state.searchResult = null;
@@ -90,9 +96,16 @@ const searchSlice = createSlice({
     suggestionItemReset(state, action) {
       state.clickedSuggestionItem = null;
     },
+    suggestionsCleared(state, action) {
+      state.clickedSuggestionItem = null;
+      state.suggestionList = [];
+    },
     historyItemClicked(state, action) {
       const historyItem = action.payload;
       state.clickedHistoryItem = historyItem;
+    },
+    clearedHistory(state, action) {
+      state.searchHistoryItems = clearSearchHistoryItems();
     },
     historyItemReset(state, action) {
       state.clickedHistoryItem = null;
@@ -102,19 +115,23 @@ const searchSlice = createSlice({
 
 export const {
   // reducer/actions
+  changedVisAcCloseIcon,
   searchResultCleared,
   searchStarted,
   searchCompleted,
   suggestionItemClicked,
   suggestionItemReset,
+  suggestionsCleared,
   historyItemClicked,
   historyItemReset,
+  clearedHistory,
 } = searchSlice.actions;
 
 export default searchSlice.reducer;
 
 // export Selectors
 
+export const selectAcCloseIconHidden = state => state.search.acCloseIconHidden;
 export const selectIsSearchMode = state => state.search.isSearchMode;
 export const selectIsSearching = state => state.search.isSearching;
 export const selectLastSearchError =  state => state.search.lastSearchError;

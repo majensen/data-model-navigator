@@ -18,11 +18,10 @@ facetFilters.flatMap(
     });
 
 const initialState = {
-  model: {},
   configs: {filterConfig, controlVocabConfig},
   hiddenNodes: [],
   allTaggedNodes: [],
-  fullTagMatrix: {},
+  fullTagMatrix: null,
   displayedTagMatrix: {},
   checkboxState: acc,
   facetFilters,
@@ -50,37 +49,36 @@ const filterSlice = createSlice({
       const { configs } = action.payload;
       state.configs = configs;
     },
-    modelReceived(state, action) {
-      // this is basically an init script
-      // dispatch after configsLoaded
-      const { model } = action.payload;
-      state.model = model;
-      // initialize allTaggedNodes
-      state.fullTagMatrix = calcNodeTagMatrix(state.model,
-                                              state.configs.filterConfig.facetFilters,
-                                              []);
-      state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
-      
-      let taggedNodes = new Set();
-      Object.keys(state.fullTagMatrix)
-        .forEach((key) => {
-          Object.keys(state.fullTagMatrix[key])
-            .forEach( (val) => {
-              state.fullTagMatrix[key][val]
-                .nodes.forEach( (hndl) => { taggedNodes.add(hndl); } );
-            });
-        });
-      state.allTaggedNodes = [];
-      taggedNodes.forEach( (hndl) => { state.allTaggedNodes.push(hndl); } );
-      
+    filtersInitRequested(state, action) {
+      const model  = action.payload;
+      if (!state.fullTagMatrix) {
+        globalThis.model = model; // eslint-disable-line no-undef
+        // initialize allTaggedNodes
+        state.fullTagMatrix = calcNodeTagMatrix(model,
+                                                facetFilters,
+                                                []);
+        state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
+        
+        let taggedNodes = new Set();
+        Object.keys(state.fullTagMatrix)
+          .forEach((key) => {
+            Object.keys(state.fullTagMatrix[key])
+              .forEach( (val) => {
+                state.fullTagMatrix[key][val]
+                  .nodes.forEach( (hndl) => { taggedNodes.add(hndl); } );
+              });
+          });
+        state.allTaggedNodes = [];
+        taggedNodes.forEach( (hndl) => { state.allTaggedNodes.push(hndl); } );
+      }
     },
     hiddenNodesUpdated(state, action) {
       // hiddenNodes: an Array of node handles (strings)
-      const { hiddenNodes } = action.payload;
+      const { model, hiddenNodes } = action.payload;
       // replacement
       state.hiddenNodes = hiddenNodes;
-      state.displayedTagMatrix = calcNodeTagMatrix(state.model,
-                                                   state.configs.filterConfig.facetFilters,
+      state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, //eslint-disable-line no-undef
+                                                   facetFilters,
                                                    hiddenNodes);
     },
     filterSelectorToggled(state, action) {
@@ -111,7 +109,7 @@ const filterSlice = createSlice({
         if (state.hiddenNodes.length === 0) {
           state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
         } else {
-          state.displayedTagMatrix = calcNodeTagMatrix(state.model,
+          state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, // eslint-disable-line no-undef
                                                        state.configs.filterConfig.facetFilters,
                                                        state.hiddenNodes);
         }
@@ -136,8 +134,8 @@ const filterSlice = createSlice({
       if (state.hiddenNodes.length === 0) {
         state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
       } else {
-        state.displayedTagMatrix = calcNodeTagMatrix(state.model,
-                                                     state.configs.filterConfig.facetFilters,
+        state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, //eslint-disable-line no-undef
+                                                     facetFilters,
                                                      state.hiddenNodes);
       }
     },
@@ -241,8 +239,7 @@ function calcNodeTagMatrix(model, facetFilters, hiddenNodes) {
 }
 
 export const {
-  modelReceived,
-  configsLoaded,
+  filtersInitRequested,
   hiddenNodesUpdated,
   filterSelectorToggled,
   filterGroupCleared,
@@ -252,9 +249,6 @@ export const {
 
 export default filterSlice.reducer;
 
-export const selectModel = state => state.filter.model;
-export const selectConfigs = state => state.filter.configs;
-export const selectFilterConfig = state => state.filter.configs.filterConfig;
 export const selectFacetFilters = state => state.filter.configs.filterConfig.facetFilters;
 export const selectDisplayedTagMatrix = state => state.filter.displayedTagMatrix;
 export const selectFullTagMatrix = state => state.filter.fullTagMatrix;
