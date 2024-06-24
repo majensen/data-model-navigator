@@ -30,6 +30,9 @@ import {
   allFiltersCleared,
   selectFiltersSelected,
 } from "../../../../../features/filter/filterSlice";
+import {
+  clickedBlankSpace,
+} from "../../../../../features/graph/graphSlice";
 import FacetSelector from "./FacetSelector";
 import styles from "./FacetFilters.style";
 import FacetFilterThemeProvider from "./FacetFilterThemeConfig";
@@ -56,7 +59,6 @@ const FacetFiltersView = ({
   classes,
   onToggleCheckBox,
   hidePropertyTable,
-  onClickBlankSpace,
   onResetGraphCanvas,
   onSortSection,
 }) => {
@@ -111,9 +113,8 @@ const FacetFiltersView = ({
       datafield: item.datafield,
       isChecked: item.isChecked,
     };
-    // onClickBlankSpace();
     // hidePropertyTable();
-    // onToggleCheckBox(toggleCheckBoxItem); //
+    dispatch(clickedBlankSpace());
     dispatch(filterSelectorToggled({checkBoxInfo}));
   };
 
@@ -174,7 +175,7 @@ const FacetFiltersView = ({
 
   const clearFilterHandler = () => {
     dispatch(allFiltersCleared());
-    onClickBlankSpace();
+    dispatch(clickedBlankSpace());
     hidePropertyTable();
   };
 

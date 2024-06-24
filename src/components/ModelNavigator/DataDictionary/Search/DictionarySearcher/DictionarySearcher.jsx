@@ -18,6 +18,10 @@ import {
   allFiltersCleared,
 } from '../../../../../features/filter/filterSlice';
 import {
+  clickedBlankSpace,
+  changedVisOverlayPropTable,
+} from '../../../../../features/graph/graphSlice';
+import {
   selectCurrentSearchKeyword,
   selectSearchResult,
   selectSuggestionList,
@@ -38,16 +42,14 @@ import SearchThemeConfig from "./SearchThemeConfig";
 function DictionarySearcher({
   activeFiltersCount,
   classes,
-  hidePropertyTable,
   onClearAllFilter,
-  onClickBlankSpace,
   onSaveCurrentSearchKeyword,
   onSearchResultCleared,
   onSearchResultUpdated,
   onSearchHistoryItemCreated,
   onStartSearching,
 }) {
-
+  const dispatch = useDispatch();
   const searchIsFinished = useSelector( selectSearchIsFinished );
   const errorMsg = useSelector( selectLastSearchError )
   const hasError = errorMsg.length > 0;
@@ -82,9 +84,9 @@ function DictionarySearcher({
   ////
   
   const clearFilterHandler = () => {
-    onClickBlankSpace();
-    onClearAllFilter();
-    hidePropertyTable();
+    dispatch(clickedBlankSpace());
+    dispatch(allFiltersCleared());
+    dispatch(changedVisOverlayPropTable('hide'));
   };
  
   return (

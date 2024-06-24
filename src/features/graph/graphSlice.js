@@ -49,7 +49,17 @@ const graphSlice = createSlice({
       state.nodes = flowData.nodes;
       state.edges = flowData.edges;
     },
-    // graph click blank space
+    clickedBlankSpace(state, action) { // this is weird.
+      if (state.highlightingNode) {
+        if (state.secondHighlightingNodeID) {
+          state.secondHighlightingNodeID = null;
+        }
+        else {
+          state.highlightingNode = null;
+          state.tableExpandNodeID = null;
+        }
+      }
+    },
     tableNodeExpanded(state, action) {
       const { nodeState, nodeID } = action.payload;
       state.highlightingNode = nodeID;
@@ -161,6 +171,7 @@ export const {
   reactFlowNodeFocused,
   reactFlowNodeDisplayChanged,
   reactFlowGraphViewChanged,
+  clickedBlankSpace,
   graphLegendCalculated,
   legendDisplayChanged,
   canvasWidthChanged,

@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   List,
   Accordion,
@@ -18,7 +19,7 @@ import {
   ArrowDropDown as ArrowDropDownIcon,
   ExpandMore as ExpandMoreIcon,
 } from "@material-ui/icons";
-import { useDispatch, useSelector } from "react-redux";
+
 import {
   sortLabels,
   resetIcon,
@@ -28,6 +29,9 @@ import {
   selectFacetSectionProps,
   selectFiltersSelected,
 } from "../../../../../features/filter/filterSlice";
+import {
+  clickedBlankSpace,
+} from "../../../../../features/graph/graphSlice";
 import CheckBoxView from "./CheckBoxView";
 import styles from "./FacetFilters.style";
 import FacetFilterThemeProvider from "./FacetFilterThemeConfig";
@@ -55,12 +59,11 @@ const FacetFilters = ({
   onClearAllFilter,
   onToggleCheckBox,
   hidePropertyTable,
-  onClickBlankSpace,
   onResetGraphCanvas,
   onSortSection,
   onClearGroupFilter,
 }) => {
-
+  const dispatch = useDispatch();
   const activeFilters = useSelector(selectFiltersSelected);
 
   const activeFiltersCount = Object.entries(activeFilters).reduce(
@@ -191,7 +194,7 @@ const FacetFilters = ({
       datafield: item.datafield,
       isChecked: !item.isChecked,
     };
-    onClickBlankSpace();
+    dispatch(clickedBlankSpace());
     hidePropertyTable();
     onToggleCheckBox(toggleCheckBoxItem);
   };
