@@ -79,7 +79,7 @@ let nodeCoordinatesSetter = null;
 
 const getLayoutedElements = (
   nodes, edges, isSearchMode, defaultIcon,
-  searchResults, currentSearchKeyword, hiddenNodes,
+  searchResult, currentSearchKeyword, hiddenNodes,
   coordinatesSetter) => {
     const nodes_r = _.cloneDeep( nodes.filter( n => !hiddenNodes.includes(n.id) ) );
     const edges_r = _.cloneDeep( edges.filter( ed => !(hiddenNodes.includes(ed.source) ||
@@ -91,13 +91,15 @@ const getLayoutedElements = (
         }
       });
     if (isSearchMode) {
-      const matchingNodeTitle = setMatchingNodeTitle(searchResults);
-      nodes_r.forEach(
-        (node) => {
-          if(matchingNodeTitle[node.id]) {
-            node.data.matchedNodeNameQuery = currentSearchKeyword;
-          }
-        });
+      const matchingNodeTitle = setMatchingNodeTitle(searchResult);
+      if (matchingNodeTitle) {
+        nodes_r.forEach(
+          (node) => {
+            if(matchingNodeTitle[node.id]) {
+              node.data.matchedNodeNameQuery = currentSearchKeyword;
+            }
+          });
+      }
     }
     coordinatesSetter(nodes_r, edges_r);
     return {nodes_r, edges_r};
@@ -118,7 +120,7 @@ const CanvasController = ({
 
   //dispatch(reactFlowGraphInitialized({graphViewConfig}));
   const isSearchMode = useSelector( selectIsSearchMode );
-  const searchResults = useSelector( selectSearchResult );
+  const searchResult = useSelector( selectSearchResult );
   const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
   const hiddenNodes = useSelector( selectHiddenNodes );
   
@@ -153,7 +155,7 @@ const CanvasController = ({
       flowData.nodes, flowData.edges,
       isSearchMode,
       defaultIcon,
-      searchResults,
+      searchResult,
       currentSearchKeyword,
       hiddenNodes,
       nodeCoordinatesSetter, 
@@ -161,7 +163,7 @@ const CanvasController = ({
     dispatch(reactFlowGraphDataCalculated({flowData}));
     setNodes(layoutNodes);
     setEdges(layoutEdges);
-  }, [isSearchMode, searchResults, currentSearchKeyword, hiddenNodes]); // deps ensure updates on filter changes
+  }, [isSearchMode, searchResult, currentSearchKeyword, hiddenNodes]); // deps ensure updates on filter changes
 
 
   const onConnect = useCallback(

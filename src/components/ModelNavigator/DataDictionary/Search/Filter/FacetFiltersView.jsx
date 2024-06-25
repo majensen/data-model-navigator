@@ -33,6 +33,7 @@ import {
 } from "../../../../../features/filter/filterSlice";
 import {
   clickedBlankSpace,
+  changedVisOverlayPropTable,
 } from "../../../../../features/graph/graphSlice";
 import FacetSelector from "./FacetSelector";
 import styles from "./FacetFilters.style";
@@ -59,7 +60,6 @@ const CustomAccordionSummary = withStyles({
 const FacetFiltersView = ({
   classes,
   onToggleCheckBox,
-  hidePropertyTable,
   onResetGraphCanvas,
   onSortSection,
 }) => {
@@ -109,7 +109,7 @@ const FacetFiltersView = ({
       datafield: item.datafield,
       isChecked: item.isChecked,
     };
-    // hidePropertyTable();
+    dispatch(changedVisOverlayPropTable('hide'));
     dispatch(clickedBlankSpace());
     dispatch(filterSelectorToggled({checkBoxInfo}));
   };
@@ -172,7 +172,7 @@ const FacetFiltersView = ({
   const clearFilterHandler = () => {
     dispatch(allFiltersCleared());
     dispatch(clickedBlankSpace());
-    hidePropertyTable();
+    dispatch(changedVisOverlayPropTable('hide'));
   };
 
   return (

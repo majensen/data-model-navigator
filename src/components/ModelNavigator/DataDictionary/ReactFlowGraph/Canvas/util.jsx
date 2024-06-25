@@ -53,7 +53,7 @@ export const nodeColor = (node) => {
    if (!searchResult) {
      return null;
    }
-   searchResult.forEach((item) => {
+   searchResult.matchedNodes.forEach((item) => {
      item.matches.forEach((matchItem) => {
        const { value, key } = matchItem;
        if (key === 'title') {
