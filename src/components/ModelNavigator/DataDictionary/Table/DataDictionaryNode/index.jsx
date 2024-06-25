@@ -73,9 +73,7 @@ const DataDictionaryNode = ({
         >
           <DataDictionaryPropertyTable
             title={node.handle}
-            properties={node.props()}
-            requiredProperties={node.props().filter(p => p.tags('Inclusion') === 'required')}
-            preferredProperties={node.props().filter(p => p.tags('Inclusion') === 'preferred')}
+s            node={node}
             // horizontal // supports horizontal orientation
           />
         </div>

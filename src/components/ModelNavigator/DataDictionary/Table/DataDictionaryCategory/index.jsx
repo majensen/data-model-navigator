@@ -63,7 +63,7 @@ const DataDictionaryCategory = ({
           key={node.handle}
           description={node.desc}
           // pdfDownloadConfig={pdfDownloadConfig}
-          expanded={highlightingNodeID && highlightingNodeID.includes(node.handle)}
+          expanded={true || highlightingNodeID && highlightingNodeID.includes(node.handle)}
           expandNode={expandNode}
         />
       ))}

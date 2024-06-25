@@ -77,6 +77,10 @@ const searchSlice = createSlice({
             matchedCount: summary.generalMatcheNodeIDs.length
           });
         }
+        state.matchedNodeIDs = summary.generalMatchedNodeIDs;
+        state.matchedNodeIDsInNameAndDescription = summary.matchedNodeIDsInNameAndDescription;
+        state.matchedNodeIDsInProperties = summary.matchedNodeIDsInProperties;
+          
         const matchedStrings = calcMatchedStrings(result);
         state.suggestionList = Object.keys(matchedStrings)
           .sort( (str1, str2) =>
