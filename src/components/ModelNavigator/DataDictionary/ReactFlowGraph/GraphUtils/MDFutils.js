@@ -88,22 +88,12 @@ const generateFlowData = (node_objs, edge_objs) => {
   };
 };
 
-export function createNodesAndEdges(
-  model,
-  createAll,
-  nodesToHide = ["program"]
-) {
+export function createNodesAndEdges(model) {
   const node_objs = model.nodes()
-        .filter( (node) => !nodesToHide.includes(node.handle) )
         .map((node) => ({
           name: node.handle,
           node
         }));
-
-  const hideDb = nodesToHide.reduce((db, name) => {
-    db[name] = true;
-    return db;
-  }, {});
 
   const edge_objs = node_objs
         .filter((obj) => model.outgoing_edges(obj.node.handle).length > 0) // just outgoing edges, b/c Gen3
@@ -121,10 +111,7 @@ export function createNodesAndEdges(
       []
     )
     .filter(
-      // target type exist and is not in hide list
-      (edge_obj) =>
-        edge_obj.target 
-        && !(edge_obj.target.handle in hideDb)
+      (edge_obj) => edge_obj.target 
     );
 
   const flowData =  generateFlowData(node_objs, edge_objs);

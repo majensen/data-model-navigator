@@ -31,7 +31,10 @@ import {
   selectCurrentSearchKeyword,
   selectSearchResult,
 } from '../../../../../features/search/searchSlice';
-// import { getNodePosition } from './CanvasHelper';
+import {
+  selectHiddenNodes,
+} from '../../../../../features/filter/filterSlice';
+
 import defaultIcon from './assets/graph_icon/study.svg';
 
 const simulation = forceSimulation()
@@ -44,10 +47,44 @@ const simulation = forceSimulation()
 
 const numTicks = 20; // number of simulation ticks to get initial layout - put in config later
 
+const createNodeCoordinatesSetter = (nodes, edges) => {
+    // must clone edges, since simulation replaces source and target with
+    // actual node objects, and we need the simple handles for rendering
+  // in flowgraph
+  let sim_nodes = _.cloneDeep(nodes);
+  let sim_edges = _.cloneDeep(edges);
+  simulation.nodes(sim_nodes).force(
+    'link',
+    forceLink(sim_edges)
+      .id((d) => d.id)
+      .strength(0.1)
+      .distance(100)
+  );
+  simulation.tick(numTicks);
+  const positionByID = _.zipObject(
+    sim_nodes.map( node => node.id ),
+    sim_nodes.map(
+      (node) => ({ x:node.x, y:node.y })
+    ));
+  // closure preserves original initted coordinates
+  return (nodes, edges) => {
+    nodes.forEach( (node) => {
+      node.position.x = positionByID[node.id].x;
+      node.position.y = positionByID[node.id].y;
+    });
+  };
+};
+
+let nodeCoordinatesSetter = null;
+
 const getLayoutedElements = (
   nodes, edges, isSearchMode, defaultIcon,
-  searchResults, currentSearchKeyword) => {
-    nodes.forEach(
+  searchResults, currentSearchKeyword, hiddenNodes,
+  coordinatesSetter) => {
+    const nodes_r = _.cloneDeep( nodes.filter( n => !hiddenNodes.includes(n.id) ) );
+    const edges_r = _.cloneDeep( edges.filter( ed => !(hiddenNodes.includes(ed.source) ||
+                                                       hiddenNodes.includes(ed.target)) ) );
+    nodes_r.forEach(
       (node) => {
         if (!node.data.icon) {
           node.data.icon = defaultIcon;
@@ -55,31 +92,15 @@ const getLayoutedElements = (
       });
     if (isSearchMode) {
       const matchingNodeTitle = setMatchingNodeTitle(searchResults);
-      nodes.forEach(
+      nodes_r.forEach(
         (node) => {
           if(matchingNodeTitle[node.id]) {
             node.data.matchedNodeNameQuery = currentSearchKeyword;
           }
         });
     }
-    // must clone edges, since simulation replaces source and target with
-    // actual node objects, and we need the simple handles for rendering
-    // in flowgraph
-    let sim_edges = _.cloneDeep(edges);
-    simulation.nodes(nodes).force(
-      'link',
-      forceLink(sim_edges)
-        .id((d) => d.id)
-        .strength(0.1)
-        .distance(100)
-    );
-    simulation.tick(numTicks);
-    nodes.forEach(
-      (node) => {
-        node.position.x = node.x;
-        node.position.y = node.y;
-      });
-    return {nodes, edges};
+    coordinatesSetter(nodes_r, edges_r);
+    return {nodes_r, edges_r};
   };
 
 
@@ -99,20 +120,22 @@ const CanvasController = ({
   const isSearchMode = useSelector( selectIsSearchMode );
   const searchResults = useSelector( selectSearchResult );
   const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
+  const hiddenNodes = useSelector( selectHiddenNodes );
   
   // leave in React std form for flowGraph
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
+  const flowData = createNodesAndEdges(model);
+  if (!nodeCoordinatesSetter) {
+    nodeCoordinatesSetter = createNodeCoordinatesSetter(flowData.nodes, flowData.edges);
+  }
   
   // const [iconsURL, setIconsURL] = useState({});
 
   /**
      * initalize category item for Legend
      */
-  // useEffect(() => {
-  //   // const urls = getCategoryIconUrl(cats, `${assetConfig?.iconUrl}`);
-  //   // setIconsURL(urls);
-  // }, []);
 
   /** node
     * 1. position (x, y)
@@ -126,14 +149,19 @@ const CanvasController = ({
      */
 
   useEffect(() => {
-    const flowData = createNodesAndEdges(model, true, []); //eslint-disable-line no-undef
-    const {nodes: layoutNodes, edges: layoutEdges} = getLayoutedElements(
-      flowData.nodes, flowData.edges, isSearchMode,
-      defaultIcon, searchResults, currentSearchKeyword);
+    const {nodes_r: layoutNodes, edges_r: layoutEdges} = getLayoutedElements(
+      flowData.nodes, flowData.edges,
+      isSearchMode,
+      defaultIcon,
+      searchResults,
+      currentSearchKeyword,
+      hiddenNodes,
+      nodeCoordinatesSetter, 
+    );
     dispatch(reactFlowGraphDataCalculated({flowData}));
     setNodes(layoutNodes);
     setEdges(layoutEdges);
-  }, []);
+  }, [isSearchMode, searchResults, currentSearchKeyword, hiddenNodes]); // deps ensure updates on filter changes
 
 
   const onConnect = useCallback(

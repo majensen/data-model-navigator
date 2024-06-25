@@ -99,11 +99,11 @@ const filterSlice = createSlice({
         else {
           fs = fs.filter( (item) => !(item.tag == tag && item.value == value) );
         }
-        state.filtersSelected = fs;
         // determine nodes to hide
-        state.hiddenNodes = calcHiddenNodes(state.filtersSelected,
+        state.hiddenNodes = calcHiddenNodes(fs,
                                             state.fullTagMatrix,
                                             state.allTaggedNodes);
+        state.filtersSelected = fs;
         
         // calculate counts
         if (state.hiddenNodes.length === 0) {
@@ -155,7 +155,7 @@ const filterSlice = createSlice({
 });
 
 function calcHiddenNodes(filtersSelected, fullTagMatrix, allTaggedNodes) {
-  if (filtersSelected.size === 0) {
+  if (filtersSelected.length === 0) {
     return [];
   }
   let showNodes = [];
@@ -249,6 +249,7 @@ export const {
 
 export default filterSlice.reducer;
 
+export const selectHiddenNodes = state => state.filter.hiddenNodes;
 export const selectFacetFilters = state => state.filter.configs.filterConfig.facetFilters;
 export const selectDisplayedTagMatrix = state => state.filter.displayedTagMatrix;
 export const selectFullTagMatrix = state => state.filter.fullTagMatrix;
