@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, withStyles } from "@material-ui/core";
 import DictionarySearcher from "./Search/DictionarySearcher";
 import DictionarySearchHistory from "./Search/DictionarySearchHistory";
-import FacetFiltersView from "./Search/Filter/FacetFiltersView";
+import FacetFilters from './Search/FacetFilter';
 import HeaderComponent from "./Header";
-import DictionaryView from "./DictionaryView/DictionaryView";
+import DictionaryView from "./DictionaryView";
 
 import {
   tabGraphViewChanged,
@@ -43,7 +43,7 @@ function DataDictionary({
             onClickSearchHistoryItem={handleClickSearchHistoryItem}
             onClearSearchHistory={handleClearSearchResult}
           />
-          <FacetFiltersView />
+          <FacetFilters />
         </div>
         <DictionaryView
           // pdfDownloadConfig={pdfDownloadConfig}

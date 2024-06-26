@@ -12,7 +12,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { createFilterOptions } from "@material-ui/lab";
-import AutoComplete from "../AutoComplete/AutoCompleteView";
+import AutoComplete from "../AutoComplete";
 import ModelContext from "../../../Model/ModelContext";
 import {
   allFiltersCleared,

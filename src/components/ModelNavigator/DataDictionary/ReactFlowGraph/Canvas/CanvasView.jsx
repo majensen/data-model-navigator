@@ -8,18 +8,18 @@ import ReactFlow, {
   useReactFlow,
   useViewport,
 } from 'reactflow';
-import NodeView from '../Node/NodeView';
-import EdgeView from '../Edge/CustomEdgeView';
+import NodeView from '../Node';
+import EdgeView from '../Edge';
 import Styles from './CanvasStyle';
 import { getMinZoom } from './util';
-import LegendView from '../Legend/LegendView';
+import LegendView from '../Legend';
 import './Canvas.css';
 import './assets/style.css';
-import ActionLayer from './components/ActionLayer';
+import ActionLayer from './ActionLayer';
 import resetIcon from './assets/graph_icon/Reset.svg';
 import ZoomInIcon from './assets/graph_icon/ZoomIn.svg';
 import ZoomOutIcon from './assets/graph_icon/ZoomOut.svg';
-import OverlayPropertyTable from '../OverlayPropertyTable/OverlayPropertyTable';
+import OverlayPropertyTable from '../OverlayPropertyTable';
 import {
   reactFlowPanelClicked,
   selectCategories,

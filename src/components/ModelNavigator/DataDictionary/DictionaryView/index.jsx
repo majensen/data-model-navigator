@@ -2,7 +2,7 @@ import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { withStyles } from "@material-ui/core";
 import Styles from "./DictionaryStyle";
-import Tab from "./Tab/Tab";
+import Tab from "./Tab";
 import TabPanel from "./Tab/TabPanel";
 import TabThemeProvider from "./Tab/TabThemeConfig";
 import DataDictionaryTable from "../Table/DataDictionaryTable";
