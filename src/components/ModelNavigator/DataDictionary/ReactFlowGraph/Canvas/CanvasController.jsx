@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import React, { useCallback, useEffect, useState, useContext } from 'react';
-import { forceSimulation, forceLink, forceManyBody, forceX, forceY } from 'd3-force';
+import { forceCollide, forceCenter, forceSimulation, forceLink, forceManyBody, forceX, forceY } from 'd3-force';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   addEdge,
@@ -38,14 +38,15 @@ import {
 import defaultIcon from './assets/graph_icon/study.svg';
 
 const simulation = forceSimulation()
-  .force('charge', forceManyBody().strength(-1000))
-  .force('x', forceX().x(0).strength(0.05))
-  .force('y', forceY().y(0).strength(0.05))
-  .force('collide', collide())
-  .alphaTarget(0.05)
-  .stop();
+      .force('charge', forceManyBody().strength(-1000))
+//      .force('x', forceX().x(0).strength(0.05))
+//      .force('y', forceY().y(0).strength(0.05))
+//      .force('collide', collide())
+      .force('center', forceCenter())
+      .alphaTarget(0.05)
+      .stop();
 
-const numTicks = 20; // number of simulation ticks to get initial layout - put in config later
+const numTicks = 3; // number of simulation ticks to get initial layout - put in config later
 
 const createNodeCoordinatesSetter = (nodes, edges) => {
     // must clone edges, since simulation replaces source and target with
@@ -53,13 +54,14 @@ const createNodeCoordinatesSetter = (nodes, edges) => {
   // in flowgraph
   let sim_nodes = _.cloneDeep(nodes);
   let sim_edges = _.cloneDeep(edges);
-  simulation.nodes(sim_nodes).force(
-    'link',
-    forceLink(sim_edges)
-      .id((d) => d.id)
-      .strength(0.1)
-      .distance(100)
-  );
+  simulation.nodes(sim_nodes).
+    force(
+      'link',
+      forceLink(sim_edges)
+        .id((d) => d.id)
+        .strength(0.01)
+        .distance(50)
+    );
   simulation.tick(numTicks);
   const positionByID = _.zipObject(
     sim_nodes.map( node => node.id ),
