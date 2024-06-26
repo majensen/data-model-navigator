@@ -73,7 +73,7 @@
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "marked": "^4.2.3",
-    "mdf-reader": "^1.1.1",
+    "mdf-reader": "^1.1.2",
     "mini-css-extract-plugin": "^2.4.5",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.2.1",
