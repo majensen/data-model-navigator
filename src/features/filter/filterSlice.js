@@ -1,21 +1,12 @@
+/* eslint-disable no-undef */
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
 
 import {
-  facetSectionProps,
-  facetFilters,
   filterConfig,
   controlVocabConfig,
-} from "../../components/ModelNavigator/config/nav.config";
+} from "../../components/ModelNavigator/Config/nav.config";
 
-let acc = {};
-
-facetFilters.flatMap(
-    (filt) => {
-      filt.checkboxItems.map((item) => {
-        acc[`checkbox_${item.tag}_${item.value}`] = false;
-      });
-    });
 
 const initialState = {
   configs: {filterConfig, controlVocabConfig},
@@ -23,19 +14,9 @@ const initialState = {
   allTaggedNodes: [],
   fullTagMatrix: null,
   displayedTagMatrix: {},
-  checkboxState: acc,
-  facetFilters,
+  checkboxState: {},
   filtersSelected: [],
 };
-
-const defaultFilterConfig = {
-  facetFilters: [],
-  facetSectionProps: {},
-  resetIcon: {},
-  baseFilters: {},
-  filterSections: [],
-  filterOptions: []
-}
 
 const filterSlice = createSlice({
   name: 'filter',
@@ -52,10 +33,10 @@ const filterSlice = createSlice({
     filtersInitRequested(state, action) {
       const model  = action.payload;
       if (!state.fullTagMatrix) {
-        globalThis.model = model; // eslint-disable-line no-undef
+        globalThis.model = model; 
         // initialize allTaggedNodes
         state.fullTagMatrix = calcNodeTagMatrix(model,
-                                                facetFilters,
+                                                globalThis.config.facetFilters,
                                                 []);
         state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
         
@@ -71,14 +52,24 @@ const filterSlice = createSlice({
         state.allTaggedNodes = [];
         taggedNodes.forEach( (hndl) => { state.allTaggedNodes.push(hndl); } );
       }
+      if (!state.checkboxState) {
+        let acc = {};
+        globalThis.config.facetFilters.flatMap( // eslint-disable-line no-undef
+          (filt) => {
+            filt.checkboxItems.map((item) => {
+              acc[`checkbox_${item.tag}_${item.value}`] = false;
+            });
+          });
+        state.checkboxState = acc;
+      }
     },
     hiddenNodesUpdated(state, action) {
       // hiddenNodes: an Array of node handles (strings)
       const { model, hiddenNodes } = action.payload;
       // replacement
       state.hiddenNodes = hiddenNodes;
-      state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, //eslint-disable-line no-undef
-                                                   facetFilters,
+      state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, 
+                                                   globalThis.config.facetFilters,
                                                    hiddenNodes);
     },
     filterSelectorToggled(state, action) {
@@ -109,8 +100,8 @@ const filterSlice = createSlice({
         if (state.hiddenNodes.length === 0) {
           state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
         } else {
-          state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, // eslint-disable-line no-undef
-                                                       state.configs.filterConfig.facetFilters,
+          state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, 
+                                                       globalThis.config.facetFilters,
                                                        state.hiddenNodes);
         }
       }
@@ -134,8 +125,8 @@ const filterSlice = createSlice({
       if (state.hiddenNodes.length === 0) {
         state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
       } else {
-        state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, //eslint-disable-line no-undef
-                                                     facetFilters,
+        state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, 
+                                                     globalThis.config.facetFilters,
                                                      state.hiddenNodes);
       }
     },
@@ -250,9 +241,9 @@ export const {
 export default filterSlice.reducer;
 
 export const selectHiddenNodes = state => state.filter.hiddenNodes;
-export const selectFacetFilters = state => state.filter.configs.filterConfig.facetFilters;
+// export const selectFacetFilters = state => state.filter.configs.filterConfig.facetFilters;
 export const selectDisplayedTagMatrix = state => state.filter.displayedTagMatrix;
 export const selectFullTagMatrix = state => state.filter.fullTagMatrix;
 export const selectCheckboxState = state => state.filter.checkboxState;
 export const selectFiltersSelected = state => state.filter.filtersSelected;
-export const selectFacetSectionProps = state => state.filter.configs.filterConfig.facetSectionProps;
+// export const selectFacetSectionProps = state => state.filter.configs.filterConfig.facetSectionProps;

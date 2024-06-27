@@ -17,7 +17,7 @@ import { collide } from './collide.js';
 import { ModelContext } from '../../../Model/ModelContext';
 import CanvasView from './CanvasView';
 import { createNodesAndEdges } from '../GraphUtils/MDFutils';
-import { getDistinctCategoryItems, setMatchingNodeTitle, getCategoryIconUrl } from './util';
+import {  setMatchingNodeTitle } from './util';
 import {
   reactFlowGraphInitialized,
   //  onNodeDragStart, onPanelViewClick, onViewChange, setReactFlowGraphData,
@@ -134,23 +134,6 @@ const CanvasController = ({
   if (!nodeCoordinatesSetter) {
     nodeCoordinatesSetter = createNodeCoordinatesSetter(flowData.nodes, flowData.edges);
   }
-  
-  // const [iconsURL, setIconsURL] = useState({});
-
-  /**
-     * initalize category item for Legend
-     */
-
-  /** node
-    * 1. position (x, y)
-    * 2. title
-    * 3. highlight node based on matching search query to desc, properties and title
-    */
-  /**
-     * update states
-     * 1. nodes and edges
-     * 2. toggle between on/off for search mode
-     */
 
   useEffect(() => {
     const {nodes_r: layoutNodes, edges_r: layoutEdges} = getLayoutedElements(

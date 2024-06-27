@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from "@material-ui/core";
 // import { downloadTemplate } from "../../Utils/utils";
@@ -7,6 +7,8 @@ import DataDictionaryPropertyTable from "../DataDictionaryPropertyTable";
 import "./DataDictionaryNode.css";
 import styles from "./DataDictionaryNode.style";
 import NodeViewComponent from "./components/NodeViewComponent";
+import { ConfigContext } from "../../../Config/ConfigContext";
+
 import {
   tableNodeExpanded,
 } from '../../../../../features/graph/graphSlice';
@@ -20,10 +22,13 @@ const DataDictionaryNode = ({
   classes,
   node, // this is an mdf-reader node, not a flowgraph node
   // pdfDownloadConfig,
+  tag,
+  value,
   description,
   expanded
 }) => {
   const dispatch = useDispatch();
+  const config = useContext( ConfigContext );
   
   const handleClickNode = (nodeID) => {
     if (!expanded) {
@@ -43,13 +48,14 @@ const DataDictionaryNode = ({
   //   downloadTemplate(format, node.handle);
   // };
 
+  const color = tag ? config.tagAttribute(tag, value).table.color : '#000000';
 
   const propertyCount = node.props().length;
   return (
     <>
       <div
         className={classes.node}
-        style={{ borderLeftColor: getCategoryColor(node.category) }}
+        style={{ borderLeftColor: color }}
         onClick={() => handleClickNode(node.handle)}
         onKeyPress={() => handleClickNode(node.handle)}
         role="button"
@@ -67,7 +73,7 @@ const DataDictionaryNode = ({
         <div
           className={classes.property}
           style={{
-            borderLeft: `5px solid ${getCategoryColor(node.tags('Category'))}`,
+            borderLeft: `5px solid ${color}`,
             borderBottom: `1px solid #adbec4`,
           }}
         >

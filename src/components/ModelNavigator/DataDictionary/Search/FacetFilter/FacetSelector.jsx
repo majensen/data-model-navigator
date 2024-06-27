@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import {
   List,
@@ -17,13 +17,14 @@ import {
   ArrowDropDown as ArrowDropDownIcon,
   ExpandMore as ExpandMoreIcon,
 } from "@material-ui/icons";
+import { ConfigContext } from "../../../Config/ConfigContext";
 import CheckBoxView from "./CheckBoxView";
 import styles from "./FacetFilters.style";
 import {
   sortLabels,
   resetIcon,
   defaultFacetSectionProps,
-} from "../../../config/nav.config";
+} from "../../../Config/nav.config";
 import { filterGroupCleared } from '../../../../../features/filter/filterSlice';
 
 const CustomAccordionSummary = withStyles({
@@ -48,14 +49,14 @@ const FacetSelector = ({
   classes,
   facetItem,
   section,
-  facetSectionProps,
   handleToggle,
   checkBoxCount,
   setCheckBoxCount,
   onSortSection
 }) => {
+
   const dispatch = useDispatch();
-  
+  const config = useContext( ConfigContext );
   const [groupsExpanded, setGroupsExpanded] = useState([]);
   
   const handleGroupsChange = (panel) => (event, isExpanded) => {
@@ -67,7 +68,6 @@ const FacetSelector = ({
       if (index > -1) {
         groups.splice(index, 1);
       }
-      // setCheckBoxCount(showCheckboxCount);
     }
     setGroupsExpanded(groups);
   };
@@ -96,8 +96,8 @@ const FacetSelector = ({
   };
 
   function getCheckBoxColor(index, currentSection) {
-    return facetSectionProps[currentSection.sectionName]
-      ? facetSectionProps[currentSection.sectionName].checkBoxColorsOne
+    return config.facetSection(currentSection.sectionName)
+      ? config.facetSection(currentSection.sectionName).checkBoxColorsOne
       : defaultFacetSectionProps.checkBoxColorsOne;
   }
   
@@ -105,9 +105,9 @@ const FacetSelector = ({
     let groupNameColor = "black";
     facetItem.checkboxItems.map((item) => {
       if (item.isChecked) {
-        groupNameColor = facetSectionProps[currentSection.sectionName]
-          ? facetSectionProps[currentSection.sectionName].color
-            ? facetSectionProps[currentSection.sectionName].color
+        groupNameColor = config.facetSection(currentSection.sectionName)
+          ? config.facetSection(currentSection.sectionName).color
+            ? config.facetSection(currentSection.sectionName).color
             : ""
           : defaultFacetSectionProps.color;
       }
@@ -126,7 +126,6 @@ const FacetSelector = ({
         checkboxItem={item}
         facetItem={facetItem}
         handleToggle={handleToggle}
-        facetSectionProps={facetSectionProps}
         defaultFacetSectionProps={defaultFacetSectionProps}
         backgroundColor={getCheckBoxColor(index, section)}
         checkColor={getGroupNameColor(facetItem, section)}

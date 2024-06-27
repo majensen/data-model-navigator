@@ -19,12 +19,12 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from "@material-ui/icons";
 import _ from "lodash";
+import { ConfigContext } from '../../../Config/ConfigContext'; 
 import { ModelContext } from '../../../Model/ModelContext';
 import {
   resetIcon,
   defaultFacetSectionProps,
-  filterConfig
-} from "../../../config/nav.config";
+} from "../../../Config/nav.config";
 import {
   filtersInitRequested,
   filterSelectorToggled,
@@ -65,24 +65,18 @@ const FacetFiltersView = ({
 }) => {
   const dispatch = useDispatch();
   const model = useContext( ModelContext );
+  const config = useContext( ConfigContext );
   dispatch(filtersInitRequested(model));
 
-  const { facetSectionProps, facetFilters } = filterConfig;
+  const facetSectionProps = config.facetSections;
+  const facetFilters = config.facetFilters;
   
-  const showCheckboxCount = filterConfig?.showCheckboxCount || 3;
+  const showCheckboxCount = 3;
   
   const selectedFilters = useSelector(selectFiltersSelected);
   const selectedFiltersCount = selectedFilters ? selectedFilters.length : 0;
 
-  const [sectionsExpanded, setSectionsExpanded] = useState(
-    Object.keys(facetSectionProps).reduce((acc, filterKey) => {
-      const { isExpanded } = facetSectionProps[filterKey];
-      if (isExpanded) {
-        acc.push(filterKey);
-      }
-      return acc;
-    }, [])
-  );
+  const [sectionsExpanded, setSectionsExpanded] = useState([]);
 
   const handleSectionChange = (panel) => (event, isExpanded) => {
     const sections = _.cloneDeep(sectionsExpanded);
@@ -98,59 +92,11 @@ const FacetFiltersView = ({
   };
 
   const handleToggle = (item) => () => {
-    // this is not good
-    const checkBoxInfo = { 
-      groupName: item.groupName,
-      section: item.section,
-      name: item.name,
-      group: item.group,
-      tag: item.tag,
-      value: item.value,
-      datafield: item.datafield,
-      isChecked: item.isChecked,
-    };
     dispatch(changedVisOverlayPropTable('hide'));
     dispatch(clickedBlankSpace());
-    dispatch(filterSelectorToggled({checkBoxInfo}));
+    dispatch(filterSelectorToggled(item));
   };
 
-  // this provides the data that is ultimately displayed:
-  // which is state.submission.checkbox
-  
-  // const sideBarContent = useSelector((state) => 
-  //   state.submission && state.submission.checkbox
-  //     ? state.submission.checkbox // are 'checkboxItems'
-  //     : {
-  //         data: [],
-  //       defaultPanel: false,
-        
-  //     }
-  // );
-
-  // const sideBarDisplay = sideBarContent.data.filter(
-  //   (sideBar) => sideBar.show === true
-  // );
-
-  /*
-  const sideBarSections = arrangeBySections(sideBarDisplay);
-  
-  const arrangeBySections = (arr) => {
-    const sideBar = {};
-    arr.forEach(({ section, ...item }) => {
-      if (!sideBar[section]) {
-        sideBar[section] = { sectionName: section, items: [] };
-      }
-      sideBar[section].items.push({ section, ...item });
-    });
-    return Object.values(sideBar);
-  };
-  */
-
-    // sideBarItem has datafield, checkboxItems (array), groupName = is just a facetFilter
-  // currentSection has items (array), sectionName, 
-  // currentSection.items - array of sideBarItems = facetFilters
-  // sideBarSections - arry of [current]Sections
-  // sideBarSections just an array of groups (by section) of facetFilters
   const sections = {};
   facetFilters
     .forEach( (filt) => {
@@ -161,10 +107,10 @@ const FacetFiltersView = ({
     });
   const sideBarSections = Object.values(sections);
   
-  
+  // this below is not right - there should be a single "default section"
   if (
     facetSectionProps &&
-    Object.keys(facetSectionProps).length === 0
+    facetSectionProps.length === 0
   ) {
     return <></>;
   }
@@ -193,15 +139,15 @@ const FacetFiltersView = ({
           <Divider
             variant="middle"
             style={{
-              backgroundColor: facetSectionProps[currentSection.sectionName]
-                ? facetSectionProps[currentSection.sectionName].color
-                  ? facetSectionProps[currentSection.sectionName].color
-                  : ""
-                : "#000000",
+              backgroundColor: config.facetSection(currentSection.sectionName)
+                ? config.facetSection(currentSection.sectionName).color
+                ? config.facetSection(currentSection.sectionName).color
+                : ""
+              : "#000000",
               margin: "0px",
-              height: facetSectionProps[currentSection.sectionName]
-                ? facetSectionProps[currentSection.sectionName].height
-                  ? facetSectionProps[currentSection.sectionName].height
+              height: config.facetSection(currentSection.sectionName)
+                ? config.facetSection(currentSection.sectionName).height
+                  ? config.facetSection(currentSection.sectionName).height
                   : ""
                 : "5px",
             }}
@@ -235,7 +181,6 @@ const FacetFiltersView = ({
                     return (
                       <FacetSelector facetItem={facetItem}
                                      section={currentSection}
-                                     facetSectionProps={facetSectionProps}
                                      handleToggle={handleToggle}
                       />
                     );

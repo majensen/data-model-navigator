@@ -9,7 +9,7 @@ import {
   getMatchesSummaryForProperties,
 } from '../../Utils/highlightHelper';
 import DialogBox from './component/DialogComponent';
-import { controlVocabConfig as config } from '../../../config/nav.config';
+import { controlVocabConfig as config } from '../../../Config/nav.config';
 import TableHead from './component/tableHead';
 import TableRow from './component/tableRow';
 

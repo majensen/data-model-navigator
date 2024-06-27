@@ -9,7 +9,7 @@ import {
 import ListComponent from "./ListComponent";
 import ButtonComponent from "./ButtonComponent";
 import KeyIconSvg from "../../../../assets/key_icon.svg";
-import { controlVocabConfig as ctrlConfig } from "../../../../config/nav.config";
+import { controlVocabConfig as ctrlConfig } from "../../../../Config/nav.config";
 import "../DataDictionaryPropertyTable.css";
 // import DownloadFileTypeBtn from "./DownloadFileTypeBtn";
 

@@ -7,7 +7,7 @@ import TabPanel from "./Tab/TabPanel";
 import TabThemeProvider from "./Tab/TabThemeConfig";
 import DataDictionaryTable from "../Table/DataDictionaryTable";
 import CanvasController from "../ReactFlowGraph/Canvas/CanvasController";
-import { graphViewConfig } from '../../config/nav.config';
+import { graphViewConfig } from '../../Config/nav.config';
 import {
   searchResultCleared,
 } from '../../../../features/search/searchSlice';

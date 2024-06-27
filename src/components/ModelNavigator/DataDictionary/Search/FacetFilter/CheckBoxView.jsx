@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, {useContext} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import { Checkbox, ListItem, ListItemText, Divider, Tooltip } from "@material-ui/core";
@@ -7,6 +7,7 @@ import {
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxBlankIcon,
 } from "@material-ui/icons";
+import { ConfigContext } from '../../../Config/ConfigContext'; 
 import {
   selectCheckboxState,
   selectFullTagMatrix,
@@ -48,13 +49,13 @@ function CheckBoxView(props) {
     checkboxItem,
     handleToggle,
     facetItem,
-    facetSectionProps,
     defaultFacetSectionProps,
     backgroundColor,
-    dataDictionary,
+    dataDictionary, // this is never set btw
   } = props;
   const dispatch = useDispatch();
-  const checkboxState = useSelector(selectCheckboxState );
+  const config = useContext( ConfigContext );
+  const checkboxState = useSelector(selectCheckboxState);
   const displayedTagMatrix = useSelector(selectDisplayedTagMatrix);
   const fullTagMatrix = useSelector(selectFullTagMatrix);
   const getStyles = () => {
@@ -92,10 +93,11 @@ function CheckBoxView(props) {
             />
           }
           style={{
-            color: facetSectionProps[facetItem.section]
-              .checkBoxBorderColor
-              ? facetSectionProps[facetItem.section].checkBoxBorderColor
-              : "#137fbe",
+            color: config.facetSection(facetItem.section)
+              ? config.facetSection(facetItem.section).checkBoxBorderColor
+              ? config.facetSection(facetItem.section).checkBoxBorderColor
+              :"#137fbe"
+            : "#137fbe",
           }}
           checked={checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]}
           onChange={(event) => {
@@ -139,11 +141,11 @@ function CheckBoxView(props) {
         <div className={classes.panelSubjectText}>
           <span
             style={{
-              color: facetSectionProps[facetItem.section]
-                ? facetSectionProps[facetItem.section].color
-                  ? facetSectionProps[facetItem.section].color
-                  : ""
-                : defaultFacetSectionProps.color,
+              color: config.facetSection(facetItem.section)
+                ? config.facetSection(facetItem.section).color
+                ? config.facetSection(facetItem.section).color
+                : defaultFacetSectionProps.color
+              : defaultFacetSectionProps.color,
             }}
           >
             &nbsp;
