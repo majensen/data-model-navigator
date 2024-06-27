@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import { Button, Grid, withStyles } from "@material-ui/core";
@@ -10,11 +10,11 @@ import { createFileName } from "../../../utils";
 import IconDownloadPDF from "../../icons/icon_download_PDF.svg";
 import IconDownloadPTSV from "../../icons/icon_download_TSV.svg";
 import DownloadButton from "../../../NodePDF/DownloadButton";
-import { fileManifestDownloadSettings as defaultConfig } from "../../../../../../config/file-manifest-config";
 import {
   getNodeDescriptionFragment,
   getNodeTitleFragment,
 } from "../../../Utils/highlightHelper";
+import { ConfigContext } from '../../../../Config/ConfigContext';
 import {
   selectIsSearchMode,
   selectMatchedResult,
@@ -38,6 +38,7 @@ const NodeViewComponent = ({
   //   fileType: "tsv",
   //   prefix: pdfDownloadConfig?.downloadPrefix || "Data_Loading_Template-",
   // };
+  const config = useContext( ConfigContext );
   const isSearchMode = useSelector( selectIsSearchMode );
   const isFileManifest = node.handle === "file";
   const isTemplate = node.tags('Template') === "Yes";
@@ -70,6 +71,27 @@ const NodeViewComponent = ({
     }
     return description;
   };
+
+  const TagLabels =
+        config.annotationTags.map( (tag) => {
+          if (node.tags(tag)) {
+            return (
+              <>
+                <span className={classes.nodeLabel}>
+                  <span>{_.capitalize(tag)}:</span>
+                  <span className={classes.nodeAssignment}>
+                    {_.capitalize(node.tags(tag))}
+                  </span>
+                </span>
+              </>
+            );
+          } else {
+            return (
+              <>
+              </>
+            );
+          }
+        });
 
   if (!matchedResult) {
     return (
@@ -121,60 +143,9 @@ const NodeViewComponent = ({
             </div>
             <div>
               <div className={classes.assignmentAndClassTags}>
-                {node.assignment && (
-                  <>
-                    <span className={classes.nodeLabel}>
-                      <span>Assignment:</span>
-                      <span className={classes.nodeAssignment}>
-                        {_.capitalize(node.assignment)}
-                      </span>
-                    </span>
-                  </>
-                )}
-                {node.class && (
-                  <>
-                    <span className={classes.nodeLabel}>
-                      Class:
-                      <span className={classes.nodeClass}>
-                        {_.capitalize(node.tags('Class'))}
-                      </span>
-                    </span>
-                  </>
-                )}
+                <TagLabels />
               </div>
             </div>
-            {/* leave out download feature
-            <div style={{ paddingRight: "10px"}}>                
-              <ButtonGroup>
-                {(isTemplate || (isFileManifest && isTemplate)) && (
-                  <DownloadButton
-                    config={csvBtnDownloadConfig}
-                    documentData={node}
-                    template={node.tags('Template')}
-                    isFileManifest={isFileManifest}
-                    fileName={
-                      isFileManifest
-                        ? createFileName(
-                            "",
-                            pdfDownloadConfig?.downloadPrefix || fileManifestDownloadSettings.filename_prefix
-                          )
-                        : createFileName(node.id, csvBtnDownloadConfig.prefix)
-                    }
-                  />
-                )}
-                <DownloadButton
-                  config={{
-                    ...pdfDownloadConfig,
-                    type: "single",
-                    image: IconDownloadPDF,
-                  }}
-                  documentData={node}
-                  fileName={createFileName(node.handle, pdfDownloadConfig?.prefix)}
-                />
-                </ButtonGroup>
-           </div>
-               */}
-
           </div>
         </div>
       </div>

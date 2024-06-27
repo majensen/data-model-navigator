@@ -2,6 +2,8 @@ export const createConfig = ({
   facetSections,
   facetFilters,
   tagAttributes,
+  legendTag,
+  annotationTags,
 }) => {
   const config = {
     facetSection: (section) => {
@@ -13,8 +15,11 @@ export const createConfig = ({
     },
     facetFilters,
     tagAttribute: (tag, value) => {
-      return tagAttributes.find( elt => elt.tag === tag && elt.value === value );
-    },    
+      return tagAttributes.find( elt => elt.tag === tag &&
+                                 (!value || elt.value === value) );
+    },
+    legendTag,
+    annotationTags,
   };
   globalThis.config = config; //eslint-disable-line no-undef
   return config;

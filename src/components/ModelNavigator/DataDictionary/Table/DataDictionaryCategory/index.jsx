@@ -1,5 +1,5 @@
 /* eslint-disable react/prefer-stateless-function */
-import React from "react";
+import React, {useContext} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import _ from 'lodash';
 import { withStyles } from "@material-ui/core";
@@ -13,6 +13,7 @@ import styles from "./DataDictionaryCategory.style";
 import {
   selectHighlightingNodeID,
 } from '../../../../../features/graph/graphSlice';
+import { ConfigContext } from '../../../Config/ConfigContext';
 
 const DataDictionaryCategory = ({
   classes,
@@ -21,8 +22,8 @@ const DataDictionaryCategory = ({
   expandNode,
   nodes,
 }) => {
+  const config = useContext( ConfigContext );
   const highlightingNodeID = useSelector( selectHighlightingNodeID );
-
   const categoryStyles = getCategoryStyle(category);
   const categoryColor = categoryStyles.color;
   const background = categoryStyles.background
@@ -61,6 +62,7 @@ const DataDictionaryCategory = ({
         <DataDictionaryNode
           node={node}
           key={node.handle}
+          tag={config.legendTag}
           description={node.desc}
           // pdfDownloadConfig={pdfDownloadConfig}
           expanded={true || highlightingNodeID && highlightingNodeID.includes(node.handle)}

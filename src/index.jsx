@@ -6,6 +6,8 @@ import {
   facetSections,
   facetFilters,
   tagAttributes,
+  legendTag,
+  annotationTags,
 } from './ICDCconfig.js';
 import {
   createConfig,
@@ -26,7 +28,13 @@ function getModel() {
     .then( (model) => model );
 }
 
-const config = createConfig({facetSections, facetFilters, tagAttributes});
+const config = createConfig({
+  facetSections,
+  facetFilters,
+  tagAttributes,
+  legendTag,
+  annotationTags,
+});
 const model = await getModel(); // eslint-disable-line no-undef
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -23,7 +23,6 @@ const DataDictionaryNode = ({
   node, // this is an mdf-reader node, not a flowgraph node
   // pdfDownloadConfig,
   tag,
-  value,
   description,
   expanded
 }) => {
@@ -48,7 +47,7 @@ const DataDictionaryNode = ({
   //   downloadTemplate(format, node.handle);
   // };
 
-  const color = tag ? config.tagAttribute(tag, value).table.color : '#000000';
+  const color = tag ? config.tagAttribute(tag).table.color : '#000000';
 
   const propertyCount = node.props().length;
   return (

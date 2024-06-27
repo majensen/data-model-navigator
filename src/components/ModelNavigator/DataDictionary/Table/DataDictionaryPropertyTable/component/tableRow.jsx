@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { withStyles } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -9,6 +9,7 @@ import {
 import ListComponent from "./ListComponent";
 import ButtonComponent from "./ButtonComponent";
 import KeyIconSvg from "../../../../assets/key_icon.svg";
+import { ConfigContext } from '../../../../Config/ConfigContext';
 import { controlVocabConfig as ctrlConfig } from "../../../../Config/nav.config";
 import "../DataDictionaryPropertyTable.css";
 // import DownloadFileTypeBtn from "./DownloadFileTypeBtn";
@@ -24,11 +25,8 @@ const TableRow = ({
   isSearchMode,
   title,
 }) => {
-  const config = useSelector((state) =>
-    state.submission && state.submission.ctrlVocabConfig
-      ? state.submission.ctrlVocabConfig
-      : ctrlConfig
-  );
+
+  const config = useContext( ConfigContext );
   const required = (requiredFlag, preferredFlag) => (
     <span className={requiredFlag ? classes.required : ""}>
       {requiredFlag ? "Required" : preferredFlag ? "Preferred" : "Optional"}
@@ -76,6 +74,7 @@ const TableRow = ({
     let type = prop.type;
     let enums = prop.type === 'value_set' ? prop.valueSet() : [];
     let key = prop.is_key;
+
     const isRequired = prop.tags('inclusion') === 'required';
     const isPreferred = prop.tags('inclusion') === 'preferred';
 
@@ -109,9 +108,9 @@ const TableRow = ({
             <div style={{ display: "flex", flexDirection: "column" }}>
               <span>
                 <p className={classes.acceptValue}>Acceptable Values:</p>{" "}
-                {enums.length > config.maxNoOfItems ? (
+                {enums.length > ctrlConfig.maxNoOfItems ? (
                   <ListComponent
-                    enums={enums.slice(0, config.maxNoOfItems)}
+                    enums={enums.slice(0, ctrlConfig.maxNoOfItems)}
                     isSearchMode={isSearchMode}
                     typeMatchList={typeMatchList}
                   />
@@ -123,7 +122,7 @@ const TableRow = ({
                   />
                 )}
               </span>
-              {enums.length > config.maxNoOfItems && (
+              {enums.length > ctrlConfig.maxNoOfItems && (
                 <ButtonComponent
                   label="...show more"
                   openHandler={() =>
