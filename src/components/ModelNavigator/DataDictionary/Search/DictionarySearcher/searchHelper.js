@@ -15,12 +15,6 @@ const getType = (prop) => {
   }
 }
 
-/**
- * Prepare search items for Fuse.io library
- * @params [Class MDFReader] model 
- * @returns [Object] search data
- */
-
 export const prepareSearchData = (model) => {
   if (globalThis.searchData) { // eslint-disable-line no-undef
     return globalThis.searchData // eslint-disable-line no-undef
@@ -31,7 +25,9 @@ export const prepareSearchData = (model) => {
         let type = getType(prop);
         if (type === 'UNDEFINED') type = undefined;
         const propertyDescription = prop.desc;
-        const splitText = propertyDescription ? propertyDescription.split('<br>')[0] : propertyDescription;
+        const splitText = propertyDescription
+              ? propertyDescription.split('<br>')[0]
+              : propertyDescription;
         return {
           name: lc(prop.handle),
           description: lc(splitText),

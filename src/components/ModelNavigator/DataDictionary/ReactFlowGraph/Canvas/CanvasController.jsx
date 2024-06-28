@@ -20,7 +20,6 @@ import { createNodesAndEdges } from '../GraphUtils/MDFutils';
 import {  setMatchingNodeTitle } from './util';
 import {
   reactFlowGraphInitialized,
-  //  onNodeDragStart, onPanelViewClick, onViewChange, setReactFlowGraphData,
   reactFlowNodeDragStarted, reactFlowPanelClicked, reactFlowGraphViewChanged,
   reactFlowGraphDataCalculated,
   selectGraphViewConfig,
