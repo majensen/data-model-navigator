@@ -12,7 +12,7 @@ To start it out of the box:
 
      git clone https://github.com/majensen/model-navigator-standalone
      cd model-navigator-standalone
-     npm install
+     npm --legacy-peer-deps install
      npm start
 
 which should open the model viewer onto the
