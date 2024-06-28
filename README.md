@@ -11,7 +11,7 @@ the model.
 To start it out of the box:
 
      git clone https://github.com/majensen/model-navigator-standalone
-     cd data-model-navigator
+     cd model-navigator-standalone
      npm install
      npm start
 
