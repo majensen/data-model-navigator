@@ -10,7 +10,7 @@ the model.
 
 To start it out of the box:
 
-     git clone https://github.com/majensen/data-model-navigator
+     git clone https://github.com/majensen/model-navigator-standalone
      cd data-model-navigator
      npm install
      npm start
