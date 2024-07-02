@@ -12,7 +12,7 @@ To start it out of the box:
 
      git clone https://github.com/majensen/data-model-navigator
      cd data-model-navigator
-     npm install
+     npm --legacy-peer-deps install
      npm start
 
 which should open the model viewer onto the
