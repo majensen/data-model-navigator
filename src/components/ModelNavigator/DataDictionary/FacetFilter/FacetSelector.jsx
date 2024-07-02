@@ -17,15 +17,15 @@ import {
   ArrowDropDown as ArrowDropDownIcon,
   ExpandMore as ExpandMoreIcon,
 } from "@material-ui/icons";
-import { ConfigContext } from "../../../Config/ConfigContext";
+import { ConfigContext } from "../../Config/ConfigContext";
 import CheckBoxView from "./CheckBoxView";
 import styles from "./FacetFilters.style";
 import {
   sortLabels,
   resetIcon,
   defaultFacetSectionProps,
-} from "../../../Config/nav.config";
-import { filterGroupCleared } from '../../../../../features/filter/filterSlice';
+} from "../../Config/nav.config";
+import { filterGroupCleared } from '../../../../features/filter/filterSlice';
 
 const CustomAccordionSummary = withStyles({
   root: {

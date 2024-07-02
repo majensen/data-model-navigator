@@ -19,21 +19,21 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from "@material-ui/icons";
 import _ from "lodash";
-import { ConfigContext } from '../../../Config/ConfigContext'; 
-import { ModelContext } from '../../../Model/ModelContext';
+import { ConfigContext } from '../../Config/ConfigContext'; 
+import { ModelContext } from '../../Model/ModelContext';
 import {
   resetIcon,
   defaultFacetSectionProps,
-} from "../../../Config/nav.config";
+} from "../../Config/nav.config";
 import {
   filtersInitRequested,
   allFiltersCleared,
   selectFiltersSelected,
-} from "../../../../../features/filter/filterSlice";
+} from "../../../../features/filter/filterSlice";
 import {
   clickedBlankSpace,
   changedVisOverlayPropTable,
-} from "../../../../../features/graph/graphSlice";
+} from "../../../../features/graph/graphSlice";
 import FacetSelector from "./FacetSelector";
 import styles from "./FacetFilters.style";
 import FacetFilterThemeProvider from "./FacetFilterThemeConfig";

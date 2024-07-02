@@ -7,17 +7,17 @@ import {
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxBlankIcon,
 } from "@material-ui/icons";
-import { ConfigContext } from '../../../Config/ConfigContext'; 
+import { ConfigContext } from '../../Config/ConfigContext'; 
 import {
   selectCheckboxState,
   selectFullTagMatrix,
   selectDisplayedTagMatrix,
   filterSelectorToggled,
-} from "../../../../../features/filter/filterSlice";
+} from "../../../../features/filter/filterSlice";
 import {
   clickedBlankSpace,
   changedVisOverlayPropTable,
-} from "../../../../../features/graph/graphSlice";
+} from "../../../../features/graph/graphSlice";
 import _ from "lodash";
 
 const styles = {

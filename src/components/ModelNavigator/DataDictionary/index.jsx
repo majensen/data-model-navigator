@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, withStyles } from "@material-ui/core";
 import DictionarySearcher from "./Search/DictionarySearcher";
 import DictionarySearchHistory from "./Search/DictionarySearchHistory";
-import FacetFilters from './Search/FacetFilter';
+import FacetFilters from './FacetFilter';
 import HeaderComponent from "./Header";
 import DictionaryView from "./DictionaryView";
 
