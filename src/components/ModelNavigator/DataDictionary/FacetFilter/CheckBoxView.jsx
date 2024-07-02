@@ -74,7 +74,18 @@ function CheckBoxView(props) {
     dispatch(clickedBlankSpace());
   };
 
-
+  const displayCount = ({tag, value, fullmx, dispmx}) => {
+    if (dispmx[tag] && dispmx[tag][value]) {
+      return dispmx[tag][value].count;
+    }
+    else if (fullmx[tag] && fullmx[tag][value]) {
+      return fullmx[tag][value].count;
+    }
+    else {
+      return "";
+    }
+  }
+  
   return (
     <>
       <ListItem
@@ -146,13 +157,10 @@ function CheckBoxView(props) {
             }}
           >
             &nbsp;
-            {displayedTagMatrix[checkboxItem.tag]
-             ? (displayedTagMatrix[checkboxItem.tag][checkboxItem.value]
-                ? displayedTagMatrix[checkboxItem.tag][checkboxItem.value].count
-                : fullTagMatrix[checkboxItem.tag][checkboxItem.value].count)
-             : (fullTagMatrix[checkboxItem.tag]
-                ? fullTagMatrix[checkboxItem.tag][checkboxItem.value].count
-                : "")}
+            { displayCount({tag: checkboxItem.tag,
+                            value: checkboxItem.value,
+                            dispmx: displayedTagMatrix,
+                            fullmx: fullTagMatrix})}
           </span>
         </div>
       </ListItem>

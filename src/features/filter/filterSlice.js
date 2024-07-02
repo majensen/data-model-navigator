@@ -201,7 +201,9 @@ function calcNodeTagMatrix(model, facetFilters, hiddenNodes) {
             let nodeSet = new Set();
             taggedProps
               .forEach( (prop) => {
-                if (prop.owner._kind == 'Node'
+                // if prop.owner is null => the Property is defined but doesn't
+                // appear under any Node in MDF.
+                if (prop.owner && prop.owner._kind == 'Node'
                     && !hiddenNodes.includes(prop.owner.handle)) {
                   propsCount += 1;
                   nodeSet.add(prop.owner.handle);
