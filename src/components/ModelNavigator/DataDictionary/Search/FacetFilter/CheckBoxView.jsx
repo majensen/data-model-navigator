@@ -47,11 +47,10 @@ function CheckBoxView(props) {
   const {
     classes,
     checkboxItem,
-    handleToggle,
     facetItem,
+    handleToggle,
     defaultFacetSectionProps,
     backgroundColor,
-    dataDictionary, // this is never set btw
   } = props;
   const dispatch = useDispatch();
   const config = useContext( ConfigContext );
@@ -109,21 +108,7 @@ function CheckBoxView(props) {
           classes={{ root: classes.checkboxRoot }}
           inputProps={{ "aria-label": checkboxItem.name }}
         />
-        {dataDictionary ? (
-          checkboxItem.name ? (
-            <>
-              <Tooltip title={_.startCase(checkboxItem.name)}>
-                <div className={classes.panelDetailText}>
-                  <span>{`${_.startCase(checkboxItem.name)}`}</span>
-                </div>
-              </Tooltip>
-            </>
-          ) : (
-            <div className={classes.panelDetailText}>
-              <span>{checkboxItem.name}</span>
-            </div>
-          )
-        ) : checkboxItem.title ? (
+        {checkboxItem.title ? (
           <>
             <Tooltip title={checkboxItem.title.name}>
               <div className={classes.panelDetailText}>
@@ -136,7 +121,6 @@ function CheckBoxView(props) {
             <span>{checkboxItem.name}</span>
           </div>
         )}
-        {/* {label(checkboxItem)} */}
         <ListItemText />
         <div className={classes.panelSubjectText}>
           <span

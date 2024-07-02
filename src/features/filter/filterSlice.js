@@ -22,14 +22,6 @@ const filterSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
-    configsLoaded(state, action) {
-      // configs is { pageConfig, readmeConfig, graphViewConfig,
-      //              assetConfig, controlVocabConfig, loadingExampleConfig,
-      //              filterConfig }
-      // dispatch first
-      const { configs } = action.payload;
-      state.configs = configs;
-    },
     filtersInitRequested(state, action) {
       const model  = action.payload;
       if (!state.fullTagMatrix) {
@@ -236,14 +228,11 @@ export const {
   filterGroupCleared,
   allFiltersCleared
 } = filterSlice.actions;
-// use as dispatch(modelReceived({model}), dispatch(configsLoaded({configs})
 
 export default filterSlice.reducer;
 
 export const selectHiddenNodes = state => state.filter.hiddenNodes;
-// export const selectFacetFilters = state => state.filter.configs.filterConfig.facetFilters;
 export const selectDisplayedTagMatrix = state => state.filter.displayedTagMatrix;
 export const selectFullTagMatrix = state => state.filter.fullTagMatrix;
 export const selectCheckboxState = state => state.filter.checkboxState;
 export const selectFiltersSelected = state => state.filter.filtersSelected;
-// export const selectFacetSectionProps = state => state.filter.configs.filterConfig.facetSectionProps;

@@ -50,9 +50,7 @@ const FacetSelector = ({
   facetItem,
   section,
   handleToggle,
-  checkBoxCount,
-  setCheckBoxCount,
-  onSortSection
+
 }) => {
 
   const dispatch = useDispatch();
@@ -92,7 +90,6 @@ const FacetSelector = ({
         count += 1;
       }
     });
-    setCheckBoxCount(count);
   };
 
   function getCheckBoxColor(index, currentSection) {
@@ -127,8 +124,6 @@ const FacetSelector = ({
         facetItem={facetItem}
         handleToggle={handleToggle}
         defaultFacetSectionProps={defaultFacetSectionProps}
-        backgroundColor={getCheckBoxColor(index, section)}
-        checkColor={getGroupNameColor(facetItem, section)}
       />
     ));
   };
@@ -201,11 +196,11 @@ const FacetSelector = ({
                   ),
                 }}
                 onClick={() => {
-                  onSortSection(
-                    facetItem.datafield,
-                    "alphabet"
-                  );
-                }}
+                  // onSortSection(
+                  // facetItem.datafield,
+                  // "alphabet"
+                  // );
+                  }}
               >
                 {sortLabels.sortAlphabetically}
               </span>
@@ -218,10 +213,10 @@ const FacetSelector = ({
                   ),
                 }}
                 onClick={() => {
-                  onSortSection(
-                    facetItem.datafield,
-                    "count"
-                  );
+                  // onSortSection(
+                  //  facetItem.datafield,
+                  //   "count"
+                  // );
                 }}
               >
                 {sortLabels.sortByCount}
