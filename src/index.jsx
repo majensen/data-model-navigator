@@ -2,12 +2,14 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom/client';
 import store from './store';
+import { MDFReader } from 'mdf-reader';
 import {
   facetSections,
   facetFilters,
   tagAttributes,
   legendTag,
   annotationTags,
+  mdfParseHooks,
 } from './ICDCconfig.js';
 import {
   createConfig,
@@ -27,7 +29,6 @@ function getModel() {
   return loadMDFDictionary(...mdf_urls)
     .then( (model) => model );
 }
-
 const config = createConfig({
   facetSections,
   facetFilters,
@@ -35,6 +36,10 @@ const config = createConfig({
   legendTag,
   annotationTags,
 });
+mdfParseHooks.forEach( (func) => {
+  MDFReader.add_parse_hook( func );
+});
+
 const model = await getModel(); // eslint-disable-line no-undef
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

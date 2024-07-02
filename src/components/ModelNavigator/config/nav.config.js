@@ -1,3 +1,10 @@
+// execute with config object defining the arguments below
+// returns getter function, which is provided in ConfigContext
+
+import resetIconSVG from '../../../assets/icons/Clear-icon.svg';
+import legendDefaultIcon from '../../../assets/icons/icon_default.svg';
+import categoryDefaultIcon from '../../../assets/icons/icon_default.svg';
+
 export const createConfig = ({
   facetSections,
   facetFilters,
@@ -43,6 +50,20 @@ export const defaultFacetSectionProps = {
   isExpanded: false,
 };
 
+export const defaultStyleAttributes = {
+  node: {
+    icon: categoryDefaultIcon,
+    color: '#9B9B9B',
+    background: '#691706',
+  },
+  table: {
+    icon: categoryDefaultIcon,
+  },
+  legend: {
+    icon: legendDefaultIcon,
+  },
+}
+
 export const sortLabels = {
   sortAlphabetically: 'Sort alphabetically',
   sortByCount: 'Sort by counts',
@@ -50,7 +71,7 @@ export const sortLabels = {
 };
 
 export const resetIcon = {
-  src: 'https://raw.githubusercontent.com/CBIIT/datacommons-assets/main/bento/images/icons/svgs/Clear-icon.svg',
+  src: resetIconSVG,
   alt: 'Reset icon',
   size: '12 px',
 };

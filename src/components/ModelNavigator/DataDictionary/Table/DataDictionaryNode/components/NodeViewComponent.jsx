@@ -7,9 +7,6 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import styles from "./NodeViewComponent.style";
 import { createFileName } from "../../../utils";
-import IconDownloadPDF from "../../icons/icon_download_PDF.svg";
-import IconDownloadPTSV from "../../icons/icon_download_TSV.svg";
-import DownloadButton from "../../../NodePDF/DownloadButton";
 import {
   getNodeDescriptionFragment,
   getNodeTitleFragment,
@@ -33,11 +30,6 @@ const NodeViewComponent = ({
   isExpanded,
   isOverlay,
 }) => {
-  // const csvBtnDownloadConfig = {
-  //   image: IconDownloadPTSV,
-  //   fileType: "tsv",
-  //   prefix: pdfDownloadConfig?.downloadPrefix || "Data_Loading_Template-",
-  // };
   const config = useContext( ConfigContext );
   const isSearchMode = useSelector( selectIsSearchMode );
   const isFileManifest = node.handle === "file";
@@ -47,7 +39,6 @@ const NodeViewComponent = ({
     (state) => selectMatchedResult(state, highlightingMatchedNodeID)
   );
 
-  // const fileManifestDownloadSettings = fileManifestConfig || defaultConfig;
   const getTitle = () => {
     if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(

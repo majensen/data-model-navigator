@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { Icon, withStyles } from "@material-ui/core";
-import { legendIconUrl } from "../../NodeCategories/helper";
-import relationshipSvg from "../../NodeCategories/icons/Legend/lg_relationship_links.svg";
-import toggleSvg from "../../NodeCategories/icons/Legend/lg_link.svg";
+import { ConfigContext } from '../../../Config/ConfigContext';
+import { defaultStyleAttributes } from '../../../Config/nav.config';
+import relationshipSvg from "../../../../../assets/icons/Legend/lg_relationship_links.svg";
+import toggleSvg from "../../../../../assets/icons/Legend/lg_link.svg";
 import Styles from "./LegendStyle";
 import _ from 'lodash';
 import clsx from "clsx";
@@ -23,6 +24,7 @@ const Legend = ({
   overlayPropertyHidden
 }) => {
   const dispatch = useDispatch();
+  const config = useContext( ConfigContext );
   const display = useSelector( selectLegendDisplayed );
   const graphViewConfig = useSelector( selectGraphViewConfig );
   styles = styles ? styles : graphViewConfig?.legend?.styles;
@@ -39,18 +41,23 @@ const Legend = ({
   const rightMargin =  window.innerWidth - scrollBarWidth;
   const positionRight = rightMargin > 0 ? rightMargin : 17;
   const position = { right: positionRight };
-
-  const categoryListComponent = categoryItems.map((category) => {
-    const imgUrl = `${legendIconUrl}${category}.svg`;
-    return (
-      <div key={category} className={classes.category}>
-        <div className={classes.categoryIcon}>
-          <img src={imgUrl} alt="icon" />
-        </div>
-        <span className={classes.text}>{_.capitalize(category)}</span>
-      </div>
-    );
-  });
+  const categoryListComponent = categoryItems
+        ? categoryItems.map((category) => {
+          const icon = config.tagAttribute('Category', category)
+                ? config.tagAttribute('Category', category).legend.icon
+                : defaultStyleAttributes.legend.icon;
+          return (
+            <div key={category} className={classes.category}>
+              <div className={classes.categoryIcon}>
+                <img src={icon} alt="icon" />
+              </div>
+              <span className={classes.text}>{_.capitalize(category)}</span>
+            </div>
+          )})
+        : (
+          <>
+          </>
+        );
 
   const ToggleBtn = () => (
     <div className={display ? classes.headerExpand : classes.headerCollapse}>

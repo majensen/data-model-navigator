@@ -1,8 +1,7 @@
 import React, {useContext} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from "@material-ui/core";
-// import { downloadTemplate } from "../../Utils/utils";
-import { getCategoryColor } from "../../NodeCategories/helper";
+import { defaultStyleAttributes } from '../../../Config/nav.config'; 
 import DataDictionaryPropertyTable from "../DataDictionaryPropertyTable";
 import "./DataDictionaryNode.css";
 import styles from "./DataDictionaryNode.style";
@@ -21,8 +20,7 @@ const NODE_STATE = {
 const DataDictionaryNode = ({
   classes,
   node, // this is an mdf-reader node, not a flowgraph node
-  // pdfDownloadConfig,
-  tag,
+  category,
   description,
   expanded
 }) => {
@@ -47,7 +45,11 @@ const DataDictionaryNode = ({
   //   downloadTemplate(format, node.handle);
   // };
 
-  const color = tag ? config.tagAttribute(tag).table.color : '#000000';
+  const color = category
+        ? (config.tagAttribute('Category')
+           ? config.tagAttribute('Category').table.color
+           : '#000000' )
+        : '#000000';
 
   const propertyCount = node.props().length;
   return (

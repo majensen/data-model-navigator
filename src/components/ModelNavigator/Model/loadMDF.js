@@ -1,21 +1,6 @@
 import { MDFReader } from 'mdf-reader';
 import axios from 'axios';
 
-// add inclusion and uiDisplay tags to properties:
-MDFReader.add_parse_hook(
-  function () {
-    const translate = { "Yes":"required", "No":"optional", "Preferred":"preferred" };
-    this.props().
-      forEach( (prop) => {
-        let val = translate[prop.is_required] || "optional";
-        this.updateTags("Inclusion", val, prop);
-        val = prop.tags().filter( (t) => t[0] == 'Labeled' ).length > 0 ? "yes" : "no";
-        this.updateTags("UI Display", val, prop);
-      });
-    return this;
-  }
-);
-
 export default function loadMDFModel(...urls) {
   let ps = urls.map( (url) => {
     return axios.get(url)

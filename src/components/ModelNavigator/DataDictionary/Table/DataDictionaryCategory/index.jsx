@@ -3,11 +3,7 @@ import React, {useContext} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import _ from 'lodash';
 import { withStyles } from "@material-ui/core";
-import {
-  defaultCategory,
-  getCategoryStyle,
-  tableNodeCategoryList,
-} from "../../NodeCategories/helper";
+import { defaultStyleAttributes } from '../../../Config/nav.config';
 import DataDictionaryNode from "../DataDictionaryNode";
 import styles from "./DataDictionaryCategory.style";
 import {
@@ -18,20 +14,19 @@ import { ConfigContext } from '../../../Config/ConfigContext';
 const DataDictionaryCategory = ({
   classes,
   category,
-  // pdfDownloadConfig,
   expandNode,
   nodes,
 }) => {
   const config = useContext( ConfigContext );
   const highlightingNodeID = useSelector( selectHighlightingNodeID );
-  const categoryStyles = getCategoryStyle(category);
+  const categoryStyles = config.tagAttribute('Category', category)
+        ? config.tagAttribute('Category', category)
+        : defaultStyleAttributes;
   const categoryColor = categoryStyles.color;
-  const background = categoryStyles.background
-    ? categoryStyles.background
-    : categoryStyles.color;
-  const iconURL = tableNodeCategoryList[category]
-    ? tableNodeCategoryList[category].icon
-        : defaultCategory.icon;
+
+  const background = categoryStyles.node.background
+        ? categoryStyles.node.background
+        : categoryStyles.color;
   
   return (
     <div>
@@ -47,24 +42,29 @@ const DataDictionaryCategory = ({
             gap: '8px'
         }}
       >
-        <img src={iconURL} alt="icon"  style={{
-        width: '32px'}
-        }/>
-        <div className={classes.title}>
-          <span>{_.capitalize(category)} </span>
-        </div>
+        <img
+          src={categoryStyles.table.icon}
+          alt="icon"
+          style={{width: '32px'}}
+        />
+        { category ? (
+          <div className={classes.title}>
+            <span>{_.capitalize(category)} </span>
+          </div>
+        ) : (
+          <>
+          </>
+        )}
       </div>
       <div
-
         style={{ borderLeftColor: categoryColor }}
       />
       {nodes.map((node) => (
         <DataDictionaryNode
           node={node}
           key={node.handle}
-          tag={config.legendTag}
+          category={config.legendTag}
           description={node.desc}
-          // pdfDownloadConfig={pdfDownloadConfig}
           expanded={true || highlightingNodeID && highlightingNodeID.includes(node.handle)}
           expandNode={expandNode}
         />

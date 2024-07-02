@@ -16,6 +16,8 @@ import { capitalizeFirstLetter, createFileName } from "../../../utils";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import { useSelector } from 'react-redux';
 
+const pdfConfig = {}; // stub
+
 const DOWNLOADS = "DOWNLOADS";
 const filePrefix = "Controlled_Vocabulary-";
 const FILE_TYPE_JSON = "JSON";
@@ -66,9 +68,8 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 const DownloadFileTypeBtn = ({ classes, data, node:node_handle, propertyKey }) => {
-  const [anchorElement, setAnchorElement] = React.useState(null);
+  const [anchorElement, setAnchorElement] = useState(null);
   const [label, setLabel] = useState("DOWNLOADS");
-  const pdfConfig = useSelector((state) => state?.ddgraph && state?.ddgraph?.pdfDownloadConfig ? state?.ddgraph?.pdfDownloadConfig : {});
 
   const clickHandler = (event) => {
     setLabel("DOWNLOADS");
@@ -91,7 +92,7 @@ const DownloadFileTypeBtn = ({ classes, data, node:node_handle, propertyKey }) =
     saveAs(exportData, `${fileName}.${fileType.toLowerCase()}`);
   };
 
-  const downladFile = () => {
+  const downloadFile = () => {
     if (label === FILE_TYPE_JSON) {
       const jsonData = JSON.stringify(data);
       download(jsonData, FILE_TYPE_JSON, CONTENT_TYPE_JSON);
@@ -136,7 +137,7 @@ const DownloadFileTypeBtn = ({ classes, data, node:node_handle, propertyKey }) =
 
         <Button
           disabled={DOWNLOADS === label}
-          onClick={downladFile}
+          onClick={downloadFile}
           classes={{
             root: classes.downloadBtn,
           }}

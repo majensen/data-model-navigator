@@ -1,3 +1,4 @@
+// this is a popup window that displays all acceptable values for a property
 import React, { useEffect, useState } from 'react';
 import {
   DialogContent,

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, createTheme, MuiThemeProvider } from "@material-ui/core";
-import { FontRegistry } from "../../../NodePDF/util";
+import { FontRegistry } from '../../../../../../assets/fonts/util';
 
 const theme = {
   overrides: {

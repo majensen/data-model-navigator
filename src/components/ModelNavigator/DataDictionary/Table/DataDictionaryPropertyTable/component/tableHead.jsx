@@ -20,9 +20,6 @@ const TableHeader = ({ classes, hideIsRequired }) => (
       <th className={classes.item}>
         Description
       </th>
-      {/* <th className={classes.item}>
-        Source
-        </th> */}
     </tr>
   </thead>
 );
@@ -42,7 +39,7 @@ const styles = () => ({
     padding: '10px 10px 10px 19px',
     border: '0',
     textAlign: 'left',
-    fontFamily: 'raleway',
+    fontFamily: 'Raleway',
     verticalAlign: 'top',
     '& p': {
       margin: 'auto',

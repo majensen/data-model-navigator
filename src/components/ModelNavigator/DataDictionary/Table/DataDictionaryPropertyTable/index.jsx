@@ -10,8 +10,8 @@ import {
 } from '../../Utils/highlightHelper';
 import DialogBox from './component/DialogComponent';
 import { controlVocabConfig as config } from '../../../Config/nav.config';
-import TableHead from './component/tableHead';
-import TableRow from './component/tableRow';
+import TableHead from './component/TableHead';
+import TableRows from './component/TableRows';
 
 import {
   selectIsSearchMode,
@@ -59,7 +59,7 @@ const DataDictionaryPropertyTable = ({
       <table className={classes.propertyTable}>
         <TableHead hideIsRequired={hideIsRequired} />
         <tbody>
-          <TableRow
+          <TableRows
             onlyShowMatchedProperties={onlyShowMatchedProperties}
             matchedPropertiesSummary={matchedPropertiesSummary}
             properties={properties}

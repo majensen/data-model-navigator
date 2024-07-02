@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable react/forbid-prop-types */
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import IconButton from '@material-ui/core/IconButton';
@@ -22,11 +22,9 @@ import {
   selectPropTableNodeID,
   selectHighlightingMatchedNodeID,
 } from '../../../../../features/graph/graphSlice';
-import {
-  getCategoryBackground,
-  getCategoryColor,
-  tableIconUrl,
-} from "../../NodeCategories/helper";
+import {defaultStyleAttributes} from '../../../Config/nav.config';
+import { ConfigContext } from '../../../Config/ConfigContext';
+
 import DataDictionaryPropertyTable from "../../Table/DataDictionaryPropertyTable";
 import styles from "./OverlayPropertyTable.style";
 import NodeViewComponent from "../../Table/DataDictionaryNode/components/NodeViewComponent";
@@ -37,6 +35,7 @@ const OverlayPropertyTable = ({
   hidden,
 }) =>  {
   const dispatch = useDispatch();
+  const config = useContext( ConfigContext );
   const isSearchMode = useSelector(selectIsSearchMode);
   const node = nodeID ? globalThis.model.nodes( nodeID ) : null; // eslint-disable-line no-undef
   const matchedNodeID = useSelector( selectHighlightingMatchedNodeID );
@@ -88,6 +87,18 @@ const OverlayPropertyTable = ({
       <></>
     );
   }
+  const category = node.tags('Category') ? node.tags('Category') : null;
+  const borderLeftColor = node.tags('Category') 
+        ? config.tagAttribute('Category', node.tags('Category')).table.color
+        : defaultStyleAttributes.node.color;
+  const backgroundColor = node.tags('Category')
+        ? config.tagAttribute('Category', node.tags('Category')).node.background
+        : defaultStyleAttributes.node.background;
+  const tableIcon = node.tags('Category') 
+        ? (node.tags('Category').table.icon
+           ? node.tags('Category').table.icon
+           : defaultStyleAttributes.table.icon)
+        : defaultStyleAttributes.table.icon;
   return (
     <div className={classes.table}>
       <div className={classes.background} />
@@ -97,8 +108,8 @@ const OverlayPropertyTable = ({
             <div
               className={classes.category}
               style={{
-                borderLeftColor: getCategoryColor(node.category),
-                backgroundColor: getCategoryBackground(node.category),
+                borderLeftColor,
+                backgroundColor
               }}
             >
               <div
@@ -110,16 +121,21 @@ const OverlayPropertyTable = ({
                 }}
               >
                 <img
-                  src={`${tableIconUrl}${node.category}.svg`}
+                  src={tableIcon}
                   alt="icon"
                   className={classes.categoryIcon}
                 />
-                <h4
-                  style={{ color: "#FFF" }}
-                  className={classes.categoryText}
-                >
-                  {_.capitalize(node.category)}
-                </h4>
+                { category ? (
+                  <h4
+                    style={{ color: "#FFF" }}
+                    className={classes.categoryText}
+                  >
+                    {_.capitalize(node.category)}
+                  </h4>
+                ) : (
+                  <>
+                  </>
+                )}
               </div>
               <div>
                 <IconButton
@@ -135,12 +151,12 @@ const OverlayPropertyTable = ({
           </div>
           <div
             className={classes.categoryDivider}
-            style={{ borderLeftColor: getCategoryColor(node.category) }}
+            style={{ borderLeftColor }}
           />
           <div
             className={classes.node}
             style={{
-              borderLeftColor: getCategoryColor(node.category),
+              borderLeftColor,
               marginBottom: "0px",
               borderRight: "1px solid #ADBEC4",
               backgroundColor: "white",
@@ -150,7 +166,6 @@ const OverlayPropertyTable = ({
               node={node}
               description={node.desc}
               matchedResult={matchedResult}
-              // pdfDownloadConfig={props.pdfDownloadConfig}
               propertyCount={node.props().length}
               isOverlay={true}
             />
@@ -158,7 +173,7 @@ const OverlayPropertyTable = ({
           
           <div
             className={classes.propertyTable}
-            style={{ borderLeftColor: getCategoryColor(node.category) }}
+            style={{ borderLeftColor }}
           >
             <div className={classes.property}>
               <DataDictionaryPropertyTable

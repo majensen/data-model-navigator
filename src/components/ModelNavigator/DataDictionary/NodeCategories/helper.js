@@ -37,7 +37,7 @@ import clinicalIconLegend from './icons/Legend/lg_clinical.svg';
 
 import IconDefault from './icons/icon_default.svg';
 
-const iconUrl = 'https://raw.githubusercontent.com/CBIIT/datacommons-assets/data_model_pdf_icons/icdc/DMN/'
+const iconUrl = 'https://raw.githubusercontent.com/CBIIT/datacommons-assets/data_model_pdf_icons/icdc/DMN/';
 export const graphIconUrl = iconUrl + 'graph/';
 export const legendIconUrl = iconUrl + 'legend/';
 export const tableIconUrl = iconUrl + 'table/';
