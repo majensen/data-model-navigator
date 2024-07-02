@@ -14,7 +14,7 @@ const initialState = {
   allTaggedNodes: [],
   fullTagMatrix: null,
   displayedTagMatrix: {},
-  checkboxState: {},
+  checkboxState: null,
   filtersSelected: [],
 };
 

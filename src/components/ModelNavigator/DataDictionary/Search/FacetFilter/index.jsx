@@ -27,7 +27,6 @@ import {
 } from "../../../Config/nav.config";
 import {
   filtersInitRequested,
-  filterSelectorToggled,
   allFiltersCleared,
   selectFiltersSelected,
 } from "../../../../../features/filter/filterSlice";
@@ -89,12 +88,6 @@ const FacetFiltersView = ({
       }
     }
     setSectionsExpanded(sections);
-  };
-
-  const handleToggle = (item) => () => {
-    dispatch(changedVisOverlayPropTable('hide'));
-    dispatch(clickedBlankSpace());
-    dispatch(filterSelectorToggled(item));
   };
 
   const sections = {};
@@ -181,7 +174,6 @@ const FacetFiltersView = ({
                     return (
                       <FacetSelector facetItem={facetItem}
                                      section={currentSection}
-                                     handleToggle={handleToggle}
                       />
                     );
                   })

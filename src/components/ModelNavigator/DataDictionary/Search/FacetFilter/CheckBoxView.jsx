@@ -14,6 +14,10 @@ import {
   selectDisplayedTagMatrix,
   filterSelectorToggled,
 } from "../../../../../features/filter/filterSlice";
+import {
+  clickedBlankSpace,
+  changedVisOverlayPropTable,
+} from "../../../../../features/graph/graphSlice";
 import _ from "lodash";
 
 const styles = {
@@ -48,7 +52,6 @@ function CheckBoxView(props) {
     classes,
     checkboxItem,
     facetItem,
-    handleToggle,
     defaultFacetSectionProps,
     backgroundColor,
   } = props;
@@ -65,6 +68,13 @@ function CheckBoxView(props) {
       };
     }
   };
+  const handleToggle = (tagpair) => {
+    dispatch(filterSelectorToggled(tagpair));
+    dispatch(changedVisOverlayPropTable('hide'));
+    dispatch(clickedBlankSpace());
+  };
+
+
   return (
     <>
       <ListItem
@@ -72,7 +82,9 @@ function CheckBoxView(props) {
         button
         alignItems={alignment}
         selected={checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]}
-        onClick={handleToggle({ ...checkboxItem, ...facetItem })}
+        onClick={(e) => {
+         handleToggle({tag:checkboxItem.tag, value:checkboxItem.value})
+        }}
         className={classes.nested}
         style={getStyles()}
         classes={{
@@ -99,9 +111,10 @@ function CheckBoxView(props) {
             : "#137fbe",
           }}
           checked={checkboxState[`checkbox_${checkboxItem.tag}_${checkboxItem.value}`]}
-          onChange={(event) => {
-            dispatch(filterSelectorToggled({tag:checkboxItem.tag, value:checkboxItem.value}))
-          }}
+          // onChange={(e) => {
+          //   e && e.stopPropagation();
+          //   handleToggle({tag:checkboxItem.tag, value:checkboxItem.value})
+          // }}
           tabIndex={-1}
           disableRipple
           color="secondary"

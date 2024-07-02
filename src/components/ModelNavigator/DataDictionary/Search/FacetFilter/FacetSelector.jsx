@@ -49,8 +49,6 @@ const FacetSelector = ({
   classes,
   facetItem,
   section,
-  handleToggle,
-
 }) => {
 
   const dispatch = useDispatch();
@@ -122,7 +120,6 @@ const FacetSelector = ({
         key={index}
         checkboxItem={item}
         facetItem={facetItem}
-        handleToggle={handleToggle}
         defaultFacetSectionProps={defaultFacetSectionProps}
       />
     ));
