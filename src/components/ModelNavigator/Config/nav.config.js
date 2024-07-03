@@ -6,6 +6,8 @@ import legendDefaultIcon from '../../../assets/icons/icon_default.svg';
 import categoryDefaultIcon from '../../../assets/icons/icon_default.svg';
 
 export const createConfig = ({
+  pageTitle,
+  brandIconSrc,
   facetSections,
   facetFilters,
   tagAttributes,
@@ -25,6 +27,8 @@ export const createConfig = ({
       return tagAttributes.find( elt => elt.tag === tag &&
                                  (!value || elt.value === value) );
     },
+    pageTitle,
+    brandIconSrc,
     legendTag,
     annotationTags,
   };
@@ -33,14 +37,7 @@ export const createConfig = ({
 };
 
 export const showCheckboxCount = 5;
-
-export const types = {
-  CATEGORY: 'category',
-  ASSIGNMENT: 'assignment',
-  INCLUSION: 'inclusion',
-  CLASS: 'class',
-  MULTIPLICITY: 'multiplicity',
-};
+export const brandIconSrc = 'https://avatars.githubusercontent.com/u/82073?v=4';
 
 export const defaultFacetSectionProps = {
   color: '#000000',

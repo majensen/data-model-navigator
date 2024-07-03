@@ -19,3 +19,12 @@ which should open the model viewer onto the
 [Integrated Canine Data Commons](https://caninecommons.cancer.gov)
 graph data model.
 
+## Config and setup
+
+The example app in [index.jsx](/src/index.jsx) show the key steps.
+
+* Import the Redux `store`
+* Import the `ModelNavigator` component.
+* Read the MDF with `loadMDF` to obtain the `model` object.
+* Create the `config` object by using `createConfig` on the config JS file.
+* Use Redux `Provider`, and providers for `ModelContext` and `ConfigContext` to wrap the `DataDictionary` component.

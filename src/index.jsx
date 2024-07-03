@@ -3,7 +3,10 @@ import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom/client';
 import store from './store';
 import { MDFReader } from 'mdf-reader';
+import ModelNavigator from  './components/ModelNavigator';
+
 import {
+  brandIconSrc,
   facetSections,
   facetFilters,
   tagAttributes,
@@ -20,7 +23,6 @@ import {
 import loadMDFDictionary from './components/ModelNavigator/Model/loadMDF';
 import { ConfigContext } from './components/ModelNavigator/Config/ConfigContext';
 import { ModelContext } from './components/ModelNavigator/Model/ModelContext';
-import DataDictionary from  './components/ModelNavigator/DataDictionary';
 import './components/ModelNavigator/index.css';
 const mdf_urls = ['https://raw.githubusercontent.com/CBIIT/icdc-model-tool/develop/model-desc/icdc-model.yml',
                   'https://raw.githubusercontent.com/CBIIT/icdc-model-tool/develop/model-desc/icdc-model-props.yml'];
@@ -30,6 +32,7 @@ function getModel() {
     .then( (model) => model );
 }
 const config = createConfig({
+  brandIconSrc,
   facetSections,
   facetFilters,
   tagAttributes,
@@ -49,7 +52,7 @@ root.render(
     <Provider store={store}>
       <ConfigContext.Provider value={config}>
       <ModelContext.Provider value={model}>
-        <DataDictionary />
+        <ModelNavigator />
       </ModelContext.Provider>
       </ConfigContext.Provider>
     </Provider>

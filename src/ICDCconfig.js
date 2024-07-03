@@ -25,6 +25,9 @@ import clinicalIconLegend from './assets/icons/Legend/lg_clinical.svg';
 
 import IconDefault from './assets/icons/icon_default.svg';
 
+export const pageTitle = 'Data Model Navigator';
+export const brandIconSrc = 'https://raw.githubusercontent.com/CBIIT/datacommons-assets/4a3fb8e201e6ba2a858d7ec1226d2fd6ea2b5298/icdc/images/svgs/Icon-DMNav.85x85.svg';
+
 export const mdfParseHooks = [
   // add inclusion and uiDisplay tags to properties:
   function () {
