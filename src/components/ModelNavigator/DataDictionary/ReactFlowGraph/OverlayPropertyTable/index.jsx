@@ -42,17 +42,17 @@ const OverlayPropertyTable = ({
   const matchedResult = useSelector(
     (state, matchedNodeID) => selectMatchedResult(state, matchedNodeID)
   );
-
+  
   const getTitle = () => {
     if (isSearchMode) {
       const nodeTitleFragment = getNodeTitleFragment(
         matchedResult.matches,
-        node.title,
+        _.capitalize(node.handle),
         "overlay-property-table__span"
       );
       return nodeTitleFragment;
     }
-    return node.title;
+    return _.capitalize(node.handle);
   };
 
   const getDescription = () => {
@@ -88,15 +88,16 @@ const OverlayPropertyTable = ({
     );
   }
   const category = node.tags('Category') ? node.tags('Category') : null;
-  const borderLeftColor = node.tags('Category') 
-        ? config.tagAttribute('Category', node.tags('Category')).table.color
+  const catConfig =  category ? config.tagAttribute('Category', category) : null;
+  const borderLeftColor = category 
+        ? catConfig.table.color
         : defaultStyleAttributes.node.color;
-  const backgroundColor = node.tags('Category')
-        ? config.tagAttribute('Category', node.tags('Category')).node.background
+  const backgroundColor = category
+        ? catConfig.node.background
         : defaultStyleAttributes.node.background;
-  const tableIcon = node.tags('Category') 
-        ? (node.tags('Category').table.icon
-           ? node.tags('Category').table.icon
+  const tableIcon = category
+        ? (catConfig.table.icon
+           ? catConfig.table.icon
            : defaultStyleAttributes.table.icon)
         : defaultStyleAttributes.table.icon;
   return (
@@ -130,7 +131,7 @@ const OverlayPropertyTable = ({
                     style={{ color: "#FFF" }}
                     className={classes.categoryText}
                   >
-                    {_.capitalize(node.category)}
+                    {_.capitalize(category)}
                   </h4>
                 ) : (
                   <>
@@ -177,7 +178,7 @@ const OverlayPropertyTable = ({
           >
             <div className={classes.property}>
               <DataDictionaryPropertyTable
-                title={node.title}
+                title={getTitle()}
                 node={node}
                 onlyShowMatchedProperties={false}
                 needHighlightSearchResult={needHighlightSearchResult}

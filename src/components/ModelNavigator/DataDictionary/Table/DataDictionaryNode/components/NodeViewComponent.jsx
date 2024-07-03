@@ -63,32 +63,27 @@ const NodeViewComponent = ({
     return description;
   };
 
-  const TagLabels =
+  const TagLabels = () => 
         config.annotationTags.map( (tag) => {
           if (node.tags(tag)) {
             return (
-              <>
+              <div key={tag}>
                 <span className={classes.nodeLabel}>
                   <span>{_.capitalize(tag)}:</span>
                   <span className={classes.nodeAssignment}>
                     {_.capitalize(node.tags(tag))}
                   </span>
                 </span>
-              </>
+              </div>
             );
           } else {
             return (
-              <>
-              </>
+              <div key={tag}>
+              </div>
             );
           }
         });
 
-  if (!matchedResult) {
-    return (
-      <>
-      </>
-    ); }
   return (
     <div className={classes.container}>
       <div className={classes.titleAndDescContainer}>

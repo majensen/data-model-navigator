@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -7,15 +7,14 @@ import {
 import clsx from 'clsx';
 import styles from './Header.style';
 import CustomTheme from './Header.theme.config';
+import { ConfigContext } from '../../Config/ConfigContext';
+import { brandIconSrc } from '../../Config/nav.config';
 
-// graph all the things
-const brandIconSrc = 'https://avatars.githubusercontent.com/u/82073?v=4';
 const HeaderComponent = ({
   classes,
-  // model, fullDictionary, 
 }) => {
-  const pageConfig = {};
   const modelVersion = "TEST";
+  const config = useContext( ConfigContext );
   
   return (
     <>
@@ -29,13 +28,13 @@ const HeaderComponent = ({
             <img
               className={classes.brandIcon}
               alt="brand-icon"
-              src={pageConfig?.brandIconSrc || brandIconSrc}
+              src={config.brandIconSrc || brandIconSrc}
             />
             <div className={classes.titleAndVersion}>
               <h2
                 className={modelVersion ? clsx(classes.title, classes.titleWithVersion) : classes.title}
               >
-                {pageConfig?.title || "Data Model Navigator"}
+                {config.pageTitle || "Data Model Navigator"}
               </h2>
               {modelVersion && (<span className={classes.modelVersion}>Version {modelVersion}</span>)}
             </div>

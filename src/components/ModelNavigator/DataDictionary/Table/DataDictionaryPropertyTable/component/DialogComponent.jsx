@@ -12,7 +12,7 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import ListComponent from './ListComponent';
 import ButtonComponent from './ButtonComponent';
-import DownloadFileTypeBtn from './DownloadFileTypeBtn';
+// import DownloadFileTypeBtn from './DownloadFileTypeBtn';
 
 const theme = {
   overrides: {
@@ -103,11 +103,11 @@ const DialogComponent = ({
       >
         <div className={classes.titleContent}>
           <div item xs={1} className={classes.closeBtn}>
-            <DownloadFileTypeBtn
+            {/* <DownloadFileTypeBtn
               data={items}
               node={node}
               propertyKey={property}
-            />
+              /> */}
             <IconButton
               onClick={closeHandler}
               aria-label="Close Dialog"
