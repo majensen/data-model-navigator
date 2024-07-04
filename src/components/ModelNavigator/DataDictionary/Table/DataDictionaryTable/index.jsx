@@ -9,7 +9,6 @@ import DataDictionaryCategory from '../DataDictionaryCategory';
 
 const DataDictionaryTable = ({
   classes,
-  expandNode,
   dictionaryName,
   // pdfDownloadConfig,
 }) => {
@@ -30,7 +29,6 @@ const DataDictionaryTable = ({
             key={category}
             nodes={model.tagged_items('Category', category)}
             category={category}
-            expandNode={expandNode}
           />
         ))}
       </div>

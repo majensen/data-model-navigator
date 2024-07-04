@@ -14,7 +14,6 @@ import { ConfigContext } from '../../../Config/ConfigContext';
 const DataDictionaryCategory = ({
   classes,
   category,
-  expandNode,
   nodes,
 }) => {
   const config = useContext( ConfigContext );
@@ -65,8 +64,6 @@ const DataDictionaryCategory = ({
           key={node.handle}
           category={config.legendTag}
           description={node.desc}
-          expanded={true || highlightingNodeID && highlightingNodeID.includes(node.handle)}
-          expandNode={expandNode}
         />
       ))}
     </div>

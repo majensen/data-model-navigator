@@ -110,21 +110,18 @@ const NodeViewComponent = ({
                   root: classes.propertyCountBtn,
                 }}
               >
-                {propertyCount === 1 ? (
-                  <p
-                    style={{ fontSize: "11px" }}
-                  >{<span 
+                <p
+                  style={{ fontSize: "11px" }}
+                >
+                  <span 
                     style={{ fontSize: "14px", fontWeight: "700", color: "#42779a", fontFamily: "Open Sans"}}>
-                      {propertyCount}</span>
-                    } property</p>
-                ) : (
-                  <p style={{ fontSize: "11px" }}>
-                    {<span 
-                    style={{ fontSize: "14px", fontWeight: "700", color: "#42779a", fontFamily: "Open Sans"}}>
-                      {propertyCount}</span>
-                    } properties
-                  </p>
-                )}
+                    {propertyCount}
+                  </span>
+                  { propertyCount === 1 ? (
+                    <> property</>
+                  ) : (
+                    <> properties</>) }
+                </p>
               </Button>
             </div>
             <div>

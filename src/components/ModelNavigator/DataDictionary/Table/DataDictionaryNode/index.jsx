@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from "@material-ui/core";
 import { defaultStyleAttributes } from '../../../Config/nav.config'; 
@@ -9,12 +9,13 @@ import NodeViewComponent from "./components/NodeViewComponent";
 import { ConfigContext } from "../../../Config/ConfigContext";
 
 import {
-  tableNodeExpanded,
+  tableNodeExpandChanged,
+  selectTableNodeIsExpanded,
 } from '../../../../../features/graph/graphSlice';
 
 const NODE_STATE = {
   OPEN: "open",
-  CLOSE: "close",
+  CLOSED: "close",
 };
 
 const DataDictionaryNode = ({
@@ -22,21 +23,24 @@ const DataDictionaryNode = ({
   node, // this is an mdf-reader node, not a flowgraph node
   category,
   description,
-  expanded
 }) => {
   const dispatch = useDispatch();
   const config = useContext( ConfigContext );
-  
+
+  //           expanded={highlightingNodeID && highlightingNodeID.includes(node.handle)}
+  const isExpanded = useSelector(
+    state => selectTableNodeIsExpanded(state, node.handle)
+  );
   const handleClickNode = (nodeID) => {
-    if (!expanded) {
-      dispatch(tableNodeExpanded(NODE_STATE.OPEN));
+    if (!isExpanded) {
+      dispatch(tableNodeExpandChanged({nodeState: NODE_STATE.OPEN, nodeID}));
     } else {
-      dispatch(tableNodeExpanded(NODE_STATE.CLOSED));
+      dispatch(tableNodeExpandChanged({nodeState: NODE_STATE.CLOSED, nodeID}));
     }
   };
 
-  const handleCloseNode = () => {
-      dispatch(tableNodeExpanded(NODE_STATE.CLOSED));
+  const handleCloseNode = (nodeID) => {
+    dispatch(tableNodeExpandChanged({nodeState: NODE_STATE.CLOSED, nodeID}));
   };
 
   // const handleDownloadTemplate = (e, format) => {
@@ -52,6 +56,7 @@ const DataDictionaryNode = ({
         : '#000000';
 
   const propertyCount = node.props().length;
+  
   return (
     <>
       <div
@@ -64,13 +69,13 @@ const DataDictionaryNode = ({
       >
         <NodeViewComponent
           node={node}
-          isExpanded={expanded}
+          isExpanded={isExpanded}
           description={description}
           // pdfDownloadConfig={pdfDownloadConfig}
           propertyCount={propertyCount}
         />
       </div>
-      {expanded && (
+      {isExpanded && (
         <div
           className={classes.property}
           style={{

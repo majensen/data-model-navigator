@@ -60,20 +60,20 @@ const graphSlice = createSlice({
         }
       }
     },
-    tableNodeExpanded(state, action) {
+    tableNodeExpandChanged(state, action) {
       const { nodeState, nodeID } = action.payload;
       state.highlightingNode = nodeID;
       state.secondHighlightingNodeID = null;
       switch (nodeState) {
       case 'open':
         if (state.tableExpandNodeIDs) {
-          state.tableExpandNodeIDs.push(nodeID);
+          !state.tableExpandNodeIDs.includes(nodeID) && state.tableExpandNodeIDs.push(nodeID);
         } else {
           state.tableExpandNodeIDs = [nodeID];
         }
         break;
       case 'close':
-        state.tableExpandNodeIDs = _.remove(state.tableExpandNodeIDs, elt => elt.id === nodeID);
+        state.tableExpandNodeIDs = _.filter(state.tableExpandNodeIDs, elt => elt !== nodeID);
         break;
       default:
         break;
@@ -166,7 +166,7 @@ const graphSlice = createSlice({
 export const {
   // reducer/actions
   reactFlowGraphInitialized,
-  tableNodeExpanded,
+  tableNodeExpandChanged,
   reactFlowGraphDataCalculated,
   reactFlowPanelClicked,
   reactFlowNodeDragStarted,
@@ -206,6 +206,7 @@ export const selectOverlayTableHidden = state => state.graph.overlayTableHidden;
 export const selectNodeIsExpanded = (state, nodeID) => state.graph.expandedNodeID == nodeID;
 export const selectNodeIsForegrounded = (state, nodeID) => state.graph.foregroundedNodes.includes(nodeID);
 
+export const selectTableNodeIsExpanded = (state, nodeID) => state.graph.tableExpandNodeIDs && state.graph.tableExpandNodeIDs.includes(nodeID); 
 
 export const selectPropTableNodeID = createSelector(
   [selectHighlightingMatchedNodeID, selectHighlightingNodeID],

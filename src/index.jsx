@@ -16,9 +16,6 @@ import {
 } from './ICDCconfig.js';
 import {
   createConfig,
-  filterConfig,
-  controlVocabConfig,
-  graphViewConfig,
 } from './components/ModelNavigator/Config/nav.config';
 import loadMDFDictionary from './components/ModelNavigator/Model/loadMDF';
 import { ConfigContext } from './components/ModelNavigator/Config/ConfigContext';
