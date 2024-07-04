@@ -40,7 +40,7 @@ const NodeViewComponent = ({
   );
 
   const getTitle = () => {
-    if (isSearchMode) {
+    if (isSearchMode && matchedResult) {
       const nodeTitleFragment = getNodeTitleFragment(
         matchedResult.matches,
         _.capitalize(node.handle),
@@ -52,7 +52,7 @@ const NodeViewComponent = ({
   };
 
   const getDescription = (description) => {
-    if (isSearchMode) {
+    if (isSearchMode && matchedResult) {
       const nodeDescriptionFragment = getNodeDescriptionFragment(
         matchedResult.matches,
         description,
