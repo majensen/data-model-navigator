@@ -5,6 +5,10 @@ import store from '../../store';
 import { createConfig } from './Config/nav.config';
 import { ConfigContext } from './Config/ConfigContext';
 import { ModelContext } from './Model/ModelContext';
+import loadMDF from './Model/loadMDF';
+import './index.css';
+
+export { loadMDF };
 
 export default function ModelNavigator({
   model,
