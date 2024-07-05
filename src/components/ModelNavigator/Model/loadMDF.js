@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export default function loadMDFModel(...urls) {
   let ps = urls.map( (url) => {
-    return axios.get(url)
+    return axios.get(url instanceof Object ? url.format() : url)
       .then( (r) => { return r.data; } );
   });
 
