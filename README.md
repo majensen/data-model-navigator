@@ -8,7 +8,7 @@ set of [MDF](https://github.com/CBIIT/bento-mdf) files, to create an
 annotated data dictionary with an interactive graphical rendering of
 the model.
 
-![screenshot of ICDC model graph](./screen-1.png)
+![screenshot of ICDC model graph](./screen-1.jpg)
 ![screenshot of filtered ICDC model graph](./screen-2.png)
 ![screenshot of searched GDC model graph](./screen-3.png)
 ![screenshot of CCDI model table](./screen-5.png)
