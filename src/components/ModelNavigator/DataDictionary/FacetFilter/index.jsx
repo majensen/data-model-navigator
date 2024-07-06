@@ -69,7 +69,7 @@ const FacetFiltersView = ({
 
   const facetSectionProps = config.facetSections;
   const facetFilters = config.facetFilters;
-  
+
   const showCheckboxCount = 3;
   
   const selectedFilters = useSelector(selectFiltersSelected);

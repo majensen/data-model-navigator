@@ -25,7 +25,7 @@ const filterSlice = createSlice({
     filtersInitRequested(state, action) {
       const model  = action.payload;
       if (!state.fullTagMatrix) {
-        globalThis.model = model; 
+        globalThis.model = model;
         // initialize allTaggedNodes
         state.fullTagMatrix = calcNodeTagMatrix(model,
                                                 globalThis.config.facetFilters,
