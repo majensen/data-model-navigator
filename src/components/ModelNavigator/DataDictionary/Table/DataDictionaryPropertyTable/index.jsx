@@ -4,7 +4,6 @@
 import React, { useState } from 'react';
 import { withStyles } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { SearchResultItemShape } from '../../Utils/utils';
 import {
   getMatchesSummaryForProperties,
 } from '../../Utils/highlightHelper';

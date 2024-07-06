@@ -10,7 +10,15 @@ import {
   createTheme,
   MuiThemeProvider,
 } from '@material-ui/core';
-import { getType } from './utils';
+
+const getType = (prop) => {
+  if (prop.type == 'value_set') {
+    return prop.valueSet();
+  }
+  else {
+    return prop.type || 'UNDEFINED';
+  }
+}
 
 const theme = {
   overrides: {
@@ -69,6 +77,12 @@ const displayKeyPropsDescription = (description) => {
 };
 
 export const addHighlightingSpans = (str, indices, spanClassName) => {
+  if (!str) {
+    return (
+      <>
+      </>
+    );
+  }
   let cursor = 0;
   let currentIndices = 0;
   const resultFragments = [];

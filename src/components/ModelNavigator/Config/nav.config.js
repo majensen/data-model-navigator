@@ -50,7 +50,7 @@ const defaultConfig = {
   facetFilters: [],
   tagAttribute: () => {},
   tagAttributes: [],
-  legendTag: null,
+  legendTag: "Category",
   annotationTags: [],
   };
 

@@ -8,13 +8,17 @@ import clsx from 'clsx';
 import styles from './Header.style';
 import CustomTheme from './Header.theme.config';
 import { ConfigContext } from '../../Config/ConfigContext';
+import { ModelContext } from '../../Model/ModelContext';
 import { brandIconSrc } from '../../Config/nav.config';
 
 const HeaderComponent = ({
   classes,
 }) => {
-  const modelVersion = "TEST";
   const config = useContext( ConfigContext );
+  const model = useContext( ModelContext );
+
+  const handle = model.handle;
+  const version = model.version;
   
   return (
     <>
@@ -32,11 +36,12 @@ const HeaderComponent = ({
             />
             <div className={classes.titleAndVersion}>
               <h2
-                className={modelVersion ? clsx(classes.title, classes.titleWithVersion) : classes.title}
+                className={version ? clsx(classes.title, classes.titleWithVersion) : classes.title}
               >
                 {config.pageTitle || "Data Model Navigator"}
               </h2>
-              {modelVersion && (<span className={classes.modelVersion}>Version {modelVersion}</span>)}
+              {handle && (<span className={classes.modelVersion}>{handle}</span>)}
+              {version && (<span className={classes.modelVersion}>Version {version}</span>)}
             </div>
           </div>
         </div>
