@@ -6,7 +6,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import styles from "./NodeViewComponent.style";
-import { createFileName } from "../../../utils";
 import {
   getNodeDescriptionFragment,
   getNodeTitleFragment,
@@ -32,8 +31,8 @@ const NodeViewComponent = ({
 }) => {
   const config = useContext( ConfigContext );
   const isSearchMode = useSelector( selectIsSearchMode );
-  const isFileManifest = node.handle === "file";
-  const isTemplate = node.tags('Template') === "Yes";
+  // const isFileManifest = node.handle === "file";
+  // const isTemplate = node.tags('Template') === "Yes";
   const highlightingMatchedNodeID = useSelector( selectHighlightingMatchedNodeID );
   const matchedResult = useSelector(
     (state) => selectMatchedResult(state, highlightingMatchedNodeID)
@@ -63,26 +62,35 @@ const NodeViewComponent = ({
     return description;
   };
 
-  const TagLabels = () => 
-        config.annotationTags.map( (tag) => {
-          if (node.tags(tag)) {
-            return (
-              <div key={tag}>
-                <span className={classes.nodeLabel}>
-                  <span>{_.capitalize(tag)}:</span>
-                  <span className={classes.nodeAssignment}>
-                    {_.capitalize(node.tags(tag))}
-                  </span>
+  const TagLabels = () => {
+    if (config.annotationTags.length > 0) {
+      config.annotationTags.map( (tag) => {
+        if (node.tags(tag)) {
+          return (
+            <div key={tag}>
+              <span className={classes.nodeLabel}>
+                <span>{_.capitalize(tag)}:</span>
+                <span className={classes.nodeAssignment}>
+                  {_.capitalize(node.tags(tag))}
                 </span>
-              </div>
-            );
-          } else {
-            return (
-              <div key={tag}>
-              </div>
-            );
-          }
-        });
+              </span>
+            </div>
+          );
+        } else {
+          return (
+            <div key={tag}>
+            </div>
+          );
+        }
+      });
+    } else {
+      return (
+        <>
+        </>
+      );
+    }};
+
+  
 
   return (
     <div className={classes.container}>

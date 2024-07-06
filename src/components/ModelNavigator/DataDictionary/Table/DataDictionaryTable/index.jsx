@@ -17,20 +17,28 @@ const DataDictionaryTable = ({
     <>
       <p className={classes.tableInfo}>
         <span>{dictionaryName}</span>
-        <span> dictionary has </span>
+        <span> Model has </span>
         <span>{model.nodes().length}</span>
         <span> nodes and </span>
         <span>{model.props().length}</span>
         <span> properties </span>
       </p>
       <div className={classes.tableBody}>
-        {model.tag_kvs('Category').map(([,category]) => (
-          <DataDictionaryCategory
-            key={category}
-            nodes={model.tagged_items('Category', category)}
-            category={category}
-          />
-        ))}
+        { model.tag_kvs('Category').length > 0
+          ? model.tag_kvs('Category').map(([,category]) => (
+            <DataDictionaryCategory
+              key={category}
+              nodes={model.tagged_items('Category', category)}
+              category={category}
+            />
+          ))
+          : (
+              <DataDictionaryCategory
+                nodes={model.nodes()}
+                category="Nodes"
+              />
+          )
+        }
       </div>
     </>
   );

@@ -5,15 +5,20 @@ import resetIconSVG from '../../../assets/icons/Clear-icon.svg';
 import legendDefaultIcon from '../../../assets/icons/icon_default.svg';
 import categoryDefaultIcon from '../../../assets/icons/icon_default.svg';
 
-export const createConfig = ({
-  pageTitle,
-  brandIconSrc,
-  facetSections,
-  facetFilters,
-  tagAttributes,
-  legendTag,
-  annotationTags,
-}) => {
+export const createConfig = (props) => {
+  if (!props) {
+    globalThis.config = defaultConfig; //eslint-disable-line no-undef
+    return defaultConfig;
+  }
+  const {
+    pageTitle,
+    brandIconSrc,
+    facetSections,
+    facetFilters,
+    tagAttributes,
+    legendTag,
+    annotationTags,
+  } = props;
   const config = {
     facetSection: (section) => {
       return facetSections.find( elt => elt.section === section );
@@ -36,7 +41,21 @@ export const createConfig = ({
   return config;
 };
 
+const defaultConfig = {
+  pageTitle: "MDF Model Navigator",
+  brandIconSrc: 'https://avatars.githubusercontent.com/u/82073?v=4',
+  facetSection: () => {},
+  facetSections: [],
+  facetFilter: () => {},
+  facetFilters: [],
+  tagAttribute: () => {},
+  tagAttributes: [],
+  legendTag: null,
+  annotationTags: [],
+  };
+
 export const showCheckboxCount = 5;
+
 export const brandIconSrc = 'https://avatars.githubusercontent.com/u/82073?v=4';
 
 export const defaultFacetSectionProps = {
