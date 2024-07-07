@@ -1,6 +1,6 @@
 {
   "name": "model-navigator-standalone",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "",
   "main": "lib/index.js",
   "private": false,
@@ -10,9 +10,17 @@
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
-  "keywords": [],
+  "keywords": [
+    "graph",
+    "model",
+    "MDF",
+    "Bento"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/majensen/model-navigator-standalone/issues"
+  },
   "dependencies": {
     "@babel/cli": "^7.19.3",
     "@babel/core": "^7.23.5",

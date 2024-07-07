@@ -15,6 +15,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import _ from 'lodash';
 import { collide } from './collide.js';
 import { ModelContext } from '../../../Model/ModelContext';
+import { ConfigContext } from '../../../Config/ConfigContext';
 import CanvasView from './CanvasView';
 import { createNodesAndEdges } from '../GraphUtils/MDFutils';
 import {  setMatchingNodeTitle } from './util';
@@ -118,8 +119,7 @@ const CanvasController = ({
     return <CircularProgress />;
   }
   const dispatch = useDispatch();
-
-  //dispatch(reactFlowGraphInitialized({graphViewConfig}));
+  dispatch(reactFlowGraphInitialized({graphViewConfig, model}));
   const isSearchMode = useSelector( selectIsSearchMode );
   const searchResult = useSelector( selectSearchResult );
   const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
@@ -168,7 +168,6 @@ const CanvasController = ({
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
-      graphViewConfig={graphViewConfig}
     />
   );
 };

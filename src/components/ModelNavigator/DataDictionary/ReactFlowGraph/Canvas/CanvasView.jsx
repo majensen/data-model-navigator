@@ -26,6 +26,7 @@ import {
   selectHighlightedNodes,
   selectOverlayTableHidden,
   selectExpandedNodeID,
+  selectGraphViewConfig,
 } from '../../../../../features/graph/graphSlice';
 
 const nodeTypes = {
@@ -43,7 +44,6 @@ const CanvasView = ({
   onConnect,
   onNodesChange,
   onEdgesChange,
-  graphViewConfig,
 }) => {
   const dispatch = useDispatch();
   const categories = useSelector( selectCategories );
@@ -62,7 +62,6 @@ const CanvasView = ({
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             classes={classes}
-            graphViewConfig={graphViewConfig}
           />
         </ReactFlowProvider>
       </div>
@@ -77,11 +76,11 @@ const CustomFlowView = ({
   onConnect,
   onNodesChange,
   onEdgesChange,
-  graphViewConfig,
 }) => {
 
   const dispatch = useDispatch();
   const categories = useSelector( selectCategories );
+  const graphViewConfig = useSelector( selectGraphViewConfig );
   const overlayTableHidden = useSelector( selectOverlayTableHidden );
   const expandedNodeID = useSelector( selectExpandedNodeID );
   const highlightedNodes = useSelector( selectHighlightedNodes );

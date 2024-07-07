@@ -12,6 +12,7 @@ import {
   legendDisplayChanged,
   selectLegendDisplayed,
   selectGraphViewConfig,
+  selectOverlayTableHidden,
 } from '../../../../../features/graph/graphSlice';
 import {
   selectOverlayPropertyHidden,
@@ -21,12 +22,13 @@ const Legend = ({
   classes,
   categoryItems,
   styles,
-  overlayPropertyHidden
 }) => {
   const dispatch = useDispatch();
   const config = useContext( ConfigContext );
   const display = useSelector( selectLegendDisplayed );
   const graphViewConfig = useSelector( selectGraphViewConfig );
+  const overlayPropertyHidden = useSelector( selectOverlayPropertyHidden );
+  const overlayTableHidden = useSelector( selectOverlayTableHidden );
   styles = styles ? styles : graphViewConfig?.legend?.styles;
   const toggleLegend = () => dispatch(legendDisplayChanged(!display));
 
@@ -77,7 +79,7 @@ const Legend = ({
     <>
       <div
         className={clsx({
-          [classes.zvalue]: overlayPropertyHidden,
+          [classes.zvalue]: overlayPropertyHidden && overlayTableHidden,
           [classes.legendExpand]: display,
           [classes.legendCollapse]: !display,
         })}

@@ -9,7 +9,7 @@ const initialState = {
   edges: [],
   graphViewConfig: {},
   graphBoundingBox: [],
-  legendDisplayed: false,
+  legendDisplayed: true,
   expandedNodeID: null,
   foregroundedNodes: [],
   legendItems: [],

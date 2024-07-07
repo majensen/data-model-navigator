@@ -23,9 +23,15 @@ const config = {
   mdfParseHooks,
 };
 
-const mdf_urls = ['https://raw.githubusercontent.com/CBIIT/gdc-model/main/model-desc/gdc-model.yaml',
-                  'https://raw.githubusercontent.com/CBIIT/gdc-model/main/model-desc/gdc-model-props.yaml',
-                 'https://raw.githubusercontent.com/CBIIT/gdc-model/main/model-desc/gdc-model-terms.yaml']
+// const mdf_urls = ['https://raw.githubusercontent.com/CBIIT/ccdi-model/main/model-desc/ccdi-model.yml',
+//                   'https://raw.githubusercontent.com/CBIIT/ccdi-model/main/model-desc/ccdi-model-props.yml'];
+
+// const mdf_urls = ['https://raw.githubusercontent.com/CBIIT/gdc-model/main/model-desc/gdc-model.yaml',
+//                   'https://raw.githubusercontent.com/CBIIT/gdc-model/main/model-desc/gdc-model-props.yaml',
+//                  'https://raw.githubusercontent.com/CBIIT/gdc-model/main/model-desc/gdc-model-terms.yaml']
+
+const mdf_urls = ['https://raw.githubusercontent.com/CBIIT/icdc-model-tool/develop/model-desc/icdc-model.yml',
+                  'https://raw.githubusercontent.com/CBIIT/icdc-model-tool/develop/model-desc/icdc-model-props.yml'];
 
 function getModel() {
   return loadMDF(...mdf_urls)
@@ -44,7 +50,7 @@ root.render(
   <React.StrictMode>
     <ModelNavigator
       model={model}
-      // customConfig={config}
+      customConfig={config}
     />
   </React.StrictMode>
 );

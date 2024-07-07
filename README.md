@@ -8,15 +8,18 @@ set of [MDF](https://github.com/CBIIT/bento-mdf) files, to create an
 annotated data dictionary with an interactive graphical rendering of
 the model.
 
-![screenshot of ICDC model graph](./screen-1.jpg)
-![screenshot of filtered ICDC model graph](./screen-2.png)
-![screenshot of searched GDC model graph](./screen-3.png)
-![screenshot of CCDI model table](./screen-5.png)
+![screenshot of ICDC model graph](https://github.com/majensen/model-navigator-standalone/blob/main/screen-1.png)
+
+![screenshot of filtered ICDC model graph](https://github.com/majensen/model-navigator-standalone/blob/main/screen-2.png)
+
+![screenshot of searched GDC model graph](https://github.com/majensen/model-navigator-standalone/blob/main/screen-3.png)
+
+![screenshot of CCDI model table](https://github.com/majensen/model-navigator-standalone/blob/main/screen-5.png)
 
 To start it out of the box:
 
-     git clone https://github.com/majensen/data-model-navigator
-     cd data-model-navigator
+     git clone https://github.com/majensen/model-navigator-standalone
+     cd model-navigator-standalone
      npm --legacy-peer-deps install
      npm start
 
@@ -29,7 +32,8 @@ graph data model.
 Just import the `ModelNavigator` component and the `loadMDF`
 utility. Load MDFs to return an
 [MDFReader](https://www.npmjs.com/package/mdf-reader) model
-object. Provide the model to the navigator component:
+object. Provide the model to the navigator component. Render in 
+an appropriate element.
 
 ```js
 import ModelNavigator, { loadMDF } from  './components/ModelNavigator';
@@ -40,6 +44,7 @@ function getModel() {
     .then( (model) => model );
 }
 const model = await getModel();
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <ModelNavigator
@@ -84,5 +89,5 @@ const config = {
 };
 ```
 
-See the file [ICDCconfig.js](./src/ICDCconfig.js) for the examples of
-the values of these elements.
+See the file [ICDCconfig.js](https://github.com/majensen/model-navigator-standalone/blob/main/src/ICDCconfig.js)
+for examples of the values of these elements.
