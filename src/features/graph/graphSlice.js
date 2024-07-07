@@ -8,7 +8,6 @@ const initialState = {
   nodes: [],
   edges: [],
   graphViewConfig: {},
-  graphBoundingBox: [],
   legendDisplayed: true,
   expandedNodeID: null,
   foregroundedNodes: [],
@@ -161,7 +160,6 @@ const graphSlice = createSlice({
     // graph reset highlight
   },
 });
-
 
 export const {
   // reducer/actions

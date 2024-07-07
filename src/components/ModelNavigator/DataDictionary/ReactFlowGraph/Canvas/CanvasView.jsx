@@ -85,11 +85,26 @@ const CustomFlowView = ({
   const expandedNodeID = useSelector( selectExpandedNodeID );
   const highlightedNodes = useSelector( selectHighlightedNodes );
   const { fitView } = useReactFlow();
-  const { setViewport, zoomIn, zoomOut } = useReactFlow();
+  const { getViewport, setViewport, zoomIn, zoomOut } = useReactFlow();
 
   const { fit, width } = graphViewConfig.canvas;
 
   const [minZoom, setMinZoom] = useState(fit?.minZoom);
+
+  function calcGraphBox(nodes) {
+    let graphBox = { ulx: 0, uly:0, lrx: 0, lry: 0 };
+    nodes.forEach( (n) => {
+      graphBox.ulx = graphBox.ulx < n.position.x ? graphBox.ulx : n.position.x;
+      graphBox.uly = graphBox.uly > n.position.y ? graphBox.uly : n.position.y;
+      graphBox.lrx = graphBox.lrx > n.position.x ? graphBox.lrx : n.position.x;
+      graphBox.lry = graphBox.lry < n.position.y ? graphBox.lry : n.position.y;
+    });
+    graphBox.cx = (graphBox.lrx + graphBox.ulx)/2;
+    graphBox.cy = (graphBox.lry + graphBox.uly)/2;
+    graphBox.wd = (graphBox.lrx - graphBox.ulx);
+    graphBox.ht = (graphBox.uly - graphBox.lry);
+    return graphBox;
+  }
 
   useViewport(); // I think this is called just to ensure re-render on viewport change.
   useEffect(() => {
@@ -99,10 +114,14 @@ const CustomFlowView = ({
   }, [fit, width]);
 
   const handleTransform = useCallback(() => {
+    fitView();
     // fitView(width)
-    setViewport({x: 0, y: 0, zoom: 1}, {duration: 200});
+    // const graphBox = calcGraphBox(nodes);
+    // const vp = getViewport();
+    //setViewport({x: graphBox.cx, y: graphBox.cy, zoom: 1}, {duration: 200});
+    // setViewport({x: 0, y: 0, zoom: 1}, {duration: 200});
     // setViewport({ x: fit?.x, y: fit?.y, zoom: getMinZoom({ width, ...fit }) }, { duration: 200 });
-  }, [width]);
+  }, [nodes]);
 
   return (
     <ReactFlow

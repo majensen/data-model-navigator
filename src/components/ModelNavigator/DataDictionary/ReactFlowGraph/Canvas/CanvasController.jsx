@@ -24,6 +24,7 @@ import {
   reactFlowGraphInitialized,
   reactFlowNodeDragStarted, reactFlowPanelClicked, reactFlowGraphViewChanged,
   reactFlowGraphDataCalculated,
+  updateGraphBox,
   selectGraphViewConfig,
   selectAssetConfig
 } from '../../../../../features/graph/graphSlice';

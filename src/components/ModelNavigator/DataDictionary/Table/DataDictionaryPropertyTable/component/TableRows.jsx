@@ -72,7 +72,7 @@ const TableRows = ({
       }
     }
     let type = prop.type;
-    let enums = prop.type === 'value_set' ? prop.valueSet() : [];
+    let enums = prop.valueSet ? prop.valueSet() : [];
     let key = prop.is_key;
 
     const isRequired = prop.tags('inclusion') === 'required';
@@ -107,6 +107,7 @@ const TableRows = ({
           {(enums && enums.length > 0) ? (
             <div style={{ display: "flex", flexDirection: "column" }}>
               <span>
+                <p>{type}</p>
                 <p className={classes.acceptValue}>Acceptable Values:</p>{" "}
                 {enums.length > ctrlConfig.maxNoOfItems ? (
                   <ListComponent

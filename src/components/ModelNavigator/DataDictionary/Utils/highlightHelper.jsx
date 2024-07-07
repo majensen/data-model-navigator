@@ -205,7 +205,7 @@ export const getPropertyTypeFragment = (prop, typeMatchList, spanClassName) => {
 };
 
 export const getPropertyDescriptionFragment = (prop, matchedItem, spanClassName) => {
-  let descriptionStr = prop.desc;
+  let descriptionStr = prop?.desc;
   if (!descriptionStr) descriptionStr = 'No Description';
   const propertyDescriptionFragment = addHighlightingSpans(
     descriptionStr,
@@ -245,7 +245,7 @@ export const getMatchInsideProperty = (propertyIndex, propertyKey, prop, allMatc
       if (item.key === 'properties.name' && item.value === propertyKey) {
         nameMatch = item;
       } else if (item.key === 'properties.description') {
-        const descriptionStr = prop.desc.toLowerCase();
+        const descriptionStr = prop.desc && prop.desc.toLowerCase();
         const splitText = descriptionStr ? descriptionStr.split('<br>')[0] : descriptionStr;
         if (item.value === splitText) {
           descriptionMatch = item;
