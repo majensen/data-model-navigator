@@ -40,9 +40,9 @@ const graphSlice = createSlice({
   initialState,
   reducers: {
     reactFlowGraphInitialized(state, action) {
-      const { graphViewConfig, model } = action.payload;
+      const { graphViewConfig, model, } = action.payload;
       state.graphViewConfig = graphViewConfig; //??
-      state.categories =  _.uniq(model.tag_kvs('Category').map(([,val]) => val)); 
+      state.categories =  _.uniq(model.tag_kvs('Category').map(([,val]) => val));
     },
     reactFlowGraphDataCalculated(state, action) {
       const { flowData } = action.payload;

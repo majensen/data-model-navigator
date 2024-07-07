@@ -23,6 +23,20 @@ import analysisIconLegend from './assets/icons/Legend/lg_analysis.svg';
 import dataFileIconLegend from './assets/icons/Legend/lg_data_file.svg';
 import clinicalIconLegend from './assets/icons/Legend/lg_clinical.svg';
 
+/***
+ * graph icon import
+ */
+
+import studyIconGraph from "./assets/icons/Graph/study.svg";
+import caseIconGraph from "./assets/icons/Graph/case.svg";
+import clinicalTrialIconGraph from "./assets/icons/Graph/clinical_trial.svg";
+import adminIconGraph from "./assets/icons/Graph/administrative.svg";
+import biospecimenIconGraph from "./assets/icons/Graph/biospecimen.svg";
+import analysisIconGraph from "./assets/icons/Graph/analysis.svg";
+import dataFileIconGraph from "./assets/icons/Graph/data_file.svg";
+import clinicalIconGraph from "./assets/icons/Graph/clinical.svg";
+
+
 import IconDefault from './assets/icons/icon_default.svg';
 
 export const pageTitle = 'Data Model Navigator';
@@ -160,6 +174,7 @@ export const tagAttributes = [ // nodeCategoriesList, graphNodeCategoryList, tab
       background: '#691706',
     },
     graph: {
+      icon: adminIconGraph,
       color: '#9B2C1F',
     },
     legend: {
@@ -179,6 +194,7 @@ export const tagAttributes = [ // nodeCategoriesList, graphNodeCategoryList, tab
       background: '#4D31A2',
     },
     graph: {
+      icon: studyIconGraph,
       color: '#AD91FF',
     },
     legend: {
@@ -198,6 +214,7 @@ export const tagAttributes = [ // nodeCategoriesList, graphNodeCategoryList, tab
       background: '#043F55',
     },
     graph: {
+      icon: clinicalTrialIconGraph,
       color: '#1C75BC',
     },
     legend: {
@@ -217,6 +234,7 @@ export const tagAttributes = [ // nodeCategoriesList, graphNodeCategoryList, tab
       background: '#672900',
     },
     graph: {
+      icon: caseIconGraph,
       color: '#FF7F15',
     },
     legend: {
@@ -236,6 +254,7 @@ export const tagAttributes = [ // nodeCategoriesList, graphNodeCategoryList, tab
       background: '#063126',
     },
     graph: {
+      icon: biospecimenIconGraph,
       color: '#28AE60',
     },
     legend: {
@@ -255,6 +274,7 @@ export const tagAttributes = [ // nodeCategoriesList, graphNodeCategoryList, tab
       background: '#073A61',
     },
     graph: {
+      icon: clinicalIconGraph,
       color: '#05B8EE',
     },
     legend: {
@@ -274,6 +294,7 @@ export const tagAttributes = [ // nodeCategoriesList, graphNodeCategoryList, tab
       background: '#023806',
     },
     graph: {
+      icon: dataFileIconGraph,
       color: '#7EC500',
     },
     legend: {
@@ -303,6 +324,7 @@ export const tagAttributes = [ // nodeCategoriesList, graphNodeCategoryList, tab
       background: '#6F0065',
     },
     graph: {
+      icon: analysisIconGraph,
       color: '#FF7ABC',
     },
     legend: {

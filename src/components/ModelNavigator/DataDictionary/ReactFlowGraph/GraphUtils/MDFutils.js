@@ -1,23 +1,4 @@
 import _ from "lodash";
-import studyIcon from "../../../DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/study.svg";
-import caseIcon from "../../../DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/case.svg";
-import clinicalTrialIcon from "../../../DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/clinical_trial.svg";
-import adminIcon from "../../../DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/administrative.svg";
-import biospecimenIcon from "../../../DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/biospecimen.svg";
-import analysisIcon from "../../../DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/analysis.svg";
-import dataFileIcon from "../../../DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/data_file.svg";
-import clinicalIcon from "../../../DataDictionary/ReactFlowGraph/Canvas/assets/graph_icon/clinical.svg";
-
-const graphIcons = {
-  administrative: adminIcon,
-  study: studyIcon,
-  case: caseIcon,
-  clinical_trial: clinicalTrialIcon,
-  biospecimen: biospecimenIcon,
-  analysis: analysisIcon,
-  data_file: dataFileIcon,
-  clinical: clinicalIcon,
-};
 
 const graphIconColors = {
   administrative: "#9b2e20",
@@ -30,7 +11,7 @@ const graphIconColors = {
   clinical: "#1b75bc",
 };
 
-const generateNodes = (node_objs, edge_objs, windowWidth) => {
+const generateNodes = (node_objs, edge_objs, config) => {
   const generatedNodes = node_objs.map((node_o, index) => {
     const cat = node_o.node.tags('Category');
     const nreq = node_o.node.props()
@@ -49,7 +30,7 @@ const generateNodes = (node_objs, edge_objs, windowWidth) => {
       category: cat,
       data: {
         label: _.capitalize(node_o.name),
-        icon: graphIcons[cat],
+        icon: config.tagAttribute('Category',cat).graph.icon,
         iconColor: graphIconColors[cat],
         category: cat,
         nodeAssignment: _.capitalize(node_o.node.tags('Assignment')),
@@ -81,14 +62,14 @@ const generateEdges = (edge_objs) => {
   return generatedEdges;
 };
 
-const generateFlowData = (node_objs, edge_objs) => {
+const generateFlowData = (node_objs, edge_objs, config) => {
   return {
-    nodes: generateNodes(node_objs, edge_objs),
+    nodes: generateNodes(node_objs, edge_objs, config),
     edges: generateEdges(edge_objs),
   };
 };
 
-export function createNodesAndEdges(model) {
+export function createNodesAndEdges(model, config) {
   const node_objs = model.nodes()
         .map((node) => ({
           name: node.handle,
@@ -114,6 +95,6 @@ export function createNodesAndEdges(model) {
       (edge_obj) => edge_obj.target 
     );
 
-  const flowData =  generateFlowData(node_objs, edge_objs);
+  const flowData =  generateFlowData(node_objs, edge_objs, config);
   return flowData;
 }

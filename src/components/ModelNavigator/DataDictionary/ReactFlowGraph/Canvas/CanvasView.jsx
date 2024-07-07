@@ -99,7 +99,8 @@ const CustomFlowView = ({
   }, [fit, width]);
 
   const handleTransform = useCallback(() => {
-    fitView(width)
+    // fitView(width)
+    setViewport({x: 0, y: 0, zoom: 1}, {duration: 200});
     // setViewport({ x: fit?.x, y: fit?.y, zoom: getMinZoom({ width, ...fit }) }, { duration: 200 });
   }, [width]);
 

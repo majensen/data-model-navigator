@@ -17,6 +17,7 @@ import { collide } from './collide.js';
 import { ModelContext } from '../../../Model/ModelContext';
 import { ConfigContext } from '../../../Config/ConfigContext';
 import CanvasView from './CanvasView';
+import { defaultStyleAttributes } from '../../../Config/nav.config'
 import { createNodesAndEdges } from '../GraphUtils/MDFutils';
 import {  setMatchingNodeTitle } from './util';
 import {
@@ -35,7 +36,7 @@ import {
   selectHiddenNodes,
 } from '../../../../../features/filter/filterSlice';
 
-import defaultIcon from './assets/graph_icon/study.svg';
+const defaultIcon = defaultStyleAttributes.graph.icon;
 
 const simulation = forceSimulation()
       .force('charge', forceManyBody().strength(-1000))
@@ -115,6 +116,7 @@ const CanvasController = ({
   highlightedNodes,
 }) => {
   const model = useContext( ModelContext );
+  const config = useContext( ConfigContext );
   if (tabViewWidth === 0 || !model) { // eslint-disable-line no-undef
     return <CircularProgress />;
   }
@@ -129,7 +131,7 @@ const CanvasController = ({
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const flowData = createNodesAndEdges(model);
+  const flowData = createNodesAndEdges(model, config);
   if (!nodeCoordinatesSetter) {
     nodeCoordinatesSetter = createNodeCoordinatesSetter(flowData.nodes, flowData.edges);
   }

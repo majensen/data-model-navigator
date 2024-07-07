@@ -4,6 +4,7 @@
 import resetIconSVG from '../../../assets/icons/Clear-icon.svg';
 import legendDefaultIcon from '../../../assets/icons/icon_default.svg';
 import categoryDefaultIcon from '../../../assets/icons/icon_default.svg';
+import graphDefaultIcon from '../../../assets/icons/Graph/study.svg';
 
 export const createConfig = (props) => {
   if (!props) {
@@ -91,6 +92,9 @@ export const defaultStyleAttributes = {
     icon: categoryDefaultIcon,
     color: '#9B9B9B',
     background: '#691706',
+  },
+  graph: {
+    icon: graphDefaultIcon,
   },
   table: {
     icon: categoryDefaultIcon,
