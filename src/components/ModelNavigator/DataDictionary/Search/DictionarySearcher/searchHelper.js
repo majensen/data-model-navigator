@@ -4,8 +4,6 @@ import Fuse from 'fuse.js';
 const lc = (str) => `${str}`.toLowerCase();
 const searchHistoryLocalStorageKey = 'datadictionary:searchHistory';
 
-globalThis.searchData = null; //eslint-disable-line no-undef
-
 const getType = (prop) => {
   if (prop.type == 'value_set') {
     return prop.valueSet();
@@ -16,7 +14,7 @@ const getType = (prop) => {
 }
 
 export const prepareSearchData = (model) => {
-  globalThis.searchData = model.nodes() // eslint-disable-line no-undef
+  const searchData = model.nodes() // eslint-disable-line no-undef
     .map((node) => {
       const properties = node.props().map((prop) => {
         let type = getType(prop);
@@ -38,7 +36,7 @@ export const prepareSearchData = (model) => {
         properties,
       };
     });
-  return globalThis.searchData; // eslint-disable-line no-undef
+  return searchData; // eslint-disable-line no-undef
 };
 
 export const ERR_KEYWORD_TOO_SHORT = 'Keyword too short, try longer keyword.';

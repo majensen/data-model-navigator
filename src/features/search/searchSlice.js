@@ -21,12 +21,12 @@ const initialState = {
   currentSearchKeyword: '',
   searchString: '',
   lastSearchError: '',
+  searchData: null,
   searchResult: null,
   overlayPropertyHidden: true,
   matchedNodeIDs:[],
   matchedNodeIDsInNameAndDescription: [],
   matchedNodeIDsInProperties: [],
-  searchData: null,
   suggestionList: [],
   clickedSuggestionItem: null,
   clickedHistoryItem: null,
@@ -45,6 +45,10 @@ const searchSlice = createSlice({
       const vis = action.payload;
       state.acCloseIconHidden = vis == 'hide' ? true : false;
     },
+    searchDataPrepared(state, action) {
+      const searchData = action.payload;
+      state.searchData = searchData;
+    },
     searchResultCleared(state, action) {
       state.isSearchMode = false;
       state.searchResult = null;
@@ -55,8 +59,9 @@ const searchSlice = createSlice({
       state.isSearching = true;
     },
     searchCompleted(state, action) {
-      const {result, errorMsg, store} = action.payload;
+      const {result, errorMsg, save} = action.payload;
       state.isSearching = false;
+      state.currentSearchKeyword = state.searchString;
       state.searchString = "";
       if (!result || result.length === 0) {
         state.searchResult = null;
@@ -70,11 +75,10 @@ const searchSlice = createSlice({
           summary
         };
         state.lastSearchError = '';
-        state.currentSearchKeyword = state.searchString;
-        if (store) {
+        if (save) {
           state.searchHistoryItems = storeSearchHistoryItem({
-            keywordStr: state.searchString,
-            matchedCount: summary.generalMatcheNodeIDs.length
+            keywordStr: state.currentSearchKeyword,
+            matchedCount: summary.generalMatchedNodeIDs.length
           });
         }
         state.matchedNodeIDs = summary.generalMatchedNodeIDs;
@@ -120,6 +124,7 @@ const searchSlice = createSlice({
 export const {
   // reducer/actions
   changedVisAcCloseIcon,
+  searchDataPrepared,
   searchResultCleared,
   searchStarted,
   searchCompleted,
@@ -136,12 +141,12 @@ export default searchSlice.reducer;
 // export Selectors
 
 export const selectAcCloseIconHidden = state => state.search.acCloseIconHidden;
+export const selectSearchData = state => state.search.searchData;
 export const selectIsSearchMode = state => state.search.isSearchMode;
 export const selectIsSearching = state => state.search.isSearching;
 export const selectLastSearchError =  state => state.search.lastSearchError;
 export const selectOverlayPropertyHidden = state => state.search.overlayPropertyHidden;
 export const selectCurrentSearchKeyword = state => state.search.currentSearchKeyword;
-export const selectSearchData = state => state.search.searchData;
 export const selectSearchResult = state => state.search.searchResult;
 export const selectSearchHistoryItems = state => state.search.searchHistoryItems;
 export const selectClickedSuggestionItem = state => state.search.clickedSuggestionItem;

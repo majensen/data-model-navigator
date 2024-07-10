@@ -14,11 +14,13 @@ import {
 import {
   changedVisAcCloseIcon,
   searchStarted,
+  searchDataPrepared,
   searchCompleted,
   searchResultCleared,
   suggestionItemClicked,
   suggestionItemReset,
   suggestionsCleared,
+  selectSearchData,
   selectClickedSuggestionItem,
   historyItemClicked,
   historyItemReset,
@@ -43,7 +45,7 @@ function AutoCompleteInput({
   const clickedHistoryItem = useSelector( selectClickedHistoryItem );
   const model = useContext(ModelContext);
   const modelID = useSelector( selectModelID );
-  let searchData = null; 
+  const searchData = useSelector( selectSearchData );
   
   let inputRef = useRef(null);
   
@@ -107,10 +109,12 @@ function AutoCompleteInput({
 
   // update search data when new model appears
   let n = 0;
+
   useEffect( () => {
     let id = modelID;
     n = n+1;
-    searchData = prepareSearchData(model);
+    const searchData = prepareSearchData(model);
+    dispatch(searchDataPrepared(searchData));
     console.log('hey',n);
   }, [modelID] );
   
