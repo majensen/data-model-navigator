@@ -29,6 +29,7 @@ import {
   filtersInitRequested,
   allFiltersCleared,
   selectFiltersSelected,
+  selectHaveFilters,
 } from "../../../../features/filter/filterSlice";
 import {
   clickedBlankSpace,
@@ -66,7 +67,8 @@ const FacetFiltersView = ({
   const model = useContext( ModelContext );
   const config = useContext( ConfigContext );
   dispatch(filtersInitRequested(model));
-
+  
+  const haveFilters = useSelector( selectHaveFilters );
   const facetSectionProps = config.facetSections;
   const facetFilters = config.facetFilters;
 
@@ -100,20 +102,18 @@ const FacetFiltersView = ({
     });
   const sideBarSections = Object.values(sections);
   
-  // this below is not right - there should be a single "default section"
-  if (
-    facetSectionProps &&
-    facetSectionProps.length === 0
-  ) {
-    return <></>;
-  }
-
   const clearFilterHandler = () => {
     dispatch(allFiltersCleared());
     dispatch(clickedBlankSpace());
     dispatch(changedVisOverlayPropTable('hide'));
   };
 
+  if (!haveFilters) {
+    return (
+      <>
+      </>
+    );
+  }
   return (
     <>
       <Button

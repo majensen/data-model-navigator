@@ -30,7 +30,7 @@ const generateNodes = (node_objs, edge_objs, config) => {
       category: cat,
       data: {
         label: _.capitalize(node_o.name),
-        icon: config.tagAttribute('Category',cat).graph.icon,
+        icon: config.tagAttribute('Category',cat)?.graph.icon,
         iconColor: graphIconColors[cat],
         category: cat,
         nodeAssignment: _.capitalize(node_o.node.tags('Assignment')),

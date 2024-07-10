@@ -16,9 +16,6 @@ const getType = (prop) => {
 }
 
 export const prepareSearchData = (model) => {
-  if (globalThis.searchData) { // eslint-disable-line no-undef
-    return globalThis.searchData // eslint-disable-line no-undef
-  }
   globalThis.searchData = model.nodes() // eslint-disable-line no-undef
     .map((node) => {
       const properties = node.props().map((prop) => {

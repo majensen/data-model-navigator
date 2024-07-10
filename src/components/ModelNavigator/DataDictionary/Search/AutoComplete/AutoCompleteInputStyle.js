@@ -1,4 +1,8 @@
 export default () => ({
+  autoComplete: {},
+  suggestions: {},
+  inputWrapper: {},
+  emptySuggestionList: {},
   autoCompleteInput: {
     padding: '0',
     height: '100%',

@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import _ from 'lodash';
 import DataDictionary from './DataDictionary';
 import store from '../../store';
-import { createConfig } from './Config/nav.config';
+import { createConfig, defaultConfig } from './Config/nav.config';
 import { ConfigContext } from './Config/ConfigContext';
 import { ModelContext } from './Model/ModelContext';
 import loadMDF from './Model/loadMDF';
@@ -15,7 +15,7 @@ export default function ModelNavigator({
   model,
   customConfig,
 }) {
-  const config = createConfig(customConfig);
+  const config = createConfig(customConfig || defaultConfig);
   // create default checkboxes from Category values
   // if not already specified
   if (config.facetFilters

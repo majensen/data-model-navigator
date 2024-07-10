@@ -5,6 +5,7 @@ import _ from 'lodash';
 const initialState = {
   isGraphView: true,
   layoutInitialized: false,
+  modelID: "",
   nodes: [],
   edges: [],
   graphViewConfig: {},
@@ -31,9 +32,6 @@ const initialState = {
   highlightingMatchedNodeOpened: false,
 };
 
-// how to give search its own slice and interact here?
-// "versionInfo" - where to put - it's part of the model
-
 const graphSlice = createSlice({
   name: 'graph',
   initialState,
@@ -42,11 +40,15 @@ const graphSlice = createSlice({
       const { graphViewConfig, model, } = action.payload;
       state.graphViewConfig = graphViewConfig; //??
       state.categories =  _.uniq(model.tag_kvs('Category').map(([,val]) => val));
+      state.modelID = model.id || "none";
     },
     reactFlowGraphDataCalculated(state, action) {
       const { flowData } = action.payload;
       state.nodes = flowData.nodes;
       state.edges = flowData.edges;
+    },
+    reactFlowGraphModelUpdateRequested(state, action) {
+      state.updateModel = true;
     },
     clickedBlankSpace(state, action) { // this is weird.
       if (state.highlightingNode) {
@@ -166,6 +168,7 @@ export const {
   reactFlowGraphInitialized,
   tableNodeExpandChanged,
   reactFlowGraphDataCalculated,
+  reactFlowGraphModelUpdateRequested,
   reactFlowPanelClicked,
   reactFlowNodeDragStarted,
   reactFlowNodeClicked,
@@ -189,6 +192,7 @@ export default graphSlice.reducer;
 
 // export Selectors
 
+export const selectModelID = state => state.graph.modelID;
 export const selectIsGraphView = state => state.graph.isGraphView;
 export const selectLegendDisplayed = state => state.graph.legendDisplayed;
 export const selectGraphViewConfig = state => state.graph.graphViewConfig;

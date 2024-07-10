@@ -11,6 +11,7 @@ import {
 const initialState = {
   configs: {filterConfig, controlVocabConfig},
   hiddenNodes: [],
+  haveFilters: false,
   allTaggedNodes: [],
   fullTagMatrix: null,
   displayedTagMatrix: {},
@@ -24,35 +25,49 @@ const filterSlice = createSlice({
   reducers: {
     filtersInitRequested(state, action) {
       const model  = action.payload;
-      if (!state.fullTagMatrix) {
-        globalThis.model = model;
-        // initialize allTaggedNodes
-        state.fullTagMatrix = calcNodeTagMatrix(model,
-                                                globalThis.config.facetFilters,
-                                                []);
-        state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
-        
-        let taggedNodes = new Set();
-        Object.keys(state.fullTagMatrix)
-          .forEach((key) => {
-            Object.keys(state.fullTagMatrix[key])
-              .forEach( (val) => {
-                state.fullTagMatrix[key][val]
-                  .nodes.forEach( (hndl) => { taggedNodes.add(hndl); } );
+      globalThis.model = model;
+      const tags = globalThis.config.facetFilters.map( (filt) => filt.tag );
+      if (tags) {
+        // does the model have any of these tags?
+        let tagset = tags.flatMap( (tag) => model.tag_kvs(tag) );
+        if (tagset && tagset.length > 0) {
+          state.haveFilters = true;
+          if (!state.fullTagMatrix) {
+            // initialize allTaggedNodes
+            state.fullTagMatrix = calcNodeTagMatrix(model,
+                                                    globalThis.config.facetFilters,
+                                                    []);
+            state.displayedTagMatrix = _.cloneDeep(state.fullTagMatrix);
+            
+            let taggedNodes = new Set();
+            Object.keys(state.fullTagMatrix)
+              .forEach((key) => {
+                Object.keys(state.fullTagMatrix[key])
+                  .forEach( (val) => {
+                    state.fullTagMatrix[key][val]
+                      .nodes.forEach( (hndl) => { taggedNodes.add(hndl); } );
+                  });
               });
-          });
-        state.allTaggedNodes = [];
-        taggedNodes.forEach( (hndl) => { state.allTaggedNodes.push(hndl); } );
+            state.allTaggedNodes = [];
+            taggedNodes.forEach( (hndl) => { state.allTaggedNodes.push(hndl); } );
+          }
+          if (!state.checkboxState) {
+            let acc = {};
+            globalThis.config.facetFilters.flatMap( // eslint-disable-line no-undef
+              (filt) => {
+                filt.checkboxItems.map((item) => {
+                  acc[`checkbox_${item.tag}_${item.value}`] = false;
+                });
+              });
+            state.checkboxState = acc;
+          }
+        }
+        else {
+          state.haveFilters = false;
+        }
       }
-      if (!state.checkboxState) {
-        let acc = {};
-        globalThis.config.facetFilters.flatMap( // eslint-disable-line no-undef
-          (filt) => {
-            filt.checkboxItems.map((item) => {
-              acc[`checkbox_${item.tag}_${item.value}`] = false;
-            });
-          });
-        state.checkboxState = acc;
+      else {
+        state.haveFilters = false;
       }
     },
     hiddenNodesUpdated(state, action) {
@@ -233,6 +248,7 @@ export const {
 
 export default filterSlice.reducer;
 
+export const selectHaveFilters = state => state.filter.haveFilters;
 export const selectHiddenNodes = state => state.filter.hiddenNodes;
 export const selectDisplayedTagMatrix = state => state.filter.displayedTagMatrix;
 export const selectFullTagMatrix = state => state.filter.fullTagMatrix;

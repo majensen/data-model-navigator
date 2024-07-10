@@ -42,7 +42,7 @@ export const createConfig = (props) => {
   return config;
 };
 
-const defaultConfig = {
+export const defaultConfig = {
   pageTitle: "MDF Model Navigator",
   brandIconSrc: 'https://avatars.githubusercontent.com/u/82073?v=4',
   facetSection: () => {},

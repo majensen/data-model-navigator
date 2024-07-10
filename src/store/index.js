@@ -9,7 +9,13 @@ const store = configureStore({
     search: searchReducer, 
     filter: filterReducer,
     graph: graphReducer,
-  }
+  },
+  middleware: (getDefaultMiddleware) =>
+  getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActionPaths: ['payload'],
+    }
+  }),
 });
 
 export default store;

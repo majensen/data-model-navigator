@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useRef, useContext } from 'react';
+import React, { useRef, useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, withStyles } from '@material-ui/core';
 import './AutoCompleteInput.css';
@@ -25,6 +25,9 @@ import {
   selectAcCloseIconHidden,
   selectClickedHistoryItem,
 } from '../../../../../features/search/searchSlice';
+import {
+  selectModelID,
+} from '../../../../../features/graph/graphSlice';
 
 // import acInputReducer from './AutoCompleteInputReducer';
 
@@ -39,7 +42,8 @@ function AutoCompleteInput({
   const clickedSuggestionItem = useSelector( selectClickedSuggestionItem );
   const clickedHistoryItem = useSelector( selectClickedHistoryItem );
   const model = useContext(ModelContext);
-  const searchData = model ? prepareSearchData(model) : null;
+  const modelID = useSelector( selectModelID );
+  let searchData = null; 
   
   let inputRef = useRef(null);
   
@@ -101,6 +105,15 @@ function AutoCompleteInput({
     handleSubmitInput(inputRef.current.value);
   }
 
+  // update search data when new model appears
+  let n = 0;
+  useEffect( () => {
+    let id = modelID;
+    n = n+1;
+    searchData = prepareSearchData(model);
+    console.log('hey',n);
+  }, [modelID] );
+  
   return (
     <div className={ classes.autoCompleteInput }>
       { clickedSuggestionItem && handleClickedSuggItem() }

@@ -25,6 +25,7 @@ import {
   reactFlowNodeDragStarted, reactFlowPanelClicked, reactFlowGraphViewChanged,
   reactFlowGraphDataCalculated,
   updateGraphBox,
+  selectModelID,
   selectGraphViewConfig,
   selectAssetConfig
 } from '../../../../../features/graph/graphSlice';
@@ -39,15 +40,6 @@ import {
 
 const defaultIcon = defaultStyleAttributes.graph.icon;
 
-const simulation = forceSimulation()
-      .force('charge', forceManyBody().strength(-1000))
-//      .force('x', forceX().x(0).strength(0.05))
-//      .force('y', forceY().y(0).strength(0.05))
-//      .force('collide', collide())
-      .force('center', forceCenter())
-      .alphaTarget(0.05)
-      .stop();
-
 const numTicks = 3; // number of simulation ticks to get initial layout - put in config later
 
 const createNodeCoordinatesSetter = (nodes, edges) => {
@@ -56,6 +48,15 @@ const createNodeCoordinatesSetter = (nodes, edges) => {
   // in flowgraph
   let sim_nodes = _.cloneDeep(nodes);
   let sim_edges = _.cloneDeep(edges);
+  let simulation = forceSimulation()
+      .force('charge', forceManyBody().strength(-1000))
+//      .force('x', forceX().x(0).strength(0.05))
+//      .force('y', forceY().y(0).strength(0.05))
+//      .force('collide', collide())
+      .force('center', forceCenter())
+      .alphaTarget(0.05)
+      .stop();
+
   simulation.nodes(sim_nodes).
     force(
       'link',
@@ -80,6 +81,7 @@ const createNodeCoordinatesSetter = (nodes, edges) => {
 };
 
 let nodeCoordinatesSetter = null;
+let flowData = null;
 
 const getLayoutedElements = (
   nodes, edges, isSearchMode, defaultIcon,
@@ -118,25 +120,34 @@ const CanvasController = ({
 }) => {
   const model = useContext( ModelContext );
   const config = useContext( ConfigContext );
+
   if (tabViewWidth === 0 || !model) { // eslint-disable-line no-undef
     return <CircularProgress />;
   }
   const dispatch = useDispatch();
-  dispatch(reactFlowGraphInitialized({graphViewConfig, model}));
+  
   const isSearchMode = useSelector( selectIsSearchMode );
   const searchResult = useSelector( selectSearchResult );
   const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
   const hiddenNodes = useSelector( selectHiddenNodes );
+
   
   // leave in React std form for flowGraph
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
-  const flowData = createNodesAndEdges(model, config);
-  if (!nodeCoordinatesSetter) {
+  const modelID = useSelector( selectModelID );
+  // idea: if model changes, run initialization
+  let n = 0;
+  useEffect( () => {
+    let id = modelID;
+    n = n+1;
+    console.log(n);
+    flowData = createNodesAndEdges(model, config);
     nodeCoordinatesSetter = createNodeCoordinatesSetter(flowData.nodes, flowData.edges);
-  }
-
+    dispatch(reactFlowGraphInitialized({graphViewConfig, model}));
+  }, [modelID]);
+  
   useEffect(() => {
     const {nodes_r: layoutNodes, edges_r: layoutEdges} = getLayoutedElements(
       flowData.nodes, flowData.edges,
