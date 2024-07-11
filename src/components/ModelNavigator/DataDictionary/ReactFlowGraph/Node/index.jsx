@@ -44,14 +44,6 @@ const NodeView = ({
    * expand node in normal mode (when search mode is false)
    * use view option to adjust the fontSize on property dialog
    */
-  const expandNode = () => {
-    // const view = localStorage.getItem("reactflowGraphView"); ???
-    dispatch(reactFlowNodeClicked({id, isSearchMode}));
-    // dispatch(reactFlowNodeDisplayChanged(!display));
-    // if (display) { // ??
-    //   dispatch(reactFlowPanelClicked());
-    // }
-  };
   const {
     label,
     icon,
@@ -65,9 +57,13 @@ const NodeView = ({
     optPropsCount,
   } = data;
 
-  //dispatch event - on table view
-  const displayOverlayTable = () => {
-    // dispatch(reactFlowNodeClicked(id));
+  const clickNode = (e) => {
+    e.stopPropagation();
+    dispatch(reactFlowNodeClicked({id, isSearchMode}));
+  };
+
+  const showPropTable = (e) => {
+    e.stopPropagation();
     dispatch(changedVisOverlayPropTable('show'));
   };
 
@@ -102,7 +98,7 @@ const NodeView = ({
         >
           {expand && (
             <div className={classes.iconBar}>
-              <CloseIcon className={classes.closeIcon} onClick={expandNode} aria-label="Close" />
+              <CloseIcon className={classes.closeIcon} onClick={clickNode} aria-label="Close" />
             </div>
           )}
           <div className={classes.contentWrapper}>
@@ -118,10 +114,11 @@ const NodeView = ({
                 style={{
                   border: expand && "2px solid white",
                 }}
-                onClick={isSearchMode ? displayOverlayTable : expandNode}
+                onClick={clickNode}
               >
                 <div className={classes.nodeButtonInnerWrapper}>
                   <div
+                    tag="1"
                     style={{
                       borderRadius: "11px",
                       backgroundColor: iconColor,
@@ -139,7 +136,7 @@ const NodeView = ({
                     </div>
                   </div>
 
-                  <div className={classes.labelWrapper}>
+                  <div tag="2" className={classes.labelWrapper}>
                     {isSearchMode && matchedNodeNameQuery ? (
                       <>
                         {highlightMatchingTitle(
@@ -213,7 +210,7 @@ const NodeView = ({
         {expand && (
           <button
             className={classes.viewPropBtn}
-            onClick={displayOverlayTable}
+            onClick={showPropTable}
           >
             View Properties
           </button>

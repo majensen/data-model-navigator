@@ -108,19 +108,24 @@ const graphSlice = createSlice({
     },
     reactFlowNodeClicked(state, action) {
       const {id: nodeID, isSearchMode} = action.payload;
+      state.highlightingMatchedNodeID = nodeID;
+      state.highlightingNodeID = nodeID;
+      state.highlightingMatchedNodeOpened = false;
       if (state.expandedNodeID == nodeID) {
         state.expandedNodeID = null;
       } else {
         state.expandedNodeID = nodeID;
       }
-      state.highlightingMatchedNodeID = nodeID;
-      state.highlightingNodeID = nodeID;
-      state.highlightingMatchedNodeOpened = false;
       state.overlayTableHidden = isSearchMode ? false : true;
     },
     changedVisOverlayPropTable(state, action) {
       const vis = action.payload;
-      state.overlayTableHidden = vis == 'hide' ? true : false;
+      if (vis === 'hide') {
+        state.expandedNodeID = null;
+        state.overlayTableHidden = true;
+      } else {
+        state.overlayTableHidden = false;
+      }
     },
     tabGraphViewChanged(state, action) {
       const showGraphView = action.payload;
@@ -205,7 +210,7 @@ export const selectExpandedNodeID = state => state.graph.expandedNodeID;
 export const selectFocusedNodeID = state => state.graph.focusedNodeID;
 // export const selectNodeDisplayed = state => state.graph.nodeDisplayed;
 export const selectOverlayTableHidden = state => state.graph.overlayTableHidden;
-export const selectNodeIsExpanded = (state, nodeID) => state.graph.expandedNodeID == nodeID;
+export const selectNodeIsExpanded = (state, nodeID) => state.graph.expandedNodeID === nodeID;
 export const selectNodeIsForegrounded = (state, nodeID) => state.graph.foregroundedNodes.includes(nodeID);
 
 export const selectTableNodeIsExpanded = (state, nodeID) => state.graph.tableExpandNodeIDs && state.graph.tableExpandNodeIDs.includes(nodeID); 

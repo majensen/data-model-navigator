@@ -24,6 +24,7 @@ import {
 } from '../../../../../features/graph/graphSlice';
 import {defaultStyleAttributes} from '../../../Config/nav.config';
 import { ConfigContext } from '../../../Config/ConfigContext';
+import { ModelContext } from '../../../Model/ModelContext';
 
 import DataDictionaryPropertyTable from "../../Table/DataDictionaryPropertyTable";
 import styles from "./OverlayPropertyTable.style";
@@ -36,33 +37,32 @@ const OverlayPropertyTable = ({
 }) =>  {
   const dispatch = useDispatch();
   const config = useContext( ConfigContext );
+  const model =  useContext( ModelContext );
   const isSearchMode = useSelector(selectIsSearchMode);
-  const node = nodeID ? globalThis.model.nodes( nodeID ) : null; // eslint-disable-line no-undef
+  const node = nodeID ? model.nodes( nodeID ) : null; // eslint-disable-line no-undef
   const matchedNodeID = useSelector( selectHighlightingMatchedNodeID );
   const matchedResult = useSelector(
-    (state, matchedNodeID) => selectMatchedResult(state, matchedNodeID)
+    state => selectMatchedResult(state, matchedNodeID)
   );
   
   const getTitle = () => {
     if (isSearchMode) {
-      const nodeTitleFragment = getNodeTitleFragment(
-        matchedResult.matches,
-        _.capitalize(node.handle),
-        "overlay-property-table__span"
-      );
-      return nodeTitleFragment;
+      if (matchedResult) {
+        return getNodeTitleFragment(matchedResult.matches,
+                                    _.capitalize(node.handle),
+                                    "overlay-property-table__span");
+      }
     }
     return _.capitalize(node.handle);
   };
 
   const getDescription = () => {
     if (isSearchMode) {
-      const nodeDescriptionFragment = getNodeDescriptionFragment(
-        matchedResult.matches,
-        node.description,
-        "overlay-property-table__span"
-      );
-      return nodeDescriptionFragment;
+      if (matchedResult) {
+        return getNodeDescriptionFragment(matchedResult.matches,
+                                          node.description,
+                                          "overlay-property-table__span");
+      }
     }
     return node.description;
   };
@@ -82,7 +82,7 @@ const OverlayPropertyTable = ({
   };
 
   const needHighlightSearchResult = isSearchMode;
-  if (!node || hidden) {
+  if (!node || hidden ) { // !node || hidden) {
     return (
       <></>
     );
@@ -90,14 +90,14 @@ const OverlayPropertyTable = ({
   const category = node.tags('Category') ? node.tags('Category') : null;
   const catConfig =  category ? config.tagAttribute('Category', category) : null;
   const borderLeftColor = category 
-        ? catConfig.table.color
+        ? catConfig?.table?.color
         : defaultStyleAttributes.node.color;
   const backgroundColor = category
-        ? catConfig.node.background
+        ? catConfig?.node?.background
         : defaultStyleAttributes.node.background;
   const tableIcon = category
-        ? (catConfig.table.icon
-           ? catConfig.table.icon
+        ? (catConfig?.table?.icon
+           ? catConfig?.table?.icon
            : defaultStyleAttributes.table.icon)
         : defaultStyleAttributes.table.icon;
   return (

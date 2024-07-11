@@ -8,7 +8,9 @@ import {
   selectIsSearchMode,
   selectOverlayPropertyHidden,
 } from '../../../../../../features/search/searchSlice';
-
+import {
+  selectOverlayTableHidden,
+} from '../../../../../../features/graph/graphSlice';
 
 /**
 * A layer over the graph.
@@ -20,15 +22,16 @@ const ActionLayer = ({
   const dispatch = useDispatch();
   const isSearchMode = useSelector( selectIsSearchMode );
   const overlayPropertyHidden = useSelector( selectOverlayPropertyHidden );
+  const overlayTableHidden =  useSelector( selectOverlayTableHidden );
   return (
     <div className={clsx(classes.actionLayer, {
-      [classes.zvalue]: !overlayPropertyHidden,
+      [classes.zvalue]: !overlayPropertyHidden || !overlayTableHidden,
     })}>
       {
         isSearchMode && (
           <Button
             className={clsx(classes.clearSearch, {
-              [classes.zvalue]: !overlayPropertyHidden,
+              [classes.zvalue]: !overlayPropertyHidden || !overlayTableHidden,
             })}
             onClick={() => dispatch(searchResultCleared())}
             label="Clear Search Result"

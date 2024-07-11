@@ -48,10 +48,12 @@ const DataDictionaryPropertyTable = ({
   const needHighlight = onlyShowMatchedProperties
     || needHighlightSearchResult;
   const matchedPropertiesSummary = needHighlightSearchResult
-    ? getMatchesSummaryForProperties(
-      properties,
-      matchedResult.matches,
-    ) : [];
+        ? (matchedResult 
+           ? getMatchesSummaryForProperties(
+             properties,
+             matchedResult.matches,)
+           : [])
+        : [];
 
   return (
     <div className={classes.propertyTable}>
