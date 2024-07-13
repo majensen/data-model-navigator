@@ -1,4 +1,5 @@
-export default () => ({
+export default function overlayPropertyTableStyle() {
+  return {
   table: {
     position: "absolute",
     top: "0",
@@ -41,7 +42,6 @@ export default () => ({
     marginLeft: "15px",
   },
   closeIcon: {
-    backgroundColor: "#000000",
     marginLeft: "8px",
     position: "relative",
     top: "1px",
@@ -68,14 +68,14 @@ export default () => ({
     fontSize: "19px",
     fontFamily: "Lato",
   },
-  node: {
-    backgroundColor: "#fff",
-    display: "flex",
-    minHeight: "40px",
-    padding: "15px",
-    border: "1px solid #e7e7e7",
-    borderTop: "none",
-  },
+  // node: {
+  //   backgroundColor: "#fff",
+  //   display: "flex",
+  //   minHeight: "40px",
+  //   padding: "15px",
+  //   border: "1px solid #e7e7e7",
+  //   borderTop: "none",
+  // },
   title: {
     width: "25%",
     lineHeight: "1.6rem",
@@ -102,7 +102,7 @@ export default () => ({
     minWidth: "unset" /* override .g3-button's 152px min-width */,
     height: "30px",
     margin: "0",
-    padding: "unset" /* override .g3-button's paddings */,
+    // padding: "unset" /* override .g3-button's paddings */,
     float: "right",
     fontWeight: "normal",
     border: "0",
@@ -205,4 +205,6 @@ export default () => ({
     paddingLeft: "17px",
     marginBottom: "14px",
   },
-});
+  };
+}
+

@@ -1,4 +1,5 @@
-export default () => ({
+export default function legendStyle() {
+  return {
   legendExpand: {
     position: "absolute",
     top: "400px",
@@ -98,4 +99,6 @@ export default () => ({
   categoryIcon: {
     paddingTop: "5px",
   },
-});
+  };
+}
+

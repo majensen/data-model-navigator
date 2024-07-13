@@ -1,10 +1,9 @@
 import React from 'react';
-import _ from 'lodash';
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 
-export default ({
+export default function TabThemeConfig({
   children,
-}) => {
+}) {
   const theme = {
     overrides: {
       MuiTab: {

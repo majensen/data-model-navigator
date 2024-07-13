@@ -5,7 +5,7 @@ const lc = (str) => `${str}`.toLowerCase();
 const searchHistoryLocalStorageKey = 'datadictionary:searchHistory';
 
 const getType = (prop) => {
-  if (prop.type == 'value_set') {
+  if (prop.type === 'value_set') {
     return prop.valueSet();
   }
   else {

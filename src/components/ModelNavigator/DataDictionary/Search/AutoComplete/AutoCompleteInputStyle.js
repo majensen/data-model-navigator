@@ -1,4 +1,5 @@
-export default () => ({
+export default function autoCompleteInputStyle() {
+  return {
   autoComplete: {},
   suggestions: {},
   inputWrapper: {},
@@ -60,4 +61,6 @@ export default () => ({
     borderLeft: '1px solid ',
     margin: '0px 2px 0px 2px',
   }
-});
+  };
+}
+

@@ -1,4 +1,5 @@
-export default () => ({
+export default function dictionaryStyle() {
+  return {
   container: {
     fontFamily: "Raleway, sans-serif",
     paddingLeft: "0px",
@@ -64,4 +65,6 @@ export default () => ({
   tableViewTabPanel: {
     overflow: "scroll",
   },
-});
+  };
+}
+

@@ -1,5 +1,6 @@
-export default () => ({
-  customStyle: {
-    
-  },
-});
+export default function customEdgeStyle() {
+  return {
+    customStyle: {
+    },
+  };
+}

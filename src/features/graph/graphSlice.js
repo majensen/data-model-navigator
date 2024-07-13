@@ -1,5 +1,4 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
 import _ from 'lodash';
 
 const initialState = {
@@ -111,7 +110,7 @@ const graphSlice = createSlice({
       state.highlightingMatchedNodeID = nodeID;
       state.highlightingNodeID = nodeID;
       state.highlightingMatchedNodeOpened = false;
-      if (state.expandedNodeID == nodeID) {
+      if (state.expandedNodeID === nodeID) {
         state.expandedNodeID = null;
       } else {
         state.expandedNodeID = nodeID;

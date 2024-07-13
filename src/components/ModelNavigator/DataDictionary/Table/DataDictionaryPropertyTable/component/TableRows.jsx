@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { withStyles } from "@material-ui/core";
-import { useDispatch, useSelector } from "react-redux";
+
 import {
   getPropertyNameFragment,
   getPropertyDescriptionFragment,

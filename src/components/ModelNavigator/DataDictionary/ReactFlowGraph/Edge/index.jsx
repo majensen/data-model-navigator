@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core';
 import { getStraightPath } from 'reactflow';

@@ -6,15 +6,10 @@ import {
   AccordionDetails,
   AccordionSummary,
   withStyles,
-  Divider,
-  Backdrop,
-  CircularProgress,
   Icon,
-  Button,
 } from "@material-ui/core";
 import _ from "lodash";
 import {
-  ArrowDropDown as ArrowDropDownIcon,
   ExpandMore as ExpandMoreIcon,
 } from "@material-ui/icons";
 import { ConfigContext } from "../../Config/ConfigContext";
@@ -81,21 +76,6 @@ const FacetSelector = ({
   );
 
 
-  const displayAllSelection = (checkboxItems) => {
-    let count = 0;
-    checkboxItems.forEach((item) => {
-      if (item.isChecked) {
-        count += 1;
-      }
-    });
-  };
-
-  function getCheckBoxColor(index, currentSection) {
-    return config.facetSection(currentSection.sectionName)
-      ? config.facetSection(currentSection.sectionName).checkBoxColorsOne
-      : defaultFacetSectionProps.checkBoxColorsOne;
-  }
-  
   const getGroupNameColor = (facetItem, currentSection) => {
     let groupNameColor = "black";
     facetItem.checkboxItems.map((item) => {

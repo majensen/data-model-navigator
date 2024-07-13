@@ -23,13 +23,13 @@ const theme = {
   },
 };
 
-export default ({
+export default function FacetFilterThemeConfig ({
   children,
-}) => {
+}) {
   const computedTheme = createTheme(theme);
   return (
     <ThemeProvider theme={computedTheme}>
       {children}
     </ThemeProvider>
   );
-};
+}

@@ -1,4 +1,5 @@
-export default () => ({
+export default function actionLayerStyle() {
+  return {
   actionLayer: {
     position: 'absolute',
     zIndex: '1',
@@ -19,4 +20,6 @@ export default () => ({
   zvalue: {
     zIndex: '0',
   }
-});
+  };
+}
+

@@ -156,7 +156,7 @@ const ListComponent = ({
           return prop;
         }
       }).filter((c) => c);
-      if (matchItem.length == 1) {
+      if (matchItem.length === 1) {
         return (
           <ListItemText>
             <span className={classes.listItemText}>

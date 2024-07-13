@@ -1,4 +1,5 @@
-export default () => ({
+export default function canvasStyle() {
+  return {
   mainWindow: {
     height: '100%',
     display: 'block',
@@ -26,4 +27,5 @@ export default () => ({
       height: '22px',
     }
   }
-});
+  };
+}

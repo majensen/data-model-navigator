@@ -1,4 +1,5 @@
-export default () => ({
+export default function dictionarySearcherStyle() {
+  return {
   searcher: {
     paddingTop: "0px",
     minHeight: 168,
@@ -103,4 +104,6 @@ export default () => ({
       color: "#000",
     },
   },
-});
+  };
+}
+

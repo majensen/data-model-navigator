@@ -1,19 +1,13 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useEffect, useRef, useContext } from "react";
+import React, { useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import {
   withStyles,
-  createTheme,
-  MuiThemeProvider,
   Button,
   List,
   ListItem,
-  ListItemText,
-  TextField,
 } from "@material-ui/core";
-import { createFilterOptions } from "@material-ui/lab";
 import AutoComplete from "../AutoComplete";
-import ModelContext from "../../../Model/ModelContext";
 import {
   allFiltersCleared,
 } from '../../../../../features/filter/filterSlice';
@@ -23,19 +17,12 @@ import {
 } from '../../../../../features/graph/graphSlice';
 import {
   searchResultCleared,
-  selectCurrentSearchKeyword,
   selectSearchResult,
   selectSuggestionList,
-  selectIsSearching,
   selectLastSearchError,
   selectSearchIsFinished,
 } from '../../../../../features/search/searchSlice';
 
-import {
-  searchKeyword,
-  getSearchSummary,
-  formatText,
-} from "./searchHelper";
 import styles from "./DictionarySearcher.style";
 import SearchThemeConfig from "./SearchThemeConfig";
 
@@ -54,7 +41,7 @@ function DictionarySearcher({
   const searchIsFinished = useSelector( selectSearchIsFinished );
   const errorMsg = useSelector( selectLastSearchError )
   const hasError = errorMsg.length > 0;
-  const currentSearchKeyword = useSelector( selectCurrentSearchKeyword );
+
   const suggestionList = useSelector( selectSuggestionList );
   const searchResult = useSelector( selectSearchResult );
   
@@ -68,22 +55,6 @@ function DictionarySearcher({
   // }, [currentSearchKeyword, autoCompleteRef]);
 
 
-  // these probably don't belong here
-//  const onClearResult = () => {
-//    dispatch({ type: "CLEAR_RESULT" });
-//  };
-//    resetSearchResult();
-//    autoCompleteRef.current.clearInput();
-//  };
-  const clearSearchFromOutside = () => {
-    dispatch(searchResultCleared());
-  };
-
-  const launchSearchFromOutside = (keyword) => {
-    autoCompleteRef.current.setInputText(keyword);
-   };
-  ////
-  
   const clearFilterHandler = () => {
     dispatch(clickedBlankSpace());
     dispatch(allFiltersCleared());

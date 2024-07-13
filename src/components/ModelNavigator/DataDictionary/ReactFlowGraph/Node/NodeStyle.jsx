@@ -1,4 +1,5 @@
-export default () => ({
+export default function nodeStyle() {
+  return {
   propDialog: {
     backgroundColor: "#2D4455",
     borderRadius: "5px",
@@ -152,9 +153,8 @@ export default () => ({
   },
   viewPropBtn: {
     cursor: "pointer",
-    fontSize: "9px",
+    //fontSize: "9px",
     width: "100%",
-    height: "50px",
     height: "50px",
     marginTop: "15px",
     border: "1px solid #14212b",
@@ -189,4 +189,7 @@ export default () => ({
     pointerEvents: "none",
     opacity: "0.4",
   },
-});
+  };
+}
+
+

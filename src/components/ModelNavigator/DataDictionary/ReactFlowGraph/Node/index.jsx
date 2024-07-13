@@ -1,20 +1,18 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { Handle, useReactFlow, useStoreApi } from "reactflow";
+import { Handle } from "reactflow";
 import clsx from "clsx";
 import Styles from "./NodeStyle";
 import { highlightMatchingTitle, setMatchingNodeClasses } from "./util";
 import {
-  reactFlowPanelClicked,
   reactFlowNodeClicked,
   reactFlowNodeFocused,
   reactFlowNodeDisplayChanged,
   changedVisOverlayPropTable,
   selectFocusedNodeID,
   selectHighlightingNodeID,
-  selectNodeDisplayed,
   selectNodeIsExpanded,
   selectNodeIsForegrounded,
 } from '../../../../../features/graph/graphSlice';
@@ -75,18 +73,12 @@ const NodeView = ({
     if (`${label}`.toLowerCase() !== focusedNodeID) {
       dispatch(reactFlowNodeDisplayChanged(false));
     }
-  }, [focusedNodeID]);
+  }, [focusedNodeID, label, dispatch]);
 
   /**
    * highlight nodes based on search query
    */
   const nodeClasses = setMatchingNodeClasses(matchedNodesInfo, label, classes, category);
-  /**
-   * button on focus
-   */
-  const nodeFocusEvent = () => {
-    dispatch(reactFlowNodeFocused(id));
-  };
 
   return (
     <>

@@ -3,16 +3,12 @@ import React from 'react';
 import {
   List,
   ListItem,
-  ListItemText,
-  ListItemIcon,
-  withStyles,
-  Typography,
   createTheme,
   MuiThemeProvider,
 } from '@material-ui/core';
 
 const getType = (prop) => {
-  if (prop.type == 'value_set') {
+  if (['value_set','list'].includes(prop.type)) {
     return prop.valueSet();
   }
   else {
@@ -342,7 +338,6 @@ export const getNodeTitleSVGFragment = (
     const currentRowFragment = [];
 
     // Go over all highlighted text in current row
-    let index = 0;
     while (currentHighlightIndex < matchedNodeNameIndices.length) {
       const highlightStartIndex = matchedNodeNameIndices[currentHighlightIndex][0];
       const highlightEndIndex = matchedNodeNameIndices[currentHighlightIndex][1] + 1;

@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { createSlice, createSelector } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 
 import {
@@ -75,7 +75,7 @@ const filterSlice = createSlice({
       const { model, hiddenNodes } = action.payload;
       // replacement
       state.hiddenNodes = hiddenNodes;
-      state.displayedTagMatrix = calcNodeTagMatrix(globalThis.model, 
+      state.displayedTagMatrix = calcNodeTagMatrix(model, 
                                                    globalThis.config.facetFilters,
                                                    hiddenNodes);
     },
@@ -95,7 +95,7 @@ const filterSlice = createSlice({
           fs.push(filter);
         }
         else {
-          fs = fs.filter( (item) => !(item.tag == tag && item.value == value) );
+          fs = fs.filter( (item) => !(item.tag === tag && item.value === value) );
         }
         // determine nodes to hide
         state.hiddenNodes = calcHiddenNodes(fs,
@@ -191,7 +191,7 @@ function calcNodeTagMatrix(model, facetFilters, hiddenNodes) {
         .forEach(
           ([key, val]) => {
             const taggedNodes = model.tagged_items(key, val)
-                  .filter( (ent) => (ent._kind == 'Node')
+                  .filter( (ent) => (ent._kind === 'Node')
                            && !hiddenNodes.includes(ent.handle));
             if (!nc[key]) {
               nc[key] = {};
@@ -209,7 +209,7 @@ function calcNodeTagMatrix(model, facetFilters, hiddenNodes) {
       model.tag_kvs(type.tag)
         .forEach( ([key, val]) => {
           const taggedProps = model.tagged_items(key, val)
-                .filter( (ent) => ent._kind == 'Property' );
+                .filter( (ent) => ent._kind === 'Property' );
           let info = { nodes: [], count:0 };
           if (taggedProps) {
             let propsCount = 0;
@@ -218,7 +218,7 @@ function calcNodeTagMatrix(model, facetFilters, hiddenNodes) {
               .forEach( (prop) => {
                 // if prop.owner is null => the Property is defined but doesn't
                 // appear under any Node in MDF.
-                if (prop.owner && prop.owner._kind == 'Node'
+                if (prop.owner && prop.owner._kind === 'Node'
                     && !hiddenNodes.includes(prop.owner.handle)) {
                   propsCount += 1;
                   nodeSet.add(prop.owner.handle);

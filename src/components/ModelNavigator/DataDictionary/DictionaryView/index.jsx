@@ -9,9 +9,6 @@ import DataDictionaryTable from "../Table/DataDictionaryTable";
 import CanvasController from "../ReactFlowGraph/Canvas/CanvasController";
 import { graphViewConfig } from '../../Config/nav.config';
 import {
-  searchResultCleared,
-} from '../../../../features/search/searchSlice';
-import {
   tabGraphViewChanged,
   canvasWidthChanged,
   selectIsGraphView,
@@ -52,7 +49,7 @@ const DictionaryView = ({
     return () => {
       window.removeEventListener("resize", setCanvasWidth);
     };
-  }, []);
+  });
 
   useLayoutEffect(() => {
     setTabViewWidth(ref.current.offsetWidth);

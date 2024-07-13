@@ -1,4 +1,5 @@
-export default () => ({
+export default function facetFiltersStyle() {
+  return {
   expansionPanelRoot: {
     background: "#EAEAEA",
     margin: "auto",
@@ -126,4 +127,5 @@ export default () => ({
     marginRight: "10px",
     marginTop: "5px",
   },
-});
+  };
+}

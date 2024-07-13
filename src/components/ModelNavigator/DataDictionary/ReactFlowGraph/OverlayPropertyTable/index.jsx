@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 /* eslint-disable react/forbid-prop-types */
-import React, { useRef, useContext } from 'react';
+import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import IconButton from '@material-ui/core/IconButton';
-import { Grid, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import _ from 'lodash';
 
 import {
@@ -14,12 +14,10 @@ import {
 
 import {
   selectIsSearchMode,
-  selectSearchResult,
   selectMatchedResult,
 } from '../../../../../features/search/searchSlice';
 import {
   changedVisOverlayPropTable,
-  selectPropTableNodeID,
   selectHighlightingMatchedNodeID,
 } from '../../../../../features/graph/graphSlice';
 import {defaultStyleAttributes} from '../../../Config/nav.config';

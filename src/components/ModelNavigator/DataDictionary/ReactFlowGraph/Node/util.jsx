@@ -1,7 +1,6 @@
 import React from 'react';
-import _ from 'underscore';
 import clsx from 'clsx';
-import { nodeColor } from '../Canvas/util';
+
 /**
  * 
  * @param {*} param0 

@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext } from 'react';
+// import { useSelector } from 'react-redux';
 import {
-  Button,
   withStyles,
 } from '@material-ui/core';
 import clsx from 'clsx';

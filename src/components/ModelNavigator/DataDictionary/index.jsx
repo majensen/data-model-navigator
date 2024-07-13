@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { Button, withStyles } from "@material-ui/core";
+import { useDispatch } from 'react-redux';
+import { withStyles } from "@material-ui/core";
 import DictionarySearcher from "./Search/DictionarySearcher";
 import DictionarySearchHistory from "./Search/DictionarySearchHistory";
 import FacetFilters from './FacetFilter';
@@ -9,7 +9,6 @@ import DictionaryView from "./DictionaryView";
 
 import {
   tabGraphViewChanged,
-  selectIsGraphView,
 } from '../../../features/graph/graphSlice';
 import "./DataDictionary.css";
 
@@ -20,10 +19,12 @@ function DataDictionary({
 
   const dispatch = useDispatch();
   const dictionarySearcherRef = useRef(null);
-  
+
+
+  /// ????vv
   useEffect(() => {
     dispatch(tabGraphViewChanged(true));
-  }, []);
+  });
 
   const handleClickSearchHistoryItem = (keyword) => {
     dictionarySearcherRef.current.launchSearchFromOutside(keyword);

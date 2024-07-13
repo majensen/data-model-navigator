@@ -108,14 +108,11 @@ function AutoCompleteInput({
   }
 
   // update search data when new model appears
-  let n = 0;
 
   useEffect( () => {
     let id = modelID;
-    n = n+1;
     const searchData = prepareSearchData(model);
     dispatch(searchDataPrepared(searchData));
-    console.log('hey',n);
   }, [modelID] );
   
   return (

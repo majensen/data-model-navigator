@@ -1,14 +1,11 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, {useContext} from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import _ from 'lodash';
 import { withStyles } from "@material-ui/core";
 import { defaultStyleAttributes } from '../../../Config/nav.config';
 import DataDictionaryNode from "../DataDictionaryNode";
 import styles from "./DataDictionaryCategory.style";
-import {
-  selectHighlightingNodeID,
-} from '../../../../../features/graph/graphSlice';
 import { ConfigContext } from '../../../Config/ConfigContext';
 
 const DataDictionaryCategory = ({
@@ -17,7 +14,6 @@ const DataDictionaryCategory = ({
   nodes,
 }) => {
   const config = useContext( ConfigContext );
-  const highlightingNodeID = useSelector( selectHighlightingNodeID );
   const categoryStyles = config.tagAttribute('Category', category)
         ? config.tagAttribute('Category', category)
         : defaultStyleAttributes;

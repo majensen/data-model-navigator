@@ -1,4 +1,5 @@
-export default () => ({
+export default function autoCompleteStyle() {
+  return {
   suggestions: {
     backgroundColor: "red",
   },
@@ -15,4 +16,6 @@ export default () => ({
     padding: "5px",
   },
   emptySuggestionList: {},
-});
+  };
+}
+

@@ -1,4 +1,5 @@
-export default () => ({
+export default function dataDictionaryCategoryStyle() {
+  return {
   category: {
     marginTop: '20px',
     borderTop: '1px solid #e7e7e7',
@@ -31,6 +32,7 @@ export default () => ({
   categoryIcon: {
     verticalAlign: 'middle',
     marginRight: '13px',
+    float: 'left',
   },
   title: {
     color: '#FFFFFF',
@@ -45,7 +47,6 @@ export default () => ({
     //lineHeight: '2.5',
     //paddingLeft: '40px',
   },
-  categoryIcon: {
-    float: 'left',
-  }
-});
+  };
+}
+

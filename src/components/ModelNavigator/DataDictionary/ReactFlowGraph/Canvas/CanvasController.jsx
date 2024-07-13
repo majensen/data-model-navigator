@@ -57,8 +57,8 @@ const createNodeCoordinatesSetter = (nodes, edges) => {
       .alphaTarget(0.05)
       .stop();
 
-  simulation.nodes(sim_nodes).
-    force(
+  simulation.nodes(sim_nodes)
+    .force(
       'link',
       forceLink(sim_edges)
         .id((d) => d.id)
@@ -141,8 +141,6 @@ const CanvasController = ({
   let n = 0;
   useEffect( () => {
     let id = modelID;
-    n = n+1;
-    console.log(n);
     flowData = createNodesAndEdges(model, config);
     nodeCoordinatesSetter = createNodeCoordinatesSetter(flowData.nodes, flowData.edges);
     dispatch(reactFlowGraphInitialized({graphViewConfig, model}));
@@ -161,14 +159,14 @@ const CanvasController = ({
     dispatch(reactFlowGraphDataCalculated({flowData}));
     setNodes(layoutNodes);
     setEdges(layoutEdges);
-  }, [isSearchMode, searchResult, currentSearchKeyword, hiddenNodes]); // deps ensure updates on filter changes
+  }, [isSearchMode, searchResult, currentSearchKeyword, hiddenNodes, dispatch, setEdges, setNodes]); // deps ensure updates on filter changes
 
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(
       { ...params, type: 'smoothstep', animated: true }, eds,
     )),
-    [],
+    [setEdges],
   );
 
   if (nodes.length === 0 && edges.length === 0) {

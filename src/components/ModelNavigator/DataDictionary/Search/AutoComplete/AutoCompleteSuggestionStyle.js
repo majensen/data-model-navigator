@@ -1,4 +1,5 @@
-export default () => ({
+export default function  autoCompleteSuggestionStyle() {
+  return {
   autoComplete: {},
   suggestions: {},
   inputWrapper: {},
@@ -33,4 +34,6 @@ export default () => ({
     //   color: '#ef8523',
     // }
   },
-});
+  };
+}
+

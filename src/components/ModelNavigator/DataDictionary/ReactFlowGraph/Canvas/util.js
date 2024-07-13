@@ -1,6 +1,3 @@
-import classNames from 'classnames';
-import _ from 'underscore';
-
 export const nodeColor = (node) => { 
   switch (node.category) {
     case 'administrative':

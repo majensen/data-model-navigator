@@ -1,9 +1,9 @@
 import React from 'react';
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 
-export default ({
+export default function SearchThemeConfig({
     children,
-}) => {
+}) {
   const theme = {
     overrides: {
         
@@ -15,4 +15,5 @@ export default ({
       {children}
     </ThemeProvider>
   );
-};
+}
+

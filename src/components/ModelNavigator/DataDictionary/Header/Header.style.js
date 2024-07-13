@@ -1,4 +1,5 @@
-export default () => ({
+export default function headerStyle() {
+  return {
   titleContainer: {
     height: "85px",
     display: "flex",
@@ -67,4 +68,6 @@ export default () => ({
     fontSize: "16px",
     lineHeight: "22px",
   },
-});
+  };
+}
+

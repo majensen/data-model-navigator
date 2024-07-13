@@ -1,4 +1,5 @@
-export default () => ({
+export default function dataDictionaryNodeStyle() {
+  return {
   node: {
     backgroundColor: "#fff",
     borderRight: "1px solid var(--dictionary-border-color)",
@@ -150,4 +151,6 @@ export default () => ({
     paddingLeft: "17px",
     marginBottom: "8px",
   },
-});
+  };
+}
+

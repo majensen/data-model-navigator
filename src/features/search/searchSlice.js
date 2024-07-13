@@ -1,6 +1,5 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import {compareTwoStrings} from 'string-similarity';
-import _ from 'lodash';
 import {
   getSearchSummary,
   calcMatchedStrings,
@@ -8,10 +7,6 @@ import {
   retrieveSearchHistoryItems,
   clearSearchHistoryItems,
 } from '../../components/ModelNavigator/DataDictionary/Search/DictionarySearcher/searchHelper';
-
-import {
-  selectHighlightingMatchedNodeID,
-} from '../graph/graphSlice';
 
 // matchedResult - getSearchResultItem
 
@@ -43,7 +38,7 @@ const searchSlice = createSlice({
   reducers: {
     changedVisAcCloseIcon(state, action) {
       const vis = action.payload;
-      state.acCloseIconHidden = vis == 'hide' ? true : false;
+      state.acCloseIconHidden = vis === 'hide' ? true : false;
     },
     searchDataPrepared(state, action) {
       const searchData = action.payload;

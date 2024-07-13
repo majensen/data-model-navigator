@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from "@material-ui/core";
-import { defaultStyleAttributes } from '../../../Config/nav.config'; 
 import DataDictionaryPropertyTable from "../DataDictionaryPropertyTable";
 import "./DataDictionaryNode.css";
 import styles from "./DataDictionaryNode.style";
@@ -39,9 +38,9 @@ const DataDictionaryNode = ({
     }
   };
 
-  const handleCloseNode = (nodeID) => {
-    dispatch(tableNodeExpandChanged({nodeState: NODE_STATE.CLOSED, nodeID}));
-  };
+  // const handleCloseNode = (nodeID) => {
+  //   dispatch(tableNodeExpandChanged({nodeState: NODE_STATE.CLOSED, nodeID}));
+  // };
 
   // const handleDownloadTemplate = (e, format) => {
   //   const { node } = props;

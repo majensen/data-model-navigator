@@ -1,12 +1,10 @@
 import React from 'react';
 import { nanoid } from 'nanoid';
-import { StrictMode, useState, useEffect, useContext } from 'react';
-import { Provider } from 'react-redux';
+import { StrictMode, useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import ModelNavigator from './components/ModelNavigator';
 import './index.css';
 import {
-  inputToUrls,
   loadMDFModel,
 } from './getModel';
 import UrlBox from './FileBox';

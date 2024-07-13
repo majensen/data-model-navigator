@@ -1,4 +1,5 @@
-export default () => ({
+export default function nodeViewComponentStyle()  {
+  return {
   container: {
     display: "flex",
     flexDirection: "column",
@@ -94,4 +95,6 @@ export default () => ({
     fontWeight: "600",
     fontFamily: "Nunito",
   },
-});
+  };
+}
+

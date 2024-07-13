@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { withStyles } from '@material-ui/core';
 import ReactFlow, {
   Background,
@@ -45,7 +45,6 @@ const CanvasView = ({
   onNodesChange,
   onEdgesChange,
 }) => {
-  const dispatch = useDispatch();
   const categories = useSelector( selectCategories );
   return (
     <>
@@ -85,7 +84,7 @@ const CustomFlowView = ({
   const expandedNodeID = useSelector( selectExpandedNodeID );
   const highlightedNodes = useSelector( selectHighlightedNodes );
   const { fitView } = useReactFlow();
-  const { getViewport, setViewport, zoomIn, zoomOut } = useReactFlow();
+  const { zoomIn, zoomOut } = useReactFlow();
 
   const { fit, width } = graphViewConfig.canvas;
 
@@ -111,7 +110,7 @@ const CustomFlowView = ({
     const zoom = getMinZoom({ width, ...fit });
     setMinZoom(zoom);
     fitView(width);
-  }, [fit, width]);
+  }, [fit, width, fitView]);
 
   const handleTransform = useCallback(() => {
     fitView();
@@ -121,7 +120,7 @@ const CustomFlowView = ({
     //setViewport({x: graphBox.cx, y: graphBox.cy, zoom: 1}, {duration: 200});
     // setViewport({x: 0, y: 0, zoom: 1}, {duration: 200});
     // setViewport({ x: fit?.x, y: fit?.y, zoom: getMinZoom({ width, ...fit }) }, { duration: 200 });
-  }, [nodes]);
+  },[fitView]);
 
   return (
     <ReactFlow
