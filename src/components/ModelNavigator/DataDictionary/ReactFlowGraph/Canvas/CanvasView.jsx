@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { withStyles } from '@material-ui/core';
 import ReactFlow, {
   Background,

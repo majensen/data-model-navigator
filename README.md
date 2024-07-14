@@ -16,12 +16,12 @@ the model.
 
 ![screenshot of CCDI model table](https://github.com/majensen/model-navigator-standalone/blob/main/screen-5.png)
 
-To start it out of the box:
+To start an example app out of the box:
 
      git clone https://github.com/majensen/model-navigator-standalone
      cd model-navigator-standalone
      npm --legacy-peer-deps install
-     npm start
+     npm run example
 
 which should open the model viewer onto the
 [Integrated Canine Data Commons](https://caninecommons.cancer.gov)

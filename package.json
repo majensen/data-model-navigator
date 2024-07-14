@@ -1,6 +1,6 @@
 {
-  "name": "model-navigator-sa",
-  "version": "0.0.7",
+  "name": "model-navigator-standalone",
+  "version": "0.0.9",
   "description": "",
   "main": "lib/index.js",
   "browser": "dist/index.js",
@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "example": "node scripts/start.js src/example",
     "clean": "rimraf lib dist es coverage",
     "build:webpack": "webpack",
     "build:rollup": "rollup -c",
@@ -134,7 +135,6 @@
     "tinycolor2": "^1.6.0",
     "underscore": "^1.13.6",
     "url": "^0.11.3",
-    "web-vitals": "^2.1.4",
     "webpack": "^5.64.4",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.6.0",
@@ -143,6 +143,7 @@
   },
   "overrides": {
     "js-yaml": "^4.1.0"
+
   },
   "eslintConfig": {
     "extends": [
