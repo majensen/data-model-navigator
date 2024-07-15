@@ -1,7 +1,7 @@
 {
   "name": "model-navigator-standalone",
-  "version": "0.0.11",
-  "description": "",
+  "version": "0.0.16",
+  "description": "Standalone MDF graph model visualizer",
   "main": "lib/index.js",
   "browser": "dist/index.js",
   "private": false,
@@ -12,7 +12,6 @@
     "example": "node scripts/start.js src/example",
     "clean": "rimraf lib dist es coverage",
     "build:webpack": "webpack",
-    "build:rollup": "rollup -c",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib --copy-files",
     "build:es": "cross-env BABEL_ENV=es babel src --out-dir es --copy-files",
     "test": "node scripts/test.js"
@@ -35,6 +34,7 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@babel/preset-env": "^7.23.5",
     "@babel/preset-react": "^7.18.6",
+    "@babel/runtime-corejs3": "^7.24.8",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "*",
@@ -64,6 +64,7 @@
     "classnames": "^2.5.1",
     "clean-webpack-plugin": "^4.0.0",
     "clsx": "^1.1.0",
+    "core-js": "^3.37.1",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.2",
     "css-minimizer-webpack-plugin": "^3.2.0",
@@ -143,7 +144,6 @@
   },
   "overrides": {
     "js-yaml": "^4.1.0"
-
   },
   "eslintConfig": {
     "extends": [
