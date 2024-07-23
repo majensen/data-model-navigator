@@ -1,6 +1,6 @@
 {
   "name": "model-navigator-standalone",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Standalone MDF graph model visualizer",
   "main": "lib/index.js",
   "browser": "dist/index.js",
@@ -37,7 +37,7 @@
     "@babel/runtime-corejs3": "^7.24.8",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
-    "@material-ui/lab": "*",
+    "@material-ui/lab": "4.0.0-alpha.61",
     "@material-ui/styles": "^4.11.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@react-pdf/renderer": "^3.0.2",
