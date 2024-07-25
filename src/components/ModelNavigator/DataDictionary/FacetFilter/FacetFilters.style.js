@@ -43,7 +43,7 @@ export default function facetFiltersStyle() {
     paddingLeft: 0,
     boxShadow: "inset -10px -1px 10px -7px rgb(50 50 50 / 25%)",
   },
-  ExpansionPaneldropDownIcon: {
+  AccordiondropDownIcon: {
     left: "-98%",
   },
   sectionSummaryText: {

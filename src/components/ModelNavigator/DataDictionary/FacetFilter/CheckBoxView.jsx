@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React, {useContext} from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { withStyles } from "@material-ui/core/styles";
-import { Checkbox, ListItem, ListItemText, Divider, Tooltip } from "@material-ui/core";
+import withStyles from '@mui/styles/withStyles';
+import { Checkbox, ListItem, ListItemText, Divider, Tooltip } from "@mui/material";
 import {
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxBlankIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { ConfigContext } from '../../Config/ConfigContext'; 
 import {
   selectCheckboxState,

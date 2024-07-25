@@ -7,19 +7,19 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  withStyles,
   Divider,
   Backdrop,
   CircularProgress,
   Icon,
   Button,
-} from "@material-ui/core";
+} from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import {
   ArrowDropDown as ArrowDropDownIcon,
   ExpandMore as ExpandMoreIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import _ from "lodash";
-import { ConfigContext } from '../../Config/ConfigContext'; 
+import { ConfigContext } from '../../Config/ConfigContext';
 import { ModelContext } from '../../Model/ModelContext';
 import {
   resetIcon,

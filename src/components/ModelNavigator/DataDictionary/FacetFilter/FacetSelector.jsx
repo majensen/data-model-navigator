@@ -1,17 +1,11 @@
 import React, { Fragment, useState, useContext } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  List,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  withStyles,
-  Icon,
-} from "@material-ui/core";
+import { List, Accordion, AccordionDetails, AccordionSummary, Icon } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import _ from "lodash";
 import {
   ExpandMore as ExpandMoreIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { ConfigContext } from "../../Config/ConfigContext";
 import CheckBoxView from "./CheckBoxView";
 import styles from "./FacetFilters.style";
