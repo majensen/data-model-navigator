@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { useDispatch } from 'react-redux';
-import { withStyles } from "@material-ui/core";
+import withStyles from '@mui/styles/withStyles';
 import DictionarySearcher from "./Search/DictionarySearcher";
 import DictionarySearchHistory from "./Search/DictionarySearchHistory";
 import FacetFilters from './FacetFilter';
