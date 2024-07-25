@@ -4,8 +4,10 @@ import {
   List,
   ListItem,
   createTheme,
-  MuiThemeProvider,
-} from '@material-ui/core';
+  ThemeProvider,
+  StyledEngineProvider,
+  adaptV4Theme,
+} from '@mui/material';
 
 const getType = (prop) => {
   if (['value_set','list'].includes(prop.type)) {
@@ -165,35 +167,39 @@ export const getPropertyTypeFragment = (prop, typeMatchList, spanClassName) => {
       );
       if (matchedTypeItem) {
         return (
-          <MuiThemeProvider theme={createTheme(theme)}>
+          <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={createTheme(adaptV4Theme(theme))}>
+              <List>
+                <ListItem key={i}>
+                  {
+                    addHighlightingSpans(
+                      t,
+                      matchedTypeItem.indices,
+                      spanClassName,
+                    )
+                  }
+                </ListItem>
+              </List>
+            </ThemeProvider>
+          </StyledEngineProvider>
+        );
+      }
+      return (
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={createTheme(adaptV4Theme(theme))}>
             <List>
               <ListItem key={i}>
                 {
                   addHighlightingSpans(
                     t,
-                    matchedTypeItem.indices,
+                    [],
                     spanClassName,
                   )
                 }
               </ListItem>
             </List>
-          </MuiThemeProvider>
-        );
-      }
-      return (
-        <MuiThemeProvider theme={createTheme(theme)}>
-          <List>
-            <ListItem key={i}>
-              {
-                addHighlightingSpans(
-                  t,
-                  [],
-                  spanClassName,
-                )
-              }
-            </ListItem>
-          </List>
-        </MuiThemeProvider>
+          </ThemeProvider>
+        </StyledEngineProvider>
       );
     });
   }
