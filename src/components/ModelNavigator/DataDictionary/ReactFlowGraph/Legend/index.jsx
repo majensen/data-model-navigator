@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { withStyles } from "@material-ui/core";
+import withStyles from '@mui/styles/withStyles';
 import { ConfigContext } from '../../../Config/ConfigContext';
 import { defaultStyleAttributes } from '../../../Config/nav.config';
 import relationshipSvg from "../../../../../assets/icons/Legend/lg_relationship_links.svg";
