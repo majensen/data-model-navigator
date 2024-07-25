@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useRef, useContext, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, withStyles } from '@material-ui/core';
+import { Button } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 import './AutoCompleteInput.css';
-import CloseIcon from '@material-ui/icons/Close';
-import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 import styles from './AutoCompleteInputStyle';
 import { ModelContext } from '../../../Model/ModelContext';
 import {

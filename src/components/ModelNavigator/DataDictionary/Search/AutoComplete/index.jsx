@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { withStyles } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
 import clsx from 'clsx';
 import AutoCompleteInput from './AutoCompleteInput';
 import AutoCompleteSuggestions  from './AutoCompleteSuggestions';
