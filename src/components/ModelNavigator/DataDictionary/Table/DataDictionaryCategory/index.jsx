@@ -2,7 +2,7 @@
 import React, {useContext} from "react";
 import { useSelector } from "react-redux";
 import _ from 'lodash';
-import { withStyles } from "@material-ui/core";
+import withStyles from '@mui/styles/withStyles';
 import { defaultStyleAttributes } from '../../../Config/nav.config';
 import DataDictionaryNode from "../DataDictionaryNode";
 import styles from "./DataDictionaryCategory.style";
