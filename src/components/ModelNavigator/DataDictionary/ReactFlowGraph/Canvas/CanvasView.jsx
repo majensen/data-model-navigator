@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { withStyles } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
 import ReactFlow, {
   Background,
   ReactFlowProvider,

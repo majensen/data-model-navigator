@@ -11,7 +11,7 @@ import {
   useReactFlow,
   useStore,
 } from 'reactflow';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 import _ from 'lodash';
 import { collide } from './collide.js';
 import { ModelContext } from '../../../Model/ModelContext';
