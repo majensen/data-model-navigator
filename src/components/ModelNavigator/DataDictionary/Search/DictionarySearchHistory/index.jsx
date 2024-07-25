@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { withStyles } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
 import styles from './DictionarySearchHistory.style';
 import {
   searchResultCleared,
