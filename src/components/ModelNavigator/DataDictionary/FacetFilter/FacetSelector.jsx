@@ -22,12 +22,12 @@ const CustomAccordionSummary = withStyles({
     padding: "0 39px",
     minHeight: 48,
     // marginLeft: 35,
-    "&$expanded": {
+    "&.Mui-expanded": {
       minHeight: 48,
     },
   },
   content: {
-    "&$expanded": {
+    "&.Mui-expanded": {
       margin: "16px 0",
     },
   },

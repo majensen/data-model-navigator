@@ -17,120 +17,140 @@ import {
 } from '../../../Utils/highlightHelper';
 
 const twoColumnsView = {
-  overrides: {
+  components: {
     MuiList: {
-      padding: {
-        paddingTop: '0px',
-      },
-      root: {
-        paddingBottom: '0',
-        fontWeight: '500',
-        listStyleType: 'disc',
-        WebkitColumns: 2,
-        MozColumns: 2,
-        columns: 2,
+      styleOverrides: {
+        padding: {
+          paddingTop: '0px',
+        },
+        root: {
+          paddingBottom: '0',
+          fontWeight: '500',
+          listStyleType: 'disc',
+          WebkitColumns: 2,
+          MozColumns: 2,
+          columns: 2,
+        },
       },
     },
     MuiListItem: {
-      root: {
-        paddingLeft: '0px',
-        paddingTop: '2px',
-        marginTop: '-9px',
-        paddingBottom: '0',
-        alignItems: 'inherit',
-        fontWeight: '300',
-      },
-      gutters: {
-        paddingLeft: '2px',
-        marginBottom: '1px',
+      styleOverrides: {
+        root: {
+          paddingLeft: '0px',
+          paddingTop: '2px',
+          marginTop: '-9px',
+          paddingBottom: '0',
+          alignItems: 'inherit',
+          fontWeight: '300',
+        },
+        gutters: {
+          paddingLeft: '2px',
+          marginBottom: '1px',
+        },
       },
     },
   },
 };
 
 const threeColumnsView = {
-  overrides: {
+  components: {
     MuiList: {
-      root: {
-        paddingBottom: '0',
-        fontWeight: '500',
-        listStyleType: 'disc',
-        WebkitColumns: 3,
-        MozColumns: 3,
-        columns: 3,
-      },
-      padding: {
-        paddingTop: '0px',
-        marginTop: '-10px',
+      styleOverrides: {
+        root: {
+          paddingBottom: '0',
+          fontWeight: '500',
+          listStyleType: 'disc',
+          WebkitColumns: 3,
+          MozColumns: 3,
+          columns: 3,
+        },
+        padding: {
+          paddingTop: '0px',
+          marginTop: '-10px',
+        },
       },
     },
     MuiListItemIcon: {
-      root: {
-        paddingLeft: '0',
-        display: 'initial',
-        paddingTop: '4px',
-        minWidth: '10px',
-        color: '#00002dd9',
+      styleOverrides: {
+        root: {
+          paddingLeft: '0',
+          display: 'initial',
+          paddingTop: '4px',
+          minWidth: '10px',
+          color: '#00002dd9',
+        },
       },
     },
     MuiListItem: {
-      root: {
-        paddingLeft: '0px',
-        paddingTop: '2px',
-        marginTop: '-10px',
-        paddingBottom: '0',
-        alignItems: 'inherit',
-        fontWeight: '300',
+      styleOverrides: {      
+        root: {
+          paddingLeft: '0px',
+          paddingTop: '2px',
+          marginTop: '-10px',
+          paddingBottom: '0',
+          alignItems: 'inherit',
+          fontWeight: '300',
+        },
+        gutters: {
+          margin: 'auto',
+          marginBottom: '-10px',
+          paddingLeft: '0px',
+        },
       },
-      MuiListItemText: {
+    },
+    MuiListItemText: {
+      styleOverrides: {
         root: {
           padding: '4px',
           marginTop: '-2px',
           marginBottom: '3px',
         },
       },
-      gutters: {
-        margin: 'auto',
-        marginBottom: '-10px',
-        paddingLeft: '0px',
-      },
     },
   },
 };
 
 const theme = {
-  overrides: {
+  components: {
     MuiList: {
-      padding: {
-        paddingTop: '2px',
+      styleOverrides: {
+        padding: {
+          paddingTop: '2px',
+        },
       },
     },
     MuiListItem: {
-      root: {
-        paddingLeft: '0px',
-        paddingTop: '2px',
-        marginTop: '-10px',
-        paddingBottom: '0',
-        alignItems: 'inherit',
-        fontWeight: '300',
-      },
-      gutters: {
-        paddingLeft: '0',
+      styleOverrides: {
+        root: {
+          paddingLeft: '0px',
+          paddingTop: '2px',
+          marginTop: '-10px',
+          paddingBottom: '0',
+          alignItems: 'inherit',
+          fontWeight: '300',
+        },
+        gutters: {
+          paddingLeft: '0',
+        },
       },
     },
     MuiListItemIcon: {
-      root: {
-        paddingLeft: '0',
-        paddingTop: '11px',
-        minWidth: '10px',
-        color: '#00002dd9',
+      styleOverrides: {
+        root: {
+          paddingLeft: '0',
+          paddingTop: '11px',
+          minWidth: '10px',
+          color: '#00002dd9',
+        },
       },
     },
     MuiListItemText: {
-      root: {
-        padding: '4px',
-        marginTop: '0px',
-        marginBottom: '0px',
+      styleOverrides: {
+        root: {
+          padding: '4px',
+          marginTop: '0px',
+          marginBottom: '0px',
+        },
       },
     },
   },
@@ -146,6 +166,7 @@ const ListComponent = ({
   isSearchMode,
 }) => {
   // const meanIndex = (length) => ((length % 2) ? length / 2 - 0.5 : length / 2);
+  // below is probably broken: see https://mui.com/material-ui/migration/v5-style-changes/#restructure-component-definitions
   const customTheme = (expand && enums.length > maxNoOfItemDlgBox + maxNoOfItems)
     ? { overrides: { ...theme.overrides, ...threeColumnsView.overrides } }
     : (enums.length > maxNoOfItems)

@@ -5,7 +5,7 @@ export default function HeaderThemeConfig ({
   children,
 }) {
   const theme = {
-    overrides: {
+    components: {
     },
   };
 

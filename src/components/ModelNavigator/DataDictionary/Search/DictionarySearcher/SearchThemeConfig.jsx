@@ -5,7 +5,7 @@ export default function SearchThemeConfig({
     children,
 }) {
   const theme = {
-    overrides: {
+    components: {
         
     }
   };

@@ -19,34 +19,40 @@ const getType = (prop) => {
 }
 
 const theme = {
-  overrides: {
+  components: {
     MuiList: {
-      padding: {
-        paddingTop: '2px',
+      styleOverrides: {
+        padding: {
+          paddingTop: '2px',
+        },
       },
     },
     MuiListItem: {
-      root: {
-        paddingLeft: '0px',
-        paddingTop: '2px',
-        marginTop: '-10px',
-        paddingBottom: '0',
-        alignItems: 'inherit',
-        fontWeight: '300',
-        wordBreak: 'break-all',
-
-      },
-      gutters: {
-        paddingLeft: '0px !important',
-        paddingRight: '0px',
-        wordBreak: 'break-all',
+      styleOverrides: {
+        root: {
+          paddingLeft: '0px',
+          paddingTop: '2px',
+          marginTop: '-10px',
+          paddingBottom: '0',
+          alignItems: 'inherit',
+          fontWeight: '300',
+          wordBreak: 'break-all',
+          
+        },
+        gutters: {
+          paddingLeft: '0px !important',
+          paddingRight: '0px',
+          wordBreak: 'break-all',
+        },
       },
     },
     MuiListItemText: {
-      root: {
-        padding: '4px',
-        marginTop: '0px',
-        marginBottom: '0px',
+      styleOverrides: {
+        root: {
+          padding: '4px',
+          marginTop: '0px',
+          marginBottom: '0px',
+        },
       },
     },
   },

@@ -17,42 +17,52 @@ import ButtonComponent from './ButtonComponent';
 // import DownloadFileTypeBtn from './DownloadFileTypeBtn';
 
 const theme = {
-  overrides: {
+  components: {
     MuiDialog: {
-      paper: {
-        borderRadius: '5px',
-        padding: '0px 0px 0px 20px',
-        boxShadow: 'none',
-        overflowX: 'hidden',
-        overflowY: 'hidden',
-      },
-      paperScrollPaper: {
-        maxHeight: '575px',
+      styleOverrides: {
+        paper: {
+          borderRadius: '5px',
+          padding: '0px 0px 0px 20px',
+          boxShadow: 'none',
+          overflowX: 'hidden',
+          overflowY: 'hidden',
+        },
+        paperScrollPaper: {
+          maxHeight: '575px',
+        },
       },
     },
     MuiDialogContent: {
-      root: {
-        padding: '15px 25px 35px 15px',
+      styleOverrides: {
+        root: {
+          padding: '15px 25px 35px 15px',
+        },
       },
     },
     MuiBackdrop: {
-      root: {
-        backgroundColor: '#4a4a4a52',
+      styleOverrides: {
+        root: {
+          backgroundColor: '#4a4a4a52',
+        },
       },
     },
     MuiIconButton: {
-      root: {
-        textTransform: 'none',
-        padding: 'none',
-        '&:hover': {
-          backgroundColor: 'transparent',
-          cursor: 'pointer',
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          padding: 'none',
+          '&:hover': {
+            backgroundColor: 'transparent',
+            cursor: 'pointer',
+          },
         },
       },
     },
     MuiSvgIcon: {
-      root: {
-        color: '#0d71a3',
+      styleOverrides: {
+        root: {
+          color: '#0d71a3',
+        },
       },
     },
   },
