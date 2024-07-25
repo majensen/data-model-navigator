@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { withStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from "@mui/icons-material/Close";
 import { Handle } from "reactflow";
 import clsx from "clsx";
 import Styles from "./NodeStyle";
