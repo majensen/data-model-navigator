@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import { withStyles } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
 import './DataDictionaryTable.css';
 // import {
 //   createFileName,
