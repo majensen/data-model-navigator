@@ -1,7 +1,8 @@
 import React from 'react';
 import clsx from 'clsx';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, withStyles } from '@material-ui/core';
+import { Button } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 import styles from './ActionLayer.style';
 import {
   searchResultCleared,
