@@ -2,14 +2,16 @@
 import React, { useEffect, useState } from 'react';
 import {
   DialogContent,
-  withStyles,
   IconButton,
   Backdrop,
   Dialog,
   createTheme,
-  MuiThemeProvider,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+  ThemeProvider,
+  StyledEngineProvider,
+  adaptV4Theme,
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from '@mui/icons-material/Close';
 import ListComponent from './ListComponent';
 import ButtonComponent from './ButtonComponent';
 // import DownloadFileTypeBtn from './DownloadFileTypeBtn';
@@ -91,57 +93,56 @@ const DialogComponent = ({
   };
 
   return (
-    <MuiThemeProvider theme={createTheme(theme)}>
-      <Dialog
-        open={open}
-        onClose={closeHandler}
-        maxWidth={boxSize}
-        BackdropProps={{
-          timeout: 500,
-        }}
-        BackdropComponent={Backdrop}
-      >
-        <div className={classes.titleContent}>
-          <div item xs={1} className={classes.closeBtn}>
-            {/* <DownloadFileTypeBtn
-              data={items}
-              node={node}
-              propertyKey={property}
-              /> */}
-            <IconButton
-              onClick={closeHandler}
-              aria-label="Close Dialog"
-            >
-              <CloseIcon
-                fontSize="small"
-              />
-            </IconButton>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={createTheme(adaptV4Theme(theme))}>
+        <Dialog
+          open={open}
+          onClose={closeHandler}
+          maxWidth={boxSize}
+          BackdropProps={{
+            timeout: 500,
+          }}
+          BackdropComponent={Backdrop}
+        >
+          <div className={classes.titleContent}>
+            <div item xs={1} className={classes.closeBtn}>
+              {/* <DownloadFileTypeBtn
+                data={items}
+                node={node}
+                propertyKey={property}
+                /> */}
+              <IconButton onClick={closeHandler} aria-label="Close Dialog" size="large">
+                <CloseIcon
+                  fontSize="small"
+                />
+              </IconButton>
+            </div>
+            <div>
+              <span className={classes.title}>
+                Acceptable Values
+              </span>
+            </div>
           </div>
-          <div>
-            <span className={classes.title}>
-              Acceptable Values
-            </span>
-          </div>
-        </div>
-        <DialogContent>
-          <ListComponent
-            enums={values}
-            maxNoOfItems={maxNoOfItems}
-            maxNoOfItemDlgBox={maxNoOfItemDlgBox}
-            expand={expand}
-            isSearchMode={isSearchMode}
-            typeMatchList={typeMatchList}
-          />
-          <br />
-          {(items.length > maxNoOfItemDlgBox && !expand) && (
-            <ButtonComponent
-              label="...show more"
-              openHandler={expandView}
+          <DialogContent>
+            <ListComponent
+              enums={values}
+              maxNoOfItems={maxNoOfItems}
+              maxNoOfItemDlgBox={maxNoOfItemDlgBox}
+              expand={expand}
+              isSearchMode={isSearchMode}
+              typeMatchList={typeMatchList}
             />
-          )}
-        </DialogContent>
-      </Dialog>
-    </MuiThemeProvider>
+            <br />
+            {(items.length > maxNoOfItemDlgBox && !expand) && (
+              <ButtonComponent
+                label="...show more"
+                openHandler={expandView}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };
 

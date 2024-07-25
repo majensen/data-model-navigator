@@ -2,7 +2,7 @@
 /* eslint-disable no-empty */
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { withStyles } from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getMatchesSummaryForProperties,

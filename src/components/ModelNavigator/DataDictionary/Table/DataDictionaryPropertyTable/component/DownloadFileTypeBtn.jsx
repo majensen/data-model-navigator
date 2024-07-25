@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import {
-  withStyles,
-  createTheme,
-  MuiThemeProvider,
-  Box,
-} from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import MenuItem from "@material-ui/core/MenuItem";
-import ForwardIcon from "@material-ui/icons/Forward";
+import { createTheme, ThemeProvider, StyledEngineProvider, Box } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import MenuItem from "@mui/material/MenuItem";
+import ForwardIcon from "@mui/icons-material/Forward";
 import { saveAs } from "file-saver";
 import { capitalizeFirstLetter, createFileName } from "../../../utils";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { useSelector } from 'react-redux';
 
 const pdfConfig = {}; // stub

@@ -4,12 +4,14 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  withStyles,
   Typography,
   createTheme,
-  MuiThemeProvider,
-} from '@material-ui/core';
-import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
+  ThemeProvider,
+  StyledEngineProvider,
+  adaptV4Theme,
+} from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import FiberManualRecord from '@mui/icons-material/FiberManualRecord';
 import {
   addHighlightingSpans,
 } from '../../../Utils/highlightHelper';
@@ -185,20 +187,22 @@ const ListComponent = ({
   };
 
   return (
-    <MuiThemeProvider theme={createTheme(customTheme)}>
-      <List>
-        {enums.map((enum_val, index) => (
-          <>
-            <ListItem key={`${index}`}>
-              <ListItemIcon>
-                <FiberManualRecord style={{ fontSize: 8 }} />
-              </ListItemIcon>
-              {highlightMatchingProperties(enum_val)}
-            </ListItem>
-          </>
-        ))}
-      </List>
-    </MuiThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={createTheme(adaptV4Theme(customTheme))}>
+        <List>
+          {enums.map((enum_val, index) => (
+            <>
+              <ListItem key={`${index}`}>
+                <ListItemIcon>
+                  <FiberManualRecord style={{ fontSize: 8 }} />
+                </ListItemIcon>
+                {highlightMatchingProperties(enum_val)}
+              </ListItem>
+            </>
+          ))}
+        </List>
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 };
 

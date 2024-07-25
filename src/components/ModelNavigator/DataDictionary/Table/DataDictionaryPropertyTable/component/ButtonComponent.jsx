@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, createTheme, MuiThemeProvider } from "@material-ui/core";
+import { Button, createTheme, ThemeProvider, StyledEngineProvider, adaptV4Theme } from "@mui/material";
 import { FontRegistry } from '../../../../../../assets/fonts/util';
 
 const theme = {
@@ -25,11 +25,13 @@ const theme = {
 };
 
 const ButtonComponent = ({ label, openHandler, disableTouchRipple }) => (
-  <MuiThemeProvider theme={createTheme(theme)}>
-    <Button onClick={openHandler} disableTouchRipple={disableTouchRipple}>
-      {label}
-    </Button>
-  </MuiThemeProvider>
+  <StyledEngineProvider injectFirst>
+    <ThemeProvider theme={createTheme(adaptV4Theme(theme))}>
+      <Button onClick={openHandler} disableTouchRipple={disableTouchRipple}>
+        {label}
+      </Button>
+    </ThemeProvider>
+  </StyledEngineProvider>
 );
 
 ButtonComponent.defaultProps = {
