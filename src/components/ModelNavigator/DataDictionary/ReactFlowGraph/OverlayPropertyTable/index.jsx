@@ -2,9 +2,9 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
-import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/core';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import IconButton from '@mui/material/IconButton';
+import withStyles from '@mui/styles/withStyles';
 import _ from 'lodash';
 
 import {
@@ -140,7 +140,7 @@ const OverlayPropertyTable = ({
                 <IconButton
                   className={classes.iconCloseRounded}
                   onClick={() => dispatch(changedVisOverlayPropTable("hide"))}
-                >
+                  size="large">
                   <CloseRoundedIcon
                     style={{ color: "#FFF", fontSize: "20px" }}
                   />
