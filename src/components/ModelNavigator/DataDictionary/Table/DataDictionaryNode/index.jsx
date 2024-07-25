@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import { withStyles } from "@material-ui/core";
+import withStyles from '@mui/styles/withStyles';
 import DataDictionaryPropertyTable from "../DataDictionaryPropertyTable";
 import "./DataDictionaryNode.css";
 import styles from "./DataDictionaryNode.style";

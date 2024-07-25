@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
-import { Button, withStyles } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-// import ButtonGroup from "@material-ui/core/ButtonGroup";
+import { Button } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+// import ButtonGroup from "@mui/material/ButtonGroup";
 import styles from "./NodeViewComponent.style";
 import {
   getNodeDescriptionFragment,
