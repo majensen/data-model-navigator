@@ -1,8 +1,5 @@
 import React, { useContext } from 'react';
-// import { useSelector } from 'react-redux';
-import {
-  withStyles,
-} from '@material-ui/core';
+import withStyles from '@mui/styles/withStyles';
 import clsx from 'clsx';
 import styles from './Header.style';
 import CustomTheme from './Header.theme.config';
