@@ -1,12 +1,8 @@
 /* eslint-disable react/forbid-prop-types */
 import React, { useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  withStyles,
-  Button,
-  List,
-  ListItem,
-} from "@material-ui/core";
+import { Button, List, ListItem } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import AutoComplete from "../AutoComplete";
 import {
   allFiltersCleared,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeProvider, createTheme } from '@material-ui/core/styles';
+import { ThemeProvider, StyledEngineProvider, createTheme, adaptV4Theme } from '@mui/material/styles';
 
 export default function SearchThemeConfig({
     children,
@@ -9,11 +9,13 @@ export default function SearchThemeConfig({
         
     }
   };
-  const computedTheme = createTheme({});
+  const computedTheme = createTheme(adaptV4Theme({}));
   return (
-    <ThemeProvider theme={computedTheme}>
-      {children}
-    </ThemeProvider>
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={computedTheme}>
+        {children}
+      </ThemeProvider>
+    </StyledEngineProvider>
   );
 }
 
