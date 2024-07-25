@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { withStyles } from "@material-ui/core";
+import withStyles from '@mui/styles/withStyles';
 import Styles from "./DictionaryStyle";
 import Tab from "./Tab";
 import TabPanel from "./Tab/TabPanel";

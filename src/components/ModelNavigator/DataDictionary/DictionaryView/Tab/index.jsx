@@ -1,7 +1,6 @@
 import React from 'react';
-import {
-  Tabs, Tab, withStyles,
-} from '@material-ui/core';
+import { Tabs, Tab } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
 import TabLabel from './TabLabel';
 
 const TabItems = ({
