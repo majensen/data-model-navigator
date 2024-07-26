@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeProvider, StyledEngineProvider, createTheme, adaptV4Theme } from '@mui/material/styles';
+import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 
 export default function TabThemeConfig({
   children,
@@ -63,7 +63,7 @@ export default function TabThemeConfig({
 
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={createTheme(adaptV4Theme(theme))}>
+      <ThemeProvider theme={createTheme(theme)}>
         {children}
       </ThemeProvider>
     </StyledEngineProvider>

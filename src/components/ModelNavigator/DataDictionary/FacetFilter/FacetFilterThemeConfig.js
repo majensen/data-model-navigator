@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeProvider, StyledEngineProvider, createTheme, adaptV4Theme } from '@mui/material/styles';
+import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 
 const theme = {
   components: {
@@ -32,7 +32,7 @@ const theme = {
 export default function FacetFilterThemeConfig ({
   children,
 }) {
-  const computedTheme = createTheme(adaptV4Theme(theme));
+  const computedTheme = createTheme(theme);
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={computedTheme}>

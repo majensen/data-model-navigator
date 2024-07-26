@@ -8,7 +8,6 @@ import {
   createTheme,
   ThemeProvider,
   StyledEngineProvider,
-  adaptV4Theme,
 } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
 import CloseIcon from '@mui/icons-material/Close';
@@ -104,7 +103,7 @@ const DialogComponent = ({
 
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={createTheme(adaptV4Theme(theme))}>
+      <ThemeProvider theme={createTheme(theme)}>
         <Dialog
           open={open}
           onClose={closeHandler}

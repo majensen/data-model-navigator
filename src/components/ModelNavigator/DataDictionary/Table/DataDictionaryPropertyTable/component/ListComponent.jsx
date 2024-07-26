@@ -8,7 +8,6 @@ import {
   createTheme,
   ThemeProvider,
   StyledEngineProvider,
-  adaptV4Theme,
 } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
 import FiberManualRecord from '@mui/icons-material/FiberManualRecord';
@@ -209,7 +208,7 @@ const ListComponent = ({
 
   return (
     <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={createTheme(adaptV4Theme(customTheme))}>
+      <ThemeProvider theme={createTheme(customTheme)}>
         <List>
           {enums.map((enum_val, index) => (
             <>

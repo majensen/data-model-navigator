@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThemeProvider, StyledEngineProvider, createTheme, adaptV4Theme } from '@mui/material/styles';
+import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 
 export default function HeaderThemeConfig ({
   children,
@@ -9,7 +9,7 @@ export default function HeaderThemeConfig ({
     },
   };
 
-  const computedTheme = createTheme(adaptV4Theme(theme));
+  const computedTheme = createTheme(theme);
   return (
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={computedTheme}>

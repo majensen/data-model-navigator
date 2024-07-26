@@ -1,4 +1,3 @@
-/* eslint-disable react/forbid-prop-types */
 import React, { useRef } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, List, ListItem } from "@mui/material";

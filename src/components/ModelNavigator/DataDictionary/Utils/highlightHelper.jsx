@@ -6,7 +6,6 @@ import {
   createTheme,
   ThemeProvider,
   StyledEngineProvider,
-  adaptV4Theme,
 } from '@mui/material';
 
 const getType = (prop) => {
@@ -174,7 +173,7 @@ export const getPropertyTypeFragment = (prop, typeMatchList, spanClassName) => {
       if (matchedTypeItem) {
         return (
           <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={createTheme(adaptV4Theme(theme))}>
+            <ThemeProvider theme={createTheme(theme)}>
               <List>
                 <ListItem key={i}>
                   {
@@ -192,7 +191,7 @@ export const getPropertyTypeFragment = (prop, typeMatchList, spanClassName) => {
       }
       return (
         <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={createTheme(adaptV4Theme(theme))}>
+          <ThemeProvider theme={createTheme(theme)}>
             <List>
               <ListItem key={i}>
                 {
