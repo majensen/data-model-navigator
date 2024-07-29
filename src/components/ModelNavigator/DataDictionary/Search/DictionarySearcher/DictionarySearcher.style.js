@@ -48,7 +48,7 @@ export default function dictionarySearcherStyle() {
   searchBarTitleText: {
     height: "15px",
     color: "#FFFFFF",
-    fontfamily: "Lato",
+    fontFamily: "Lato",
     fontSize: "18px",
     fontWeight: "bold",
   },
