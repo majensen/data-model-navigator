@@ -58,7 +58,7 @@ function DictionarySearcher({
  
   return (
       <div className={classes.searcher}>
-        <SearchThemeConfig>
+
           <div className={classes.searchBarTitle}>
             <span className={classes.searchBarTitleText}>Filter & Search</span>
           </div>
@@ -74,8 +74,9 @@ function DictionarySearcher({
               id="button_sidebar_clear_all_filters"
               variant="outlined"
               disabled={activeFiltersCount === 0}
-              className={classes.customButton}
-              classes={{ root: classes.clearAllButtonRoot }}
+              sx={{ root: { ...styles().clearAllButtonRoot},
+                    ...styles().customButton,
+                  }}
               onClick={clearFilterHandler}
               disableRipple
               title="CLEAR ALL"
@@ -83,7 +84,7 @@ function DictionarySearcher({
               CLEAR ALL
             </Button>
           </div>
-        </SearchThemeConfig>
+
         <div className={classes.results}>
           {searchIsFinished && (
             <div>

@@ -6,10 +6,13 @@ import store from '../../store';
 import { createConfig, defaultConfig } from './Config/nav.config';
 import { ConfigContext } from './Config/ConfigContext';
 import { ModelContext } from './Model/ModelContext';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import loadMDF from './Model/loadMDF';
 import './index.css';
 
 export { loadMDF };
+
+const defaultTheme = createTheme();
 
 export default function ModelNavigator({
   model,
@@ -32,11 +35,13 @@ export default function ModelNavigator({
 
   return (
     <Provider store={store}>
+    <ThemeProvider theme={defaultTheme}>
       <ConfigContext.Provider value={config}>
       <ModelContext.Provider value={model}>
         <DataDictionary />
       </ModelContext.Provider>
       </ConfigContext.Provider>
+    </ThemeProvider>
     </Provider>
   );
 }

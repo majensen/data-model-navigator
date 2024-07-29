@@ -23,7 +23,7 @@ function DictionarySearchHistory({
     dispatch(searchResultCleared());
     dispatch(clearedHistory());
   }
-  ////////////////
+
   
   var historyItems = []
   if (searchHistoryItems) {

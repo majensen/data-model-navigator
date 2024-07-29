@@ -87,23 +87,23 @@ export default function dictionarySearcherStyle() {
     marginRight: "13px",
     marginBottom: "12px",
   },
-  customButton: {
-    alignSelf: "end",
-    width: 75,
-    height: 22,
-    borderRadius: "100px",
-    minHeight: "20px",
-    fontSize: 9,
-    padding: 2,
-    fontFamily: "Open Sans",
-    textTransform: "none",
-    color: "#000000",
-    background: "#fff",
-    "&:hover": {
-      backgroundColor: "#D3D3D3",
-      color: "#000",
+    customButton: {
+      alignSelf: "end",
+      width: 80,
+      height: 22,
+      borderRadius: "100px",
+      minHeight: "20px",
+      fontSize: 9,
+      padding: 1,
+      fontFamily: "Open Sans",
+      textTransform: "none",
+      color: "#000000",
+      background: "#fff",
+      "& .Button:hover": {
+        backgroundColor: "#D3D3D3",
+        color: "#000",
+      },
     },
-  },
   };
 }
 
