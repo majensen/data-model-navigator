@@ -52,9 +52,11 @@ export default function TabThemeConfig({
         },
       },
       Mui: {
-        styleOverrides: {        
-          selected: {
-            borderBottom: '2px solid',
+        styleOverrides: {
+          root: {
+            '&.Mui-selected': {
+              borderBottom: '2px solid',
+            },
           },
         },
       },

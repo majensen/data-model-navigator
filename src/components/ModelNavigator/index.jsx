@@ -8,7 +8,12 @@ import { ConfigContext } from './Config/ConfigContext';
 import { ModelContext } from './Model/ModelContext';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import loadMDF from './Model/loadMDF';
+import '@fontsource/lato';
+import '@fontsource/open-sans';
+import '@fontsource/nunito';
+import '@fontsource/raleway';
 import './index.css';
+
 
 export { loadMDF };
 
