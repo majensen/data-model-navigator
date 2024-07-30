@@ -90,4 +90,4 @@ const config = {
 ```
 
 See the file [ICDCconfig.js](https://github.com/majensen/model-navigator-standalone/blob/main/src/ICDCconfig.js)
-for examples of the values of these elements.
+for examples of the values of these elements, and [example.jsx](https://github.com/majensen/model-navigator-standalone/blob/main/src/example.jsx) for an implementation.
