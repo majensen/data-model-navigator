@@ -139,8 +139,10 @@ const filterSlice = createSlice({
     },
     allFiltersCleared(state, action) {
       // reset all checkboxes
-      Object.keys(state.checkboxState).forEach( (key) => {
+      if (state.checkboxState) {
+        Object.keys(state.checkboxState).forEach( (key) => {
           state.checkboxState[key] = false; });
+      }
       // reset filtersSelected
       state.filtersSelected = [];
       // clear hidden nodes
