@@ -1,6 +1,6 @@
 {
   "name": "model-navigator-standalone",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Standalone MDF graph model visualizer",
   "main": "lib/index.js",
   "browser": "dist/index.js",
@@ -97,7 +97,7 @@
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "marked": "^4.2.3",
-    "mdf-reader": "^1.1.6",
+    "mdf-reader": "^1.1.7",
     "mini-css-extract-plugin": "^2.4.5",
     "nanoid": "^5.0.7",
     "pnp-webpack-plugin": "1.2.1",
